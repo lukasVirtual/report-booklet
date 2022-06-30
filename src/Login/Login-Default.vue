@@ -1,0 +1,110 @@
+<template>
+  <!-- <teleport to="header"> -->
+  <v-app>
+    <v-main
+      v-if="$route.path == '/Login'"
+      class="text-center"
+      style="
+        display: flex;
+        align-items: center;
+        justify-content: right;
+        padding-left: 25%;
+      "
+    >
+      <v-form
+        tile
+        ref="valid"
+        style="
+          border: 1px solid black;
+          height: 500px;
+          width: 800px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        "
+      >
+        <v-row align="center" justify="center">
+          <v-card-title>Login</v-card-title>
+          <v-col cols="12">
+            <v-text-field
+              label="Username"
+              type="text"
+              style="padding-left: 25%; padding-right: 25%"
+              :rules="[rules.required]"
+              variant="underlined"
+              v-model="validation.username"
+              single-line
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12">
+            <v-text-field
+              label="Password"
+              type="password"
+              style="padding-left: 25%; padding-right: 25%"
+              variant="underlined"
+              :rules="[rules.required, rules.minLen]"
+              v-model="validation.password"
+            ></v-text-field>
+          </v-col>
+          <v-col>
+            <router-link style="font-size: 15px" :to="{ path: '/Register' }"
+              >Not Registered? Register here</router-link
+            >
+          </v-col>
+          <v-divider length="800px"></v-divider>
+          <v-col>
+            <div class="text-right">
+              <v-card-actions>
+                <v-btn rounded @click="login">Login</v-btn>
+
+                <v-btn color="red" rounded @click="reset">reset</v-btn>
+              </v-card-actions>
+            </div>
+          </v-col>
+        </v-row>
+      </v-form>
+    </v-main>
+  </v-app>
+  <!-- </teleport> -->
+</template>
+
+<script lang="ts">
+import { defineComponent, reactive } from "vue";
+
+export default defineComponent({
+  name: "LoginDefault",
+
+  data() {
+    const rules = {
+      required: (value: string) => !!value || "Required",
+      minLen: (v: string) => v.length >= 8 || "Min. 8 Characters",
+    };
+
+    const validation = reactive({
+      username: "",
+      password: "",
+    });
+
+    const login = () => {
+      const passwordOfUser = localStorage.getItem("registeredUsersPassword");
+      const user = localStorage.getItem("registeredUser");
+      if (
+        validation.username !== "" &&
+        validation.password.length >= 8 &&
+        validation.password === passwordOfUser &&
+        validation.username === user
+      ) {
+        localStorage.removeItem("authenticated");
+        localStorage.setItem("authenticated", "true");
+        this.$router.push({ name: "home", query: { redirect: "/" } });
+      }
+    };
+
+    const reset = () => {
+      const obj = this.$refs.valid as any;
+      if (obj !== undefined) obj.reset();
+    };
+    return { rules, login, reset, validation };
+  },
+});
+</script>
