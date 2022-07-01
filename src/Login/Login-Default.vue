@@ -4,12 +4,7 @@
     <v-main
       v-if="$route.path == '/Login'"
       class="text-center"
-      style="
-        display: flex;
-        align-items: center;
-        justify-content: right;
-        padding-left: 25%;
-      "
+      style="display: flex; align-items: center; margin: auto"
     >
       <v-form
         tile
@@ -23,7 +18,7 @@
           align-items: center;
         "
       >
-        <v-row align="center" justify="center">
+        <v-row justify="center">
           <v-card-title>Login</v-card-title>
           <v-col cols="12">
             <v-text-field
@@ -97,6 +92,8 @@ export default defineComponent({
         localStorage.removeItem("authenticated");
         localStorage.setItem("authenticated", "true");
         this.$router.push({ name: "home", query: { redirect: "/" } });
+      } else {
+        alert("Something went wrong. Wrong username or password");
       }
     };
 

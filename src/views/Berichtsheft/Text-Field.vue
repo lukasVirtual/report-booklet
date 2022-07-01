@@ -25,13 +25,7 @@
             <v-col cols="12" md="12">
               <div v-for="j in anyNumber" :key="j">
                 <v-card-actions>
-                  <v-text-field
-                    :auto-grow="true"
-                    spellcheck="true"
-                    v-model.lazy="text"
-                    @change="log"
-                  ></v-text-field>
-                  <timer-text-field></timer-text-field>
+                  <typing-field></typing-field>
                 </v-card-actions>
               </div>
             </v-col>
@@ -47,7 +41,9 @@
               >
               <div style="height: 10px"></div>
               <v-btn icon elevation="20"
-                ><v-icon color="red">mdi-trash-can</v-icon></v-btn
+                ><v-icon color="red" @click="removeItems"
+                  >mdi-trash-can</v-icon
+                ></v-btn
               >
               <div style="height: 10px"></div>
 
@@ -63,11 +59,13 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, ref, watchEffect } from "vue";
-import TimerTextField from "./Timer-TextField.vue";
 import QualificationsDefault from "./Qualifications-Default.vue";
+import TypingField from "./Typing-Field.vue";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   name: "TextField",
+  components: { QualificationsDefault, TypingField },
   props: {
     propsDate: String,
   },
@@ -78,7 +76,7 @@ export default defineComponent({
     let num = ref<number[]>([]);
     let anyNumber = ref(1);
     let themeSelection = ref<string>("dark");
-    let text = ref("");
+    const router = useRouter();
 
     watchEffect(() => {
       anyNumber.value = Number(localStorage.getItem("inputs"));
@@ -90,9 +88,9 @@ export default defineComponent({
     function add() {
       num.value.push(1);
     }
-    const log = () => {
-      console.log(text.value);
-      localStorage.setItem("va", text.value);
+
+    const removeItems = () => {
+      localStorage.removeItem("inputs");
     };
 
     return {
@@ -102,11 +100,9 @@ export default defineComponent({
       input,
       anyNumber,
       themeSelection,
-      text,
-      log,
+      removeItems,
       add,
     };
   },
-  components: { TimerTextField, QualificationsDefault },
 });
 </script>

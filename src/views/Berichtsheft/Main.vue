@@ -25,7 +25,7 @@
         ref="container"
         id="test"
       >
-        <!-- <text-field :propsDate="`${i}.${currMonth}.${currYear}`"></text-field> -->
+        <text-field :propsDate="`${i}.${currMonth}.${currYear}`"></text-field>
       </v-container>
     </v-main>
 
@@ -34,18 +34,12 @@
 </template>
 
 <script lang="ts">
-import {
-  createApp,
-  defineComponent,
-  getCurrentInstance,
-  onMounted,
-  ref,
-} from "vue";
-import TextField from "./Text-Field.vue";
+import { defineComponent, getCurrentInstance, ref } from "vue";
 import BaseLayout from "../../boilerplate/layouts/Base.vue";
+import TextField from "./Text-Field.vue";
 
 export default defineComponent({
-  components: { BaseLayout },
+  components: { BaseLayout, TextField },
   name: "MainPage",
 
   setup() {
@@ -59,9 +53,6 @@ export default defineComponent({
     const currYear = ref(date.getFullYear());
     let time = ref<string | null>(null);
 
-    onMounted(() => {
-      createComponentInstance();
-    });
     const computeDays = () => {
       if (
         currMonth.value === 4 ||
@@ -83,18 +74,7 @@ export default defineComponent({
       }
     };
     let props: { propsDate: string } = { propsDate: "" };
-    const createComponentInstance = async () => {
-      // for (let i = 1; i <= daysOfMonth.value; i++) {
-      props = {
-        propsDate: `${daysOfMonth.value}.${currMonth.value}.${currYear.value}`,
-      };
-      const app = createApp((await import("./Text-Field.vue")).default, props);
-      // localStorage.setItem(props.propsDate, props.propsDate);
-      // console.log(app._context.app._uid++);
-      Object.assign(app._context, appContext);
-      app.mount("#test");
-      // }
-    };
+
     const switchPageRight = () => {
       currMonth.value++;
       if (currMonth.value > 12) {
@@ -102,10 +82,10 @@ export default defineComponent({
         currYear.value++;
       }
       computeDays();
-      const obj = localStorage.getItem(props.propsDate);
 
-      createComponentInstance();
+      localStorage.getItem(props.propsDate);
     };
+
     const switchPageLeft = async () => {
       if (currYear.value >= date.getFullYear()) {
         currMonth.value--;
@@ -115,13 +95,11 @@ export default defineComponent({
         }
       }
       computeDays();
-      createComponentInstance();
     };
 
     const today = () => {
       currMonth.value = date.getMonth() + 1;
       currYear.value = date.getFullYear();
-      createComponentInstance();
     };
 
     const submit = () => {

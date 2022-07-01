@@ -3,18 +3,6 @@
     :theme="theme"
     style="display: flex; align-items: center; justify-content: center"
   >
-    <v-navigation-drawer :color="theme" permanent>
-      <v-list>
-        <v-list-item height="60px" :to="{ path: '/Berichtsheft' }"
-          ><v-icon style="width: 40px">mdi-file-document-edit-outline</v-icon>
-          Berichtsheft</v-list-item
-        >
-        <v-list-item height="60px" :to="{ path: '/Dashboard' }"
-          ><v-icon style="width: 40px">mdi-monitor-dashboard</v-icon>
-          Dashboard</v-list-item
-        >
-      </v-list>
-    </v-navigation-drawer>
     <v-app-bar :color="theme" style="position: fixed">
       <v-spacer></v-spacer>
       <div class="text-right" style="margin: 20px">
@@ -27,9 +15,18 @@
         >
       </div></v-app-bar
     >
+    <v-navigation-drawer>
+      <v-list-item height="70px" :to="{ path: '/Berichtsheft' }"
+        ><v-icon style="width: 40px">mdi-file-document-edit-outline</v-icon>
+        Berichtsheft</v-list-item
+      >
+      <v-list-item height="70px" :to="{ path: '/Dashboard' }"
+        ><v-icon style="width: 40px">mdi-monitor-dashboard</v-icon>
+        Dashboard</v-list-item
+      >
+    </v-navigation-drawer>
     <Suspense>
       <slot></slot>
-
       <template #fallback>
         <v-overlay v-model="overlay"> </v-overlay>
       </template>
