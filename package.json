@@ -12,6 +12,7 @@
   "main": "background.js",
   "dependencies": {
     "@mdi/font": "5.9.55",
+    "axios": "^0.27.2",
     "buetify": "^0.1.7",
     "roboto-fontface": "*",
     "vue": "^3.2.33",

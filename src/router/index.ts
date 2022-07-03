@@ -19,7 +19,7 @@ const router = createRouter({
         { path: "/Dashboard", name: "Dashboard", component: DashboardDefault },
         { path: "/Berichtsheft", name: "Berichtsheft", component: MainPage },
       ],
-      beforeEnter: (to, from, next) => {
+      beforeEnter: async (to, from, next) => {
         const isAuthenticated =
           localStorage.getItem("authenticated") === "true" ? true : false;
         console.log(to.path);

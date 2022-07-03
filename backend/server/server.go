@@ -30,6 +30,7 @@ type User struct {
 }
 
 func Init() {
+	fmt.Println("Server is starting...")
 	router := fiber.New()
 
 	store = session.New(session.Config{
@@ -51,9 +52,10 @@ func Init() {
 	router.Get("/api/statuscheck", StatusCheck)
 
 	router.Get("/user", GetUser)
-
-	router.Listen(":5000")
-
+	err := router.Listen(":3000")
+	if err != nil {
+		panic(err)
+	}
 }
 
 func NewMiddleware() fiber.Handler {
