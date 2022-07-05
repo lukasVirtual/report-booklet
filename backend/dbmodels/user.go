@@ -1,34 +1,53 @@
 package dbmodels
 
-type User struct {
-	ID       uint64 `json: "id"`
-	Name     string `json: "name"`
-	Password string `json: "password"`
-}
+// import "fmt"
 
-func CreateUser(user *User) error {
-	statement := `insert into users(name, password) values(?, ?)`
+// type User struct {
+// 	ID       uint64 `json: "id"`
+// 	Name     string `json: "name"`
+// 	Password string `json: "password"`
+// 	Role     string `json: "role"`
+// }
 
-	_, err := db.Exec(statement, user.Name, user.Password)
+// func CreateUser(user *User) error {
+// 	statement := `insert into users(name, password, role) values(?, ?, ?)`
 
-	return err
+// 	_, err := db.Exec(statement, user.Name, user.Password, user.Role)
 
-}
+// 	return err
 
-func GetUser(id string) (User, error) {
-	var user User
+// }
 
-	statement := `select * from users where id = ?`
+// func GetUser(name string) (User, error) {
+// 	var user User
 
-	rows, err := db.Query(statement, id)
+// 	statement := `select name, password, role from users where name=? limit 1`
+// 	rows, err := db.Query(statement, name)
+// 	if err != nil {
+// 		return User{}, err
+// 	}
 
-	if err != nil {
-		return User{}, err
-	}
+// 	for rows.Next() {
+// 		err = rows.Scan(&user.Name, &user.Password, &user.Role)
+// 		fmt.Println(err)
+// 	}
 
-	for rows.Next() {
-		err = rows.Scan(&user.ID, &user.Name, &user.Password)
-	}
+// 	return user, nil
+// }
 
-	return user, nil
-}
+// func CheckUser(name string, user *User) bool {
+// 	statement := `select name, password from users where name=? limit 1`
+// 	rows, err := db.Query(statement, name)
+// 	if err != nil {
+// 		return false
+// 	}
+
+// 	for rows.Next() {
+// 		err = rows.Scan(&user.Name, &user.Password)
+// 		if err != nil {
+// 			return false
+// 		}
+// 	}
+
+// 	return true
+// }

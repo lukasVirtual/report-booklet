@@ -16,7 +16,7 @@ import (
 var (
 	store    *session.Store
 	AUTH_KEY string = "authenticated"
-	USER_ID  string = "user_id"
+	USER_ID  string = "ID"
 )
 
 // type User struct {
@@ -27,18 +27,16 @@ var (
 type User struct {
 	Name     string `json: "name"`
 	Password string `json: "password"`
+	Role     string `json: "role"`
 }
 
 func Init() {
-	fmt.Println("Server is starting...")
 	router := fiber.New()
 
 	store = session.New(session.Config{
 		CookieHTTPOnly: true,
 		Expiration:     time.Hour * 5,
 	})
-
-	router.Use(NewMiddleware())
 
 	router.Use(NewMiddleware(), cors.New((cors.Config{
 		AllowCredentials: true,
@@ -51,11 +49,10 @@ func Init() {
 	router.Post("/api/logout", Logout)
 	router.Get("/api/statuscheck", StatusCheck)
 
-	router.Get("/user", GetUser)
-	err := router.Listen(":3000")
-	if err != nil {
-		panic(err)
-	}
+	router.Get("/api/user", GetUserData)
+
+	router.Listen(":5000")
+
 }
 
 func NewMiddleware() fiber.Handler {
@@ -64,7 +61,6 @@ func NewMiddleware() fiber.Handler {
 
 func AuthMiddleware(c *fiber.Ctx) error {
 	sess, err := store.Get(c)
-	fmt.Printf("path[0] %s", strings.Split(c.Path(), "/")[1])
 	if strings.Split(c.Path(), "/")[1] == "api" {
 		return c.Next()
 	}
@@ -83,6 +79,7 @@ func AuthMiddleware(c *fiber.Ctx) error {
 	return c.Next()
 }
 
+// TODO Register
 func Register(c *fiber.Ctx) error {
 	c.Accepts("application/json")
 
@@ -90,13 +87,15 @@ func Register(c *fiber.Ctx) error {
 	fmt.Println("data", data.Name)
 	err := c.BodyParser(&data)
 
-	// if err != nil {
-	// 	return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-	// 		"message": "1" + err.Error(),
-	// 	})
-	// }
+	fmt.Println("data", data)
 
-	_, cryptErr := bcrypt.GenerateFromPassword([]byte(data.Password), 14)
+	if err != nil {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"message": "1" + err.Error(),
+		})
+	}
+
+	password, cryptErr := bcrypt.GenerateFromPassword([]byte(data.Password), 14)
 	if cryptErr != nil {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"message": "2",
@@ -105,21 +104,23 @@ func Register(c *fiber.Ctx) error {
 
 	user := dbmodels.User{
 		Name:     data.Name,
-		Password: data.Password,
+		Password: string(password),
+		Role:     data.Role,
 	}
+	// err =
+	dbmodels.CreateUser(&user)
 
-	err = dbmodels.CreateUser(&user)
-
-	if err != nil {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"message": "3" + err.Error(),
-		})
-	}
+	// if err != nil {
+	// 	return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+	// 		"message": "3" + err.Error(),
+	// 	})
+	// }
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"message": "registered",
 	})
 }
 
+// TODO Login
 func Login(c *fiber.Ctx) error {
 	var data User
 
@@ -127,13 +128,19 @@ func Login(c *fiber.Ctx) error {
 
 	if err != nil {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"message": err.Error(),
+			"message": "the pointer " + err.Error(),
 		})
 	}
 
 	var user dbmodels.User
+	if !dbmodels.CheckUser(data.Name, &user) {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"message": "1" + err.Error(),
+		})
+	}
+	fmt.Println("user", user.Name, user.Password, user.Role)
+	fmt.Println("user and data: ", user.Password, data.Password)
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(data.Password))
-
 	if err != nil {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"message": "Nicht Regestriert",
@@ -149,8 +156,7 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	sess.Set(AUTH_KEY, true)
-	sess.Set(USER_ID, user.ID)
-
+	sess.Set(USER_ID, user.Name)
 	sessErr = sess.Save()
 
 	if sessErr != nil {
@@ -196,19 +202,19 @@ func StatusCheck(c *fiber.Ctx) error {
 	}
 
 	auth := sess.Get(AUTH_KEY)
-
+	fmt.Println(auth)
 	if auth != nil {
 		return c.Status(fiber.StatusOK).JSON(fiber.Map{
-			"message": "no session available",
+			"message": "authenticated",
 		})
 	} else {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"message": "Not Authorized",
+			"message": "not authorized",
 		})
 	}
 }
 
-func GetUser(c *fiber.Ctx) error {
+func GetUserData(c *fiber.Ctx) error {
 	sess, err := store.Get(c)
 
 	if err != nil {
@@ -232,13 +238,12 @@ func GetUser(c *fiber.Ctx) error {
 
 	var user dbmodels.User
 
-	user, err = dbmodels.GetUser(fmt.Sprint(userId))
-
-	if err != nil {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"message": "Not Authorized",
-		})
-	}
+	user = dbmodels.GetUser(fmt.Sprint(userId))
+	// if err != nil {
+	// 	return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+	// 		"message": "Not Authorized",
+	// 	})
+	// }
 
 	return c.Status(fiber.StatusOK).JSON(user)
 }
