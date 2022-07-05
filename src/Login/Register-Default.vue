@@ -3,12 +3,7 @@
     <v-main
       v-if="$route.path == '/Register'"
       class="text-center"
-      style="
-        display: flex;
-        align-items: center;
-        justify-content: right;
-        padding-left: 25%;
-      "
+      style="display: flex; align-items: center; margin: auto"
     >
       <v-form
         tile

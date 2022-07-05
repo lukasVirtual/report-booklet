@@ -5,20 +5,18 @@
         style="width: 900px; border: 2px solid black; overflow-x: hidden"
         tile
         class="mt-5 overflow-y-auto"
-        max-width="800px"
       >
         <v-card-title>{{ propsDate }}</v-card-title>
       </v-card>
       <v-card
         style="
           width: 900px;
-          height: 400px;
-          border: 2px solid black;
+          height: 500px;
+          border: 1px solid black;
           overflow-x: hidden;
         "
         tile
         class="mt-5 overflow-y-auto"
-        max-width="800px"
       >
         <v-row dense>
           <v-row>
@@ -34,7 +32,7 @@
             <v-spacer></v-spacer>
           </v-row>
           <v-col cols="1" class="text-center">
-            <div style="background-color: lightblue; height: 320%">
+            <div style="background-color: #66d3fa; height: 320%">
               <div style="height: 5px"></div>
               <v-btn @click="anyNumber++" icon elevation="20"
                 ><v-icon color="blue">mdi-plus</v-icon></v-btn
@@ -56,9 +54,8 @@
   </div>
 </template>
 
-
 <script lang="ts">
-import { defineComponent, onMounted, ref, watchEffect } from "vue";
+import { defineComponent, ref } from "vue";
 import QualificationsDefault from "./Qualifications-Default.vue";
 import TypingField from "./Typing-Field.vue";
 import { useRouter } from "vue-router";
@@ -78,13 +75,13 @@ export default defineComponent({
     let themeSelection = ref<string>("dark");
     const router = useRouter();
 
-    watchEffect(() => {
-      anyNumber.value = Number(localStorage.getItem("inputs"));
-    });
+    // watchEffect(() => {
+    //   anyNumber.value = Number(localStorage.getItem("inputs"));
+    // });
 
-    watchEffect(() =>
-      localStorage.setItem("inputs", anyNumber.value.toString())
-    );
+    // watchEffect(() =>
+    //   localStorage.setItem("inputs", anyNumber.value.toString())
+    // );
     function add() {
       num.value.push(1);
     }

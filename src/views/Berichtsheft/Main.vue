@@ -1,11 +1,7 @@
 <template>
   <base-layout v-if="$route.path === '/Berichtsheft'">
     <v-main>
-      <v-card
-        :disabled="toggleStage"
-        color="transparent"
-        class="d-flex justify-center mb-6"
-      >
+      <v-card color="transparent" class="d-flex justify-center mb-6">
         <v-card-actions>
           <v-btn icon @click="switchPageLeft"
             ><v-icon>mdi-arrow-left</v-icon></v-btn
@@ -14,8 +10,11 @@
           <v-btn icon @click="switchPageRight"
             ><v-icon>mdi-arrow-right</v-icon></v-btn
           >
-          <v-btn @click="submit" color="blue">Submit</v-btn>
-          <h6>{{ time }}</h6>
+
+          <v-btn :disabled="toggleStage" @click="submit" color="blue"
+            >Submit</v-btn
+          >
+          <h5 style="color: grey">{{ time }}</h5>
         </v-card-actions>
       </v-card>
       <v-container
@@ -103,9 +102,7 @@ export default defineComponent({
     };
 
     const submit = () => {
-      toggleStage.value == false
-        ? (toggleStage.value = true)
-        : (toggleStage.value = false);
+      toggleStage.value = !toggleStage.value;
 
       time.value = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
 
