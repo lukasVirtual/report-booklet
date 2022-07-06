@@ -54,16 +54,16 @@
 </template>
 <script lang="ts">
 import { defineComponent, ref } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import NavigationListItem from "../NavigationListItem.vue";
 
 export default defineComponent({
   name: "BaseLayout",
-  components: { NavigationListItem },
-  data() {
+  // components: { NavigationListItem },
+  setup() {
     let isAuthenticated = ref(false);
     let theme = ref("dark");
-    // const router = useRoute();
+    const router = useRouter();
     const overlay = ref(true);
     const showHearbeat = ref(false);
     const toggleList = ref(true);
@@ -75,7 +75,7 @@ export default defineComponent({
     const logout = () => {
       localStorage.removeItem("authenticated");
       localStorage.setItem("authenticated", "false");
-      this.$router.push({ name: "Login", query: { redirect: "/Login" } });
+      router.push({ name: "Login", query: { redirect: "/Login" } });
     };
 
     const switchTheme = () => {

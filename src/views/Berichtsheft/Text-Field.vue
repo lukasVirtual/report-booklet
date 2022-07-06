@@ -16,7 +16,7 @@
           overflow-x: hidden;
         "
         tile
-        class="mt-5 overflow-y-auto"
+        class="mt-5 overflow-y auto"
       >
         <v-row dense>
           <v-row>
@@ -32,7 +32,7 @@
             <v-spacer></v-spacer>
           </v-row>
           <v-col cols="1" class="text-center">
-            <div style="background-color: #66d3fa; height: 320%">
+            <div style="background-color: #007fff; height: 320%">
               <div style="height: 5px"></div>
               <v-btn @click="anyNumber++" icon elevation="20"
                 ><v-icon color="blue">mdi-plus</v-icon></v-btn
