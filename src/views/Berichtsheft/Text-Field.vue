@@ -1,5 +1,5 @@
 <template>
-  <div id="comp">
+  <div id="comp" v-if="$route.path === '/Berichtsheft'">
     <v-container fluid>
       <v-card
         style="width: 900px; border: 2px solid black; overflow-x: hidden"
@@ -32,14 +32,14 @@
             <v-spacer></v-spacer>
           </v-row>
           <v-col cols="1" class="text-center">
-            <div style="background-color: #007fff; height: 320%">
+            <div style="background-image: linear-gradient(180deg, blue, darkblue); height: 320%">
               <div style="height: 5px"></div>
-              <v-btn @click="anyNumber++" icon elevation="20"
-                ><v-icon color="blue">mdi-plus</v-icon></v-btn
+              <v-btn @click="anyNumber++" style="border-radius: 15px;" elevation="20"
+                ><v-icon size="25" color="blue">mdi-plus</v-icon></v-btn
               >
               <div style="height: 10px"></div>
-              <v-btn icon elevation="20"
-                ><v-icon color="red" @click="removeItems"
+              <v-btn style="border-radius: 15px;" elevation="20"
+                ><v-icon size="25" color="red" @click="removeItems"
                   >mdi-trash-can</v-icon
                 ></v-btn
               >

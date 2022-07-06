@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <div v-if="$route.path == '/Berichtsheft'">
     <v-menu anchor="left">
       <template v-slot:activator="{ props }">
-        <v-btn v-bind="props" style="margin-bottom: 30px" icon elevation="20"
-          ><v-icon>mdi-text-box-outline</v-icon></v-btn
+        <v-btn v-bind="props" style="margin-bottom: 30px;border-radius: 15px;" elevation="20"
+          ><v-icon size="25">mdi-text-box-outline</v-icon></v-btn
         >
       </template>
       <v-list width="600px">

@@ -1,5 +1,5 @@
-<template>
-  <base-layout v-if="$route.path === '/Dashboard'">
+<template v-if="$route.path === '/Dashboard'">
+  <base-layout>
     <v-main style="margin: 20px">
       <h3>Dashboard</h3>
     </v-main>

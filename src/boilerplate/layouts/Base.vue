@@ -3,12 +3,12 @@
     :theme="theme"
     style="display: flex; align-items: center; justify-content: center"
   >
-    <v-navigation-drawer v-model="toggleList">
+    <v-navigation-drawer v-model="toggleList" >
       <v-list-item height="70px" :to="{ name: 'Berichtsheft' }"
         ><v-icon style="width: 40px">mdi-file-document-edit-outline</v-icon>
         Berichtsheft</v-list-item
       >
-      <v-list-item link height="70px" :to="{ name: 'Dashboard' }"
+      <v-list-item link height="70px" :to="{ name: 'Dashboard' }" class="text-center"
         ><v-icon style="width: 40px">mdi-monitor-dashboard</v-icon>
         Dashboard</v-list-item
       >
@@ -50,6 +50,7 @@
         <v-overlay v-model="overlay"> </v-overlay>
       </template>
     </Suspense>
+    
   </v-app>
 </template>
 <script lang="ts">

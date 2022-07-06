@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex justify-space-around">
+  <div class="d-flex justify-space-around" v-if="$route.path === '/Berichtsheft'">
     <v-menu justify-center ref="parentMenu" v-model="ruler">
       <template v-slot:activator="{ props }">
         <v-btn

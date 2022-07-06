@@ -1,4 +1,4 @@
-<template>
+<template v-if="$route.path === '/Berichtsheft'">
   <v-text-field :auto-grow="true" spellcheck="true"></v-text-field>
   <timer-text-field></timer-text-field>
 </template>
