@@ -63,6 +63,7 @@
 </template>
 
 <script lang="ts">
+import { loginService } from "@/handler/loginHandler";
 import { defineComponent, reactive, ref } from "vue";
 
 export default defineComponent({

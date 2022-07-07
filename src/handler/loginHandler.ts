@@ -10,28 +10,33 @@ export default interface loginServiceInterface {
 
 export class loginService implements loginServiceInterface {
   router = useRouter();
+
   async login(name: string, password: string): Promise<boolean> {
     const inputData = JSON.stringify({
       name: name,
       password: password,
     });
-    const res = await axios.post("http://127.0.0.1:3000/login", inputData);
+    const res = await axios.post("http://127.0.0.1:5000/api/login", inputData);
     return res.status === 200 ? true : false;
   }
+
   async logout(): Promise<boolean> {
-    const res = await axios.post("http://127.0.0.1:3000/logout");
+    const res = await axios.post("http://127.0.0.1:5000/api/logout");
     return res.status === 200 ? true : false;
   }
+
   async register(name: string, password: string): Promise<boolean> {
     const inputData = JSON.stringify({
       name: name,
       password: password,
     });
 
-    const res = await axios.post("http://127.0.0.1:3000/register", inputData);
+    const res = await axios.post("http://127.0.0.1:5000/api/register", inputData);
     return res.status === 200 ? true : false;
   }
-  checkStatus() {
-    throw new Error("Method not implemented.");
+
+  async checkStatus(): Promise<void> {
+    const res = await axios.get("http://127.0.0.1:5000/api/user")
+    console.log(res.status)
   }
 }

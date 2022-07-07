@@ -6,6 +6,7 @@ import RegisterDefault from "../Login/Register-Default.vue";
 import MainPage from "../views/Berichtsheft/Main.vue";
 import DashboardDefault from "../views/Dashboard/Dashboard-Default.vue";
 import BaseLayout from "../boilerplate/layouts/Base.vue";
+import type loginServiceInterface from "@/handler/loginHandler";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
