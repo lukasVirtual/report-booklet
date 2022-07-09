@@ -1,5 +1,10 @@
 package dbmodels
 
+import (
+	"fmt"
+	"log"
+)
+
 func CreateUser(user *User) {
 	db.Create(&user)
 }
@@ -13,8 +18,11 @@ func GetUser(name string) User {
 
 //TODO Only Scan Name, Password and Role
 func CheckUser(name string, user *User) bool {
-
-	db.Raw("select name, password, role from users where name = ?", name).Scan(&user)
+	log.Println(name)
+	err := db.Raw("select name, password, role from users where name = ?", name).Scan(&user)
+	if err != nil {
+		fmt.Println("error is from here", err)
+	}
 	if user.Name != "" && user.Password != "" {
 		return true
 	} else {

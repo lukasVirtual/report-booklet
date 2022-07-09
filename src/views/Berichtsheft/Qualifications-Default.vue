@@ -1,12 +1,15 @@
 <template>
   <div v-if="$route.path == '/Berichtsheft'">
-    <v-menu anchor="left">
+    <v-menu anchor="center">
       <template v-slot:activator="{ props }">
-        <v-btn v-bind="props" style="margin-bottom: 30px;border-radius: 15px;" elevation="20"
+        <v-btn
+          v-bind="props"
+          style="margin-bottom: 30px; border-radius: 15px; min-width: 20px"
+          elevation="20"
           ><v-icon size="25">mdi-text-box-outline</v-icon></v-btn
         >
       </template>
-      <v-list width="600px">
+      <v-list width="400px">
         <v-list-item v-for="num in 16" :key="num">
           <v-list-item-title>
             <v-list-item-title>The {{ num }} Qualification</v-list-item-title>

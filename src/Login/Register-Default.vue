@@ -81,16 +81,17 @@ export default defineComponent({
       minLen: (v: string) => v.length >= 8 || "Min. 8 Characters",
     };
 
-    const register = () => {
+    const register = async () => {
+      await loginService.register(vInputField.user, vInputField.passwrd);
       alert("succesfully registerd");
-      map.set(vInputField.user, vInputField.passwrd);
-      console.error(map);
-      for (const [user, password] of map) {
-        localStorage.removeItem("registeredUser");
-        localStorage.removeItem("registeredUsersPassword");
-        localStorage.setItem("registeredUser", user);
-        localStorage.setItem("registeredUsersPassword", password);
-      }
+      // map.set(vInputField.user, vInputField.passwrd);
+      // console.error(map);
+      // for (const [user, password] of map) {
+      //   localStorage.removeItem("registeredUser");
+      //   localStorage.removeItem("registeredUsersPassword");
+      //   localStorage.setItem("registeredUser", user);
+      //   localStorage.setItem("registeredUsersPassword", password);
+      // }
       this.$router.push({
         name: "Login",
         query: { redirect: "/" },

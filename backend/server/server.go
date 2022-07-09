@@ -133,6 +133,8 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	var user dbmodels.User
+
+	fmt.Println("data model", data.Name)
 	if !dbmodels.CheckUser(data.Name, &user) {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"message": "1" + err.Error(),
@@ -158,7 +160,7 @@ func Login(c *fiber.Ctx) error {
 	sess.Set(AUTH_KEY, true)
 	sess.Set(USER_ID, user.Name)
 	sessErr = sess.Save()
-
+	fmt.Println("session Error: ", sessErr)
 	if sessErr != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"message": "error: " + err.Error(),
@@ -178,7 +180,8 @@ func Logout(c *fiber.Ctx) error {
 			"message": "no session available" + err.Error(),
 		})
 	}
-
+	// sess.Set(AUTH_KEY, nil)
+	// sess.Set(USER_ID, nil)
 	err = sess.Destroy()
 
 	if err != nil {

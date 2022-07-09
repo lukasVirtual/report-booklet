@@ -23,7 +23,9 @@ type User struct {
 
 func InitDB() {
 	fmt.Println("INIT DB")
-	db, err = gorm.Open("mysql", "root:1234@tcp(127.0.0.1:3306)/test")
+	//dsnWindows := "root:1234@tcp(127.0.0.1:3306)/test"
+	dsnLinux := "sqluser:password@tcp(localhost:3306)/test"
+	db, err = gorm.Open("mysql", dsnLinux)
 
 	if err != nil {
 		panic("Error Occured when tried to open DB")

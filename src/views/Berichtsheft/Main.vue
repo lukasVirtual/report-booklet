@@ -33,7 +33,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, getCurrentInstance, ref } from "vue";
+import { defineComponent, inject, ref } from "vue";
 import BaseLayout from "../../boilerplate/layouts/Base.vue";
 import TextField from "./Text-Field.vue";
 
@@ -43,9 +43,10 @@ export default defineComponent({
 
   setup() {
     const date = new Date();
-
-    const { appContext } = getCurrentInstance() as any;
-    console.log(appContext);
+    const tryInjection = inject("role");
+    console.log(tryInjection);
+    // const { appContext } = getCurrentInstance() as any;
+    // console.log(appContext);
     let daysOfMonth = ref(31);
     let toggleStage = ref(false);
     let currMonth = ref(date.getMonth() + 1);

@@ -64,6 +64,7 @@
 </template>
 
 <script lang="ts">
+import { loginService } from "@/handler/loginHandler";
 import { defineComponent, reactive } from "vue";
 
 export default defineComponent({
@@ -80,17 +81,18 @@ export default defineComponent({
       password: "",
     });
 
-    const login = () => {
-      const passwordOfUser = localStorage.getItem("registeredUsersPassword");
-      const user = localStorage.getItem("registeredUser");
+    const login = async () => {
+      const registerRequest = await loginService.login(
+        validation.username,
+        validation.password
+      );
+
       if (
         validation.username !== "" &&
         validation.password.length >= 8 &&
-        validation.password === passwordOfUser &&
-        validation.username === user
+        registerRequest
       ) {
-        localStorage.removeItem("authenticated");
-        localStorage.setItem("authenticated", "true");
+        console.log(registerRequest);
         this.$router.push({ name: "home", query: { redirect: "/" } });
       } else {
         alert("Something went wrong. Wrong username or password");

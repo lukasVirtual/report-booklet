@@ -3,20 +3,6 @@
     :theme="theme"
     style="display: flex; align-items: center; justify-content: center"
   >
-    <v-navigation-drawer v-model="toggleList" >
-      <v-list-item height="70px" :to="{ name: 'Berichtsheft' }"
-        ><v-icon style="width: 40px">mdi-file-document-edit-outline</v-icon>
-        Berichtsheft</v-list-item
-      >
-      <v-list-item link height="70px" :to="{ name: 'Dashboard' }" class="text-center"
-        ><v-icon style="width: 40px">mdi-monitor-dashboard</v-icon>
-        Dashboard</v-list-item
-      >
-      <!-- <navigation-list-item
-        icon="mdi-monitor-dashboard"
-        :to="{ name: 'Dashboard' }"
-      ></navigation-list-item> -->
-    </v-navigation-drawer>
     <v-app-bar :color="theme" style="position: fixed">
       <v-btn @click="togglelistState" icon
         ><v-icon style="width: 35px" size="22"
@@ -44,19 +30,43 @@
         src="src\assets\vhf-logo.png"
       ></v-img>
     </v-app-bar>
+    <v-navigation-drawer v-model="toggleList">
+      <v-list-item
+        v-if="role === 'user'"
+        height="60px"
+        :to="{ name: 'Berichtsheft' }"
+        ><v-icon style="width: 40px">mdi-file-document-edit-outline</v-icon>
+        Berichtsheft</v-list-item
+      >
+      <v-list-item
+        v-if="role === 'user'"
+        height="60px"
+        :to="{ name: 'Dashboard' }"
+        ><v-icon style="width: 40px">mdi-monitor-dashboard</v-icon>
+        Dashboard</v-list-item
+      >
+      <v-list-item
+        v-if="role === 'admin'"
+        height="60px"
+        :to="{ name: 'Dashboard' }"
+        ><v-icon style="width: 40px">mdi-monitor</v-icon> Control
+        Center</v-list-item
+      >
+    </v-navigation-drawer>
     <Suspense>
-      <slot></slot>
+      <template #default>
+        <slot></slot>
+      </template>
       <template #fallback>
-        <v-overlay v-model="overlay"> </v-overlay>
+        <v-overlay v-model="overlay"></v-overlay>
       </template>
     </Suspense>
-    
   </v-app>
 </template>
 <script lang="ts">
-import { defineComponent, ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import NavigationListItem from "../NavigationListItem.vue";
+import { loginService } from "@/handler/loginHandler";
+import { defineComponent, inject, ref } from "vue";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   name: "BaseLayout",
@@ -68,14 +78,18 @@ export default defineComponent({
     const overlay = ref(true);
     const showHearbeat = ref(false);
     const toggleList = ref(true);
+    const role = ref(inject("role"));
     let iconValue =
       theme.value == "dark"
         ? ref("mdi-moon-waning-crescent")
         : ref("mdi-weather-sunny");
 
-    const logout = () => {
-      localStorage.removeItem("authenticated");
-      localStorage.setItem("authenticated", "false");
+    const logout = async () => {
+      const logoutHandling = await loginService.logout();
+      console.log(logoutHandling);
+      // localStorage.removeItem("authenticated");
+      // localStorage.setItem("authenticated", "false");
+
       router.push({ name: "Login", query: { redirect: "/Login" } });
     };
 
@@ -104,6 +118,7 @@ export default defineComponent({
       theme,
       overlay,
       iconValue,
+      role,
       togglelistState,
       logout,
       switchTheme,

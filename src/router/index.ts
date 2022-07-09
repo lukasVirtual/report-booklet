@@ -1,12 +1,10 @@
 import { createRouter, createWebHistory } from "vue-router";
-// import TextField from "../boilerplate/Text-Field.vue"
 import App from "../App.vue";
 import LoginDefault from "../Login/Login-Default.vue";
 import RegisterDefault from "../Login/Register-Default.vue";
 import MainPage from "../views/Berichtsheft/Main.vue";
 import DashboardDefault from "../views/Dashboard/Dashboard-Default.vue";
-import BaseLayout from "../boilerplate/layouts/Base.vue";
-import type loginServiceInterface from "@/handler/loginHandler";
+import { loginService } from "@/handler/loginHandler";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -21,13 +19,12 @@ const router = createRouter({
         { path: "/Berichtsheft", name: "Berichtsheft", component: MainPage },
       ],
       beforeEnter: async (to, from, next) => {
-        const isAuthenticated =
-          localStorage.getItem("authenticated") === "true" ? true : false;
-        console.log(to.path);
-        if (to.path !== "/Login" && !isAuthenticated) {
+        try {
+          const statusCheck = await loginService.checkStatus();
+          console.log(statusCheck);
+          if (statusCheck) next();
+        } catch (e) {
           next({ path: "/Login" });
-        } else {
-          next();
         }
       },
     },
