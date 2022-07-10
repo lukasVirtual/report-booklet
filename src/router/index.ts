@@ -1,9 +1,10 @@
 import { createRouter, createWebHistory } from "vue-router";
 import App from "../App.vue";
-import LoginDefault from "../Login/Login-Default.vue";
-import RegisterDefault from "../Login/Register-Default.vue";
+import LoginDefault from "../Auth/Login-Default.vue";
+import RegisterDefault from "../Auth/Register-Default.vue";
 import MainPage from "../views/Berichtsheft/Main.vue";
 import DashboardDefault from "../views/Dashboard/Dashboard-Default.vue";
+import AdminDefault from "../views/Admin/Admin-Default.vue";
 import { loginService } from "@/handler/loginHandler";
 
 const router = createRouter({
@@ -17,6 +18,7 @@ const router = createRouter({
       children: [
         { path: "/Dashboard", name: "Dashboard", component: DashboardDefault },
         { path: "/Berichtsheft", name: "Berichtsheft", component: MainPage },
+        { path: "/Admin", name: "Admin", component: AdminDefault },
       ],
       beforeEnter: async (to, from, next) => {
         try {

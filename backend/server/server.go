@@ -48,6 +48,7 @@ func Init() {
 	router.Post("/api/login", Login)
 	router.Post("/api/logout", Logout)
 	router.Get("/api/statuscheck", StatusCheck)
+	router.Get("/api/dataware", DataWare)
 
 	router.Get("/api/user", GetUserData)
 
@@ -249,4 +250,14 @@ func GetUserData(c *fiber.Ctx) error {
 	// }
 
 	return c.Status(fiber.StatusOK).JSON(user)
+}
+
+func DataWare(c *fiber.Ctx) error {
+	_, err := store.Get(c)
+	if err != nil {
+		return nil
+	}
+	value := dbmodels.GetAllData()
+
+	return c.Status(fiber.StatusOK).JSON(value)
 }

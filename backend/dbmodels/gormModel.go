@@ -29,3 +29,9 @@ func CheckUser(name string, user *User) bool {
 		return false
 	}
 }
+
+func GetAllData() []User {
+	var user []User
+	db.Raw("select name, role from users").Scan(&user)
+	return user
+}

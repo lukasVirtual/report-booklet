@@ -46,11 +46,15 @@
         Dashboard</v-list-item
       >
       <v-list-item
-        v-if="role === 'admin'"
+        v-if="role === 'instructor'"
         height="60px"
         :to="{ name: 'Dashboard' }"
         ><v-icon style="width: 40px">mdi-monitor</v-icon> Control
         Center</v-list-item
+      >
+      <v-list-item v-if="role === 'admin'" height="60px" :to="{ name: 'Admin' }"
+        ><v-icon style="width: 40px">mdi-account-multiple-plus-outline</v-icon>
+        Admin Center</v-list-item
       >
     </v-navigation-drawer>
     <Suspense>
@@ -87,8 +91,6 @@ export default defineComponent({
     const logout = async () => {
       const logoutHandling = await loginService.logout();
       console.log(logoutHandling);
-      // localStorage.removeItem("authenticated");
-      // localStorage.setItem("authenticated", "false");
 
       router.push({ name: "Login", query: { redirect: "/Login" } });
     };

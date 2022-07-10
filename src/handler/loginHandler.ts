@@ -42,7 +42,7 @@ export class loginService /* implements loginServiceInterface */ {
     const inputData = JSON.stringify({
       name: name,
       password: password,
-      role: "user",
+      role: "admin",
     });
 
     const res = await fetch("http://127.0.0.1:5000/api/register", {
@@ -66,5 +66,10 @@ export class loginService /* implements loginServiceInterface */ {
       withCredentials: true,
     });
     return res.data.Role;
+  }
+
+  static async getAllData(): Promise<any> {
+    const res = await axios.get("http://127.0.0.1:5000/api/dataware");
+    return res.data;
   }
 }

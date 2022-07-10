@@ -47,6 +47,7 @@ export default defineComponent({
     console.log(tryInjection);
     // const { appContext } = getCurrentInstance() as any;
     // console.log(appContext);
+
     let daysOfMonth = ref(31);
     let toggleStage = ref(false);
     let currMonth = ref(date.getMonth() + 1);
@@ -81,6 +82,7 @@ export default defineComponent({
         currMonth.value = 1;
         currYear.value++;
       }
+
       computeDays();
 
       localStorage.getItem(props.propsDate);

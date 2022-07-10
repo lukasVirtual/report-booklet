@@ -1,6 +1,6 @@
 <template>
   <div v-if="$route.path == '/Berichtsheft'">
-    <v-menu anchor="center">
+    <v-menu anchor="center" transition="slide-x-transition">
       <template v-slot:activator="{ props }">
         <v-btn
           v-bind="props"
