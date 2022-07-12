@@ -65,7 +65,7 @@
 
 <script lang="ts">
 import { loginService } from "@/handler/loginHandler";
-import { defineComponent, reactive } from "vue";
+import { defineComponent, inject, reactive } from "vue";
 
 export default defineComponent({
   name: "LoginDefault",
@@ -82,10 +82,15 @@ export default defineComponent({
     });
 
     const login = async () => {
-      const registerRequest = await loginService.login(
-        validation.username,
-        validation.password
-      );
+      let registerRequest: boolean = false;
+      try {
+        registerRequest = await loginService.login(
+          validation.username,
+          validation.password
+        );
+      } catch (e) {
+        alert("something went wrong. Check your password and username.");
+      }
 
       if (
         validation.username !== "" &&
@@ -103,7 +108,7 @@ export default defineComponent({
       const obj = this.$refs.valid as any;
       if (obj !== undefined) obj.reset();
     };
-    return { rules, login, reset, validation };
+    return { rules, validation, login, reset };
   },
 });
 </script>

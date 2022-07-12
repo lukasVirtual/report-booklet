@@ -9,7 +9,7 @@
           ><v-icon size="25">mdi-text-box-outline</v-icon></v-btn
         >
       </template>
-      <v-list width="400px">
+      <v-list width="400px" height="500">
         <v-list-item v-for="num in 16" :key="num">
           <v-list-item-title>
             <v-list-item-title>The {{ num }} Qualification</v-list-item-title>
@@ -23,7 +23,6 @@
     </v-menu>
   </div>
 </template>
-
 
 <script lang="ts">
 import { defineComponent } from "vue";

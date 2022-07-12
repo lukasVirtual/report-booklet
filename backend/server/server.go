@@ -19,11 +19,6 @@ var (
 	USER_ID  string = "ID"
 )
 
-// type User struct {
-// 	Name     string `json: "name"`
-// 	Password string `json: "password"`
-// }
-
 type User struct {
 	Name     string `json: "name"`
 	Password string `json: "password"`
@@ -80,7 +75,6 @@ func AuthMiddleware(c *fiber.Ctx) error {
 	return c.Next()
 }
 
-// TODO Register
 func Register(c *fiber.Ctx) error {
 	c.Accepts("application/json")
 
@@ -108,20 +102,13 @@ func Register(c *fiber.Ctx) error {
 		Password: string(password),
 		Role:     data.Role,
 	}
-	// err =
 	dbmodels.CreateUser(&user)
 
-	// if err != nil {
-	// 	return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-	// 		"message": "3" + err.Error(),
-	// 	})
-	// }
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"message": "registered",
 	})
 }
 
-// TODO Login
 func Login(c *fiber.Ctx) error {
 	var data User
 
@@ -181,8 +168,7 @@ func Logout(c *fiber.Ctx) error {
 			"message": "no session available" + err.Error(),
 		})
 	}
-	// sess.Set(AUTH_KEY, nil)
-	// sess.Set(USER_ID, nil)
+
 	err = sess.Destroy()
 
 	if err != nil {

@@ -38,11 +38,11 @@ export class loginService /* implements loginServiceInterface */ {
     return res.status === 200 ? true : false;
   }
 
-  static async register(name: string, password: string): Promise<boolean> {
+  static async register(name: string, password: string, role: string): Promise<boolean> {
     const inputData = JSON.stringify({
       name: name,
       password: password,
-      role: "admin",
+      role: role,
     });
 
     const res = await fetch("http://127.0.0.1:5000/api/register", {
