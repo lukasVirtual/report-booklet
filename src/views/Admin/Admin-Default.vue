@@ -21,6 +21,7 @@
                   label="Name"
                   variant="underlined"
                   v-model="input.name"
+                  :rules="[rules.required]"
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -30,6 +31,7 @@
                   label="Password"
                   variant="underlined"
                   v-model="input.password"
+                  :rules="[rules.required, rules.minLen]"
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -40,6 +42,7 @@
                   label="Role"
                   variant="underlined"
                   v-model="input.role"
+                  :rules="[rules.required]"
                 ></v-select>
               </v-col>
             </v-row>
@@ -54,17 +57,25 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
-      <v-table style="width: 1200px" class="mt-5">
+      <v-table style="width: 1000px" class="mt-5">
         <thead>
           <tr>
             <th class="text-left">Name</th>
             <th class="text-left">Role</th>
+            <th class="text-left"></th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="(elem, idx) in resultArr" :key="idx">
             <td>{{ elem.name }}</td>
             <td>{{ elem.role }}</td>
+            <td class="text-right">
+              <v-btn
+                v-if="elem.role !== 'admin'"
+                @click="deleteElemAt(elem, idx)"
+                ><v-icon size="20" color="red">mdi-trash-can</v-icon></v-btn
+              >
+            </td>
           </tr>
         </tbody>
       </v-table>
@@ -86,6 +97,11 @@ export default defineComponent({
     const resultArr = ref<[{ name: string; role: string }]>([
       { name: "", role: "" },
     ]);
+
+    const rules = {
+      required: (value: string) => !!value || "Required",
+      minLen: (v: string) => v.length >= 8 || "Min. 8 Characters",
+    };
 
     const input = reactive({
       name: "",
@@ -112,15 +128,31 @@ export default defineComponent({
     });
 
     const addNewUser = async () => {
-      loginService.register(input.name, input.password, input.role);
+      if (
+        input.name !== "" &&
+        input.password.length >= 8 &&
+        input.role !== ""
+      ) {
+        loginService.register(input.name, input.password, input.role);
+      } else alert("Some fields are Empty or incorrect entered");
       dialog.value = false;
+    };
+
+    const deleteElemAt = async (elem: any, idx: number) => {
+      try {
+        await loginService.deleteItem(elem.name);
+      } catch (e) {
+        console.log(e);
+      }
     };
     return {
       resultArr,
       dialog,
       roleItems,
       input,
+      rules,
       addNewUser,
+      deleteElemAt,
     };
   },
 });

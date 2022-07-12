@@ -44,6 +44,7 @@ func Init() {
 	router.Post("/api/logout", Logout)
 	router.Get("/api/statuscheck", StatusCheck)
 	router.Get("/api/dataware", DataWare)
+	router.Post("/api/delete", DeleteElem)
 
 	router.Get("/api/user", GetUserData)
 
@@ -241,9 +242,26 @@ func GetUserData(c *fiber.Ctx) error {
 func DataWare(c *fiber.Ctx) error {
 	_, err := store.Get(c)
 	if err != nil {
-		return nil
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "error: " + err.Error(),
+		})
 	}
 	value := dbmodels.GetAllData()
 
 	return c.Status(fiber.StatusOK).JSON(value)
+}
+
+func DeleteElem(c *fiber.Ctx) error {
+	var data User
+	err := c.BodyParser(&data)
+
+	if err != nil {
+		fmt.Println("Something went wrong")
+	}
+
+	dbmodels.DeleteItemAt(data.Name)
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message": "Successfull Delted",
+	})
 }

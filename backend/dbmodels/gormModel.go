@@ -33,3 +33,7 @@ func GetAllData() []User {
 	db.Raw("select name, role from users").Scan(&user)
 	return user
 }
+
+func DeleteItemAt(name string) {
+	db.Debug().Unscoped().Where("name=?", name).Delete(&User{})
+}
