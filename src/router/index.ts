@@ -16,19 +16,10 @@ const router = createRouter({
       name: "home",
       component: App,
       children: [
-        { path: "/Dashboard", name: "Dashboard", component: DashboardDefault },
-        { path: "/Berichtsheft", name: "Berichtsheft", component: MainPage },
-        { path: "/Admin", name: "Admin", component: AdminDefault },
+        { path: "/Dashboard", name: "Dashboard", component: DashboardDefault, meta: { requiresAuth: true} },
+        { path: "/Berichtsheft", name: "Berichtsheft", component: MainPage, meta: { requiresAuth: true } },
+        { path: "/Admin", name: "Admin", component: AdminDefault, meta: { requiresAuth: true } },
       ],
-      beforeEnter: async (to, from, next) => {
-        try {
-          const statusCheck = await loginService.checkStatus();
-          console.log(statusCheck);
-          if (statusCheck) next();
-        } catch (e) {
-          next({ path: "/Login" });
-        }
-      },
     },
     {
       path: "/Login",
@@ -41,5 +32,22 @@ const router = createRouter({
       component: RegisterDefault,
     },
   ],
+  
 });
+
+
+router.beforeEach(async (to, from, next) => {
+  if (to.meta.requiresAuth) {
+    try {
+      const statusCheck = await loginService.checkStatus();
+      console.log(statusCheck);
+      if (statusCheck) next();
+    } catch (e) {
+      next({ path: "/Login" });
+    }
+  } else {
+    next()
+  }
+
+})
 export default router;

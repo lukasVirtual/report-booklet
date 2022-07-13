@@ -69,7 +69,7 @@
 </template>
 <script lang="ts">
 import { loginService } from "@/handler/loginHandler";
-import { defineComponent, inject, ref } from "vue";
+import { defineComponent, inject, onMounted, onServerPrefetch, ref } from "vue";
 import { useRouter } from "vue-router";
 
 export default defineComponent({
@@ -82,7 +82,10 @@ export default defineComponent({
     const overlay = ref(true);
     const showHearbeat = ref(false);
     const toggleList = ref(true);
-    const role = ref(inject("role"));
+    let role = ref("");
+    onMounted(() => {
+      role.value = inject("role") as string;
+    });
     let iconValue =
       theme.value == "dark"
         ? ref("mdi-moon-waning-crescent")
@@ -109,7 +112,7 @@ export default defineComponent({
 
     setInterval(() => {
       showHearbeat.value = !showHearbeat.value;
-    }, 500);
+    }, 400);
 
     showHearbeat.value = false;
 

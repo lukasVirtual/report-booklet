@@ -43,8 +43,7 @@ export default defineComponent({
 
   setup() {
     const date = new Date();
-    const tryInjection = inject("role");
-    console.log(tryInjection);
+    const role = ref(inject("role"));
     // const { appContext } = getCurrentInstance() as any;
     // console.log(appContext);
 
@@ -118,6 +117,7 @@ export default defineComponent({
       currYear,
       toggleStage,
       time,
+      role,
       submit,
       switchPageRight,
       switchPageLeft,

@@ -70,9 +70,7 @@
             <td>{{ elem.name }}</td>
             <td>{{ elem.role }}</td>
             <td class="text-right">
-              <v-btn
-                v-if="elem.role !== 'admin'"
-                @click="deleteElemAt(elem, idx)"
+              <v-btn v-if="elem.role !== 'admin'" @click="deleteElemAt(elem)"
                 ><v-icon size="20" color="red">mdi-trash-can</v-icon></v-btn
               >
             </td>
@@ -86,7 +84,7 @@
 <script lang="ts">
 import { loginService } from "@/handler/loginHandler";
 import { defineComponent, onMounted, reactive } from "@vue/runtime-core";
-import { ref } from "vue";
+import { inject, ref } from "vue";
 import BaseLayout from "../../boilerplate/layouts/Base.vue";
 
 export default defineComponent({
@@ -97,6 +95,8 @@ export default defineComponent({
     const resultArr = ref<[{ name: string; role: string }]>([
       { name: "", role: "" },
     ]);
+
+    const role = ref(inject("role"));
 
     const rules = {
       required: (value: string) => !!value || "Required",
@@ -138,19 +138,21 @@ export default defineComponent({
       dialog.value = false;
     };
 
-    const deleteElemAt = async (elem: any, idx: number) => {
+    const deleteElemAt = async (elem: any) => {
       try {
         await loginService.deleteItem(elem.name);
       } catch (e) {
         console.log(e);
       }
     };
+
     return {
       resultArr,
       dialog,
       roleItems,
       input,
       rules,
+      role,
       addNewUser,
       deleteElemAt,
     };

@@ -1,5 +1,4 @@
 <template>
-  <!-- <teleport to="header"> -->
   <v-app>
     <v-main
       v-if="$route.path == '/Login'"
@@ -60,12 +59,11 @@
       </v-form>
     </v-main>
   </v-app>
-  <!-- </teleport> -->
 </template>
 
 <script lang="ts">
 import { loginService } from "@/handler/loginHandler";
-import { defineComponent, inject, reactive } from "vue";
+import { defineComponent, reactive, ref } from "vue";
 
 export default defineComponent({
   name: "LoginDefault",
@@ -82,23 +80,21 @@ export default defineComponent({
     });
 
     const login = async () => {
-      let registerRequest: boolean = false;
-      try {
-        registerRequest = await loginService.login(
-          validation.username,
-          validation.password
-        );
-      } catch (e) {
-        alert("something went wrong. Check your password and username.");
-      }
+      let registerRequest = ref(false);
 
-      if (
-        validation.username !== "" &&
-        validation.password.length >= 8 &&
-        registerRequest
-      ) {
-        console.log(registerRequest);
-        this.$router.push({ name: "home", query: { redirect: "/" } });
+      if (validation.username !== "" && validation.password.length >= 8) {
+        try {
+          registerRequest.value = await loginService.login(
+            validation.username,
+            validation.password
+          );
+          if (registerRequest.value)
+            this.$router.push({ name: "home", query: { redirect: "/" } });
+          else alert("something went wrong. Check your password and username.");
+        } catch (e) {
+          alert("something went wrong. Check your password and username.");
+        }
+        console.log(registerRequest.value);
       } else {
         alert("Something went wrong. Wrong username or password");
       }
