@@ -35,13 +35,13 @@ const router = createRouter({
   
 });
 
-
 router.beforeEach(async (to, from, next) => {
   if (to.meta.requiresAuth) {
     try {
       const statusCheck = await loginService.checkStatus();
       console.log(statusCheck);
       if (statusCheck) next();
+      else next({ path: "/Login" })
     } catch (e) {
       next({ path: "/Login" });
     }

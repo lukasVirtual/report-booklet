@@ -48,7 +48,7 @@ func Init() {
 
 	router.Get("/api/user", GetUserData)
 
-	router.Listen(":5000")
+	router.Listen("127.0.0.1:5000")
 
 }
 
