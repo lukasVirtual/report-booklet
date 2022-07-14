@@ -31,31 +31,43 @@
       ></v-img>
     </v-app-bar>
     <v-navigation-drawer v-model="toggleList">
-      <v-list-item
-        v-if="role === 'user'"
-        height="60px"
-        :to="{ name: 'Berichtsheft' }"
-        ><v-icon style="width: 40px">mdi-file-document-edit-outline</v-icon>
-        Berichtsheft</v-list-item
-      >
-      <v-list-item
-        v-if="role === 'user'"
-        height="60px"
-        :to="{ name: 'Dashboard' }"
-        ><v-icon style="width: 40px">mdi-monitor-dashboard</v-icon>
-        Dashboard</v-list-item
-      >
-      <v-list-item
-        v-if="role === 'instructor'"
-        height="60px"
-        :to="{ name: 'Dashboard' }"
-        ><v-icon style="width: 40px">mdi-monitor</v-icon> Control
-        Center</v-list-item
-      >
-      <v-list-item v-if="role === 'admin'" height="60px" :to="{ name: 'Admin' }"
-        ><v-icon style="width: 40px">mdi-account-multiple-plus-outline</v-icon>
-        Admin Center</v-list-item
-      >
+      <v-list nav>
+        <v-list-item
+          v-if="role === 'user'"
+          :to="{ name: 'Berichtsheft' }"
+          height="50"
+          prepend-icon="mdi-file-document-edit-outline"
+          title="Berichtsheft"
+          value="Berichtsheft"
+        ></v-list-item>
+
+        <v-list-item
+          v-if="role === 'user'"
+          :to="{ name: 'Dashboard' }"
+          height="50"
+          prepend-icon="mdi-monitor-dashboard"
+          title="Dashboard"
+          value="Dashboard"
+        ></v-list-item>
+
+        <v-list-item
+          v-if="role === 'instructor'"
+          :to="{ name: 'Dashboard' }"
+          height="50"
+          prepend-icon="mdi-account-search-outline"
+          title="Control Center"
+          value="Control Center"
+        ></v-list-item>
+
+        <v-list-item
+          v-if="role === 'admin'"
+          :to="{ name: 'Admin' }"
+          height="50"
+          prepend-icon="mdi-account-multiple-plus-outline"
+          title="Admin Center"
+          value="Admin Center"
+        ></v-list-item>
+      </v-list>
     </v-navigation-drawer>
     <Suspense>
       <template #default>

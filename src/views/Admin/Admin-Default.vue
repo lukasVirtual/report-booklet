@@ -9,7 +9,7 @@
           >
         </template>
 
-        <v-card width="550" height="450">
+        <v-card width="550" height="450" rounded>
           <v-card-title class="text-h5 grey lighten-2">
             Register new User
           </v-card-title>
@@ -57,7 +57,10 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
-      <v-table style="width: 1000px" class="mt-5">
+      <v-table
+        style="width: 1100px; max-width: 1400px; border-radius: 10px"
+        class="mt-5"
+      >
         <thead>
           <tr>
             <th class="text-left">Name</th>

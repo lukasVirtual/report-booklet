@@ -63,7 +63,6 @@
 import { defineComponent, ref } from "vue";
 import QualificationsDefault from "./Qualifications-Default.vue";
 import TypingField from "./Typing-Field.vue";
-import { useRouter } from "vue-router";
 
 export default defineComponent({
   name: "TextField",
@@ -73,20 +72,11 @@ export default defineComponent({
   },
   setup() {
     const selectedItem = ref(1);
-    const items = [{ title: "00:00" }, { title: "00:30" }, { title: "01:00" }];
     let input = ref("00:00");
     let num = ref<number[]>([]);
     let anyNumber = ref(1);
     let themeSelection = ref<string>("dark");
-    const router = useRouter();
 
-    // watchEffect(() => {
-    //   anyNumber.value = Number(localStorage.getItem("inputs"));
-    // });
-
-    // watchEffect(() =>
-    //   localStorage.setItem("inputs", anyNumber.value.toString())
-    // );
     function add() {
       num.value.push(1);
     }
@@ -97,7 +87,6 @@ export default defineComponent({
 
     return {
       selectedItem,
-      items,
       num,
       input,
       anyNumber,
