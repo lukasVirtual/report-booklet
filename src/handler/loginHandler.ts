@@ -21,7 +21,10 @@ export class loginService /* implements loginServiceInterface */ {
 
     const res = await fetch("http://127.0.0.1:5000/api/login", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
+      },
       credentials: "include",
       body: inputData,
     });
@@ -38,7 +41,11 @@ export class loginService /* implements loginServiceInterface */ {
     return res.status === 200 ? true : false;
   }
 
-  static async register(name: string, password: string, role: string): Promise<boolean> {
+  static async register(
+    name: string,
+    password: string,
+    role: string
+  ): Promise<boolean> {
     const inputData = JSON.stringify({
       name: name,
       password: password,
@@ -47,7 +54,10 @@ export class loginService /* implements loginServiceInterface */ {
 
     const res = await fetch("http://127.0.0.1:5000/api/register", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
+      },
       body: inputData,
     });
     console.log(res.body);
@@ -75,14 +85,13 @@ export class loginService /* implements loginServiceInterface */ {
 
   static async deleteItem(name: string): Promise<void> {
     const input = JSON.stringify({
-       name: name,
-    })
+      name: name,
+    });
     const res = await fetch("http://127.0.0.1:5000/api/delete", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: input,
     });
-
-    console.log(res.status)
+    console.log(res.status);
   }
 }

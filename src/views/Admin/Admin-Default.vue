@@ -30,6 +30,7 @@
                 <v-text-field
                   label="Password"
                   variant="underlined"
+                  type="password"
                   v-model="input.password"
                   :rules="[rules.required, rules.minLen]"
                 ></v-text-field>
@@ -86,7 +87,12 @@
 
 <script lang="ts">
 import { loginService } from "@/handler/loginHandler";
-import { defineComponent, onMounted, reactive } from "@vue/runtime-core";
+import {
+  defineComponent,
+  onMounted,
+  onUpdated,
+  reactive,
+} from "@vue/runtime-core";
 import { inject, ref } from "vue";
 import BaseLayout from "../../boilerplate/layouts/Base.vue";
 
@@ -113,7 +119,6 @@ export default defineComponent({
     });
 
     const dialog = ref(false);
-
     const roleItems = ["admin", "instructor", "user"];
 
     onMounted(async () => {
@@ -142,11 +147,16 @@ export default defineComponent({
     };
 
     const deleteElemAt = async (elem: any) => {
+      if (
+        !confirm("You sure you want to delete? Deleted Items will be immutable")
+      )
+        return;
       try {
         await loginService.deleteItem(elem.name);
       } catch (e) {
         console.log(e);
       }
+      await loginService.getAllData();
     };
 
     return {
