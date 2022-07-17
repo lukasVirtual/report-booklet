@@ -30,7 +30,7 @@
         src="src\assets\vhf-logo.png"
       ></v-img>
     </v-app-bar>
-    <v-navigation-drawer v-model="toggleList">
+    <v-navigation-drawer :rail="toggleList">
       <v-list nav>
         <v-list-item
           v-if="role === 'user'"
@@ -52,7 +52,7 @@
 
         <v-list-item
           v-if="role === 'instructor'"
-          :to="{ name: 'Dashboard' }"
+          :to="{ name: 'Berichtsheft' }"
           height="50"
           prepend-icon="mdi-account-search-outline"
           title="Control Center"
@@ -81,7 +81,7 @@
 </template>
 <script lang="ts">
 import { loginService } from "@/handler/loginHandler";
-import { defineComponent, inject, onMounted, onServerPrefetch, ref } from "vue";
+import { defineComponent, inject, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 
 export default defineComponent({

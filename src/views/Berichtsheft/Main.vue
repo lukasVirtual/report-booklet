@@ -20,7 +20,7 @@
       <v-container
         class="d-flex justify-center mb-6"
         v-for="i in daysOfMonth"
-        :key="i"
+        :key="`${i}.${currMonth}.${currYear}`"
         ref="container"
         id="test"
       >
@@ -44,8 +44,6 @@ export default defineComponent({
   setup() {
     const date = new Date();
     const role = ref(inject("role"));
-    // const { appContext } = getCurrentInstance() as any;
-    // console.log(appContext);
 
     let daysOfMonth = ref(31);
     let toggleStage = ref(false);
@@ -84,7 +82,7 @@ export default defineComponent({
 
       computeDays();
 
-      localStorage.getItem(props.propsDate);
+      // localStorage.getItem(props.propsDate);
     };
 
     const switchPageLeft = async () => {
@@ -108,7 +106,7 @@ export default defineComponent({
 
       time.value = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
 
-      localStorage.setItem("stage", JSON.stringify(document.body.innerHTML));
+      // localStorage.setItem("stage", JSON.stringify(document.body.innerHTML));
     };
 
     return {

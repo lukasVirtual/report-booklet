@@ -6,7 +6,9 @@
         tile
         class="mt-5 overflow-y-auto"
       >
-        <v-card-title>{{ propsDate }}</v-card-title>
+        <v-card-title @click="returnDate(propsDate)">{{
+          propsDate
+        }}</v-card-title>
       </v-card>
       <v-card
         style="
@@ -34,7 +36,7 @@
           <v-col cols="1" class="text-center">
             <div
               style="
-                background-image: linear-gradient(180deg, blue, royalblue);
+                background-image: linear-gradient(180deg, lightblue, azure);
                 height: 320%;
               "
             >
@@ -85,12 +87,17 @@ export default defineComponent({
       localStorage.removeItem("inputs");
     };
 
+    const returnDate = (date: string | undefined) => {
+      console.log(date);
+    };
+
     return {
       selectedItem,
       num,
       input,
       anyNumber,
       themeSelection,
+      returnDate,
       removeItems,
       add,
     };
