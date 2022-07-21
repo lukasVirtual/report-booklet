@@ -99,6 +99,7 @@ export default defineComponent({
     const today = () => {
       currMonth.value = date.getMonth() + 1;
       currYear.value = date.getFullYear();
+      computeDays();
     };
 
     const submit = () => {
