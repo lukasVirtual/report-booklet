@@ -87,6 +87,7 @@
 
 <script lang="ts">
 import { loginService } from "@/handler/loginHandler";
+import { dataService } from "@/handler/dataHandler";
 import {
   defineComponent,
   onMounted,
@@ -122,7 +123,7 @@ export default defineComponent({
     const roleItems = ["admin", "instructor", "user"];
 
     onMounted(async () => {
-      const data = await loginService.getAllData();
+      const data = await dataService.getAllData();
       for (const elem of data) {
         resultArr.value.push({
           name: elem.Name,
@@ -152,11 +153,11 @@ export default defineComponent({
       )
         return;
       try {
-        await loginService.deleteItem(elem.name);
+        await dataService.deleteItem(elem.name);
       } catch (e) {
         console.log(e);
       }
-      await loginService.getAllData();
+      await dataService.getAllData();
     };
 
     return {

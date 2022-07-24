@@ -1,5 +1,8 @@
 <template>
-  <div class="d-flex justify-space-around" v-if="$route.path === '/Berichtsheft'">
+  <div
+    class="d-flex justify-space-around"
+    v-if="$route.path === '/Berichtsheft'"
+  >
     <v-menu justify-center ref="parentMenu" v-model="ruler">
       <template v-slot:activator="{ props }">
         <v-btn
@@ -27,9 +30,9 @@
   </div>
 </template>
 
-
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { storingArray } from "@/handler/store";
+import { defineComponent, ref, watchEffect } from "vue";
 
 export default defineComponent({
   name: "TimerTextField",

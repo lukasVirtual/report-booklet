@@ -9,6 +9,11 @@
           >mdi-format-list-bulleted</v-icon
         ></v-btn
       >
+      <v-btn icon
+        ><v-icon style="width: 35px" size="22"
+          >mdi-content-save-outline</v-icon
+        ></v-btn
+      >
       <v-spacer></v-spacer>
       <div class="text-right" style="margin: 20px">
         <v-btn rounded v-if="showHearbeat"
@@ -30,7 +35,7 @@
         src="src\assets\vhf-logo.png"
       ></v-img>
     </v-app-bar>
-    <v-navigation-drawer :rail="toggleList">
+    <v-navigation-drawer :rail="!toggleList">
       <v-list nav>
         <v-list-item
           v-if="role === 'user'"

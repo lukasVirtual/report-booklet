@@ -78,20 +78,20 @@ export class loginService /* implements loginServiceInterface */ {
     return res.data.Role;
   }
 
-  static async getAllData(): Promise<any> {
-    const res = await axios.get("http://127.0.0.1:5000/api/dataware");
-    return res.data;
-  }
+  // static async getAllData(): Promise<any> {
+  //   const res = await axios.get("http://127.0.0.1:5000/api/dataware");
+  //   return res.data;
+  // }
 
-  static async deleteItem(name: string): Promise<void> {
-    const input = JSON.stringify({
-      name: name,
-    });
-    const res = await fetch("http://127.0.0.1:5000/api/delete", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: input,
-    });
-    console.log(res.status);
-  }
+  // static async deleteItem(name: string): Promise<void> {
+  //   const input = JSON.stringify({
+  //     name: name,
+  //   });
+  //   const res = await fetch("http://127.0.0.1:5000/api/delete", {
+  //     method: "POST",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: input,
+  //   });
+  //   console.log(res.status);
+  // }
 }

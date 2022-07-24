@@ -21,11 +21,21 @@ type User struct {
 	Role     string `json: "role"`
 }
 
+type InputField struct {
+	Input     string `json: "input"`
+	TimeStamp string `json: "timeStamp"`
+}
+type TextField struct {
+	gorm.Model
+	CalendarDate string `json: "calendarDate"`
+	*InputField
+}
+
 func InitDB() {
 	fmt.Println("INIT DB")
-	dsnWindows := "root:1234@tcp(127.0.0.1:3306)/test"
-	//dsnLinux := "sqluser:password@tcp(localhost:3306)/test"
-	db, err = gorm.Open("mysql", dsnWindows)
+	// dsnWindows := "root:1234@tcp(127.0.0.1:3306)/test"
+	dsnLinux := "sqluser:password@tcp(localhost:3306)/test"
+	db, err = gorm.Open("mysql", dsnLinux)
 
 	if err != nil {
 		panic("Error Occured when tried to open DB")
@@ -38,5 +48,7 @@ func InitDB() {
 	}
 
 	db.AutoMigrate(&User{})
+	// db.AutoMigrate(&TextField{})
+	// db.AutoMigrate(&InputField{})
 
 }

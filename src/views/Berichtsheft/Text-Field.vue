@@ -1,14 +1,16 @@
 <template>
-  <div id="comp" v-if="$route.path === '/Berichtsheft'">
+  <div
+    id="comp"
+    v-if="$route.path === '/Berichtsheft'"
+    @click="showDate(propsDate)"
+  >
     <v-container fluid>
       <v-card
         style="width: 900px; border: 2px solid black; overflow-x: hidden"
         tile
         class="mt-5 overflow-y-auto"
       >
-        <v-card-title @click="returnDate(propsDate)">{{
-          propsDate
-        }}</v-card-title>
+        <v-card-title>{{ propsDate }}</v-card-title>
       </v-card>
       <v-card
         style="
@@ -62,7 +64,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { dataService } from "@/handler/dataHandler";
+import { storingArray } from "@/handler/store";
+import { defineComponent, onBeforeUnmount, ref } from "vue";
 import QualificationsDefault from "./Qualifications-Default.vue";
 import TypingField from "./Typing-Field.vue";
 
@@ -72,12 +76,12 @@ export default defineComponent({
   props: {
     propsDate: String,
   },
-  setup() {
+  setup(props, { emit }) {
     const selectedItem = ref(1);
-    let input = ref("00:00");
     let num = ref<number[]>([]);
     let anyNumber = ref(1);
     let themeSelection = ref<string>("dark");
+    const date = ref<string | undefined>("");
 
     function add() {
       num.value.push(1);
@@ -87,17 +91,24 @@ export default defineComponent({
       localStorage.removeItem("inputs");
     };
 
-    const returnDate = (date: string | undefined) => {
-      console.log(date);
+    const showDate = (propsDate: string | undefined) => {
+      // console.log(propsDate);
+      date.value = propsDate;
+      console.log("propsDate = ", date.value);
+    };
+
+    const save = (propsDate: string | undefined, text: string) => {
+      console.warn("saving...");
     };
 
     return {
       selectedItem,
       num,
-      input,
       anyNumber,
       themeSelection,
-      returnDate,
+      date,
+      save,
+      showDate,
       removeItems,
       add,
     };
