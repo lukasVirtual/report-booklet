@@ -36,13 +36,15 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
   if (to.meta.requiresAuth) {
-    await loginService.getUserRole()
-    await boot()
+    
     try {
       const statusCheck = await loginService.checkStatus();
       console.log(statusCheck);      
       if (statusCheck) 
-      { next();}
+      {
+        await boot()
+        next();
+      }
       
       else next({ path: "/Login" })
     } catch (e) {

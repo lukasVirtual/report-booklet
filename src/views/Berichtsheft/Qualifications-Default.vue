@@ -3,7 +3,7 @@
     <v-menu anchor="center" transition="slide-x-transition">
       <template v-slot:activator="{ props }">
         <v-btn v-bind="props" icon style="margin-bottom: 30px" elevation="20"
-          ><v-icon size="25">mdi-text-box-outline</v-icon></v-btn
+          ><v-icon size="30">mdi-text-box-outline</v-icon></v-btn
         >
       </template>
       <v-list width="400px" height="500">

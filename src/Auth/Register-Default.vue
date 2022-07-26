@@ -82,7 +82,7 @@ export default defineComponent({
     };
 
     const register = async () => {
-      await loginService.register(vInputField.user, vInputField.passwrd);
+      // await loginService.register(vInputField.user, vInputField.passwrd);
       alert("succesfully registerd");
       // map.set(vInputField.user, vInputField.passwrd);
       // console.error(map);
