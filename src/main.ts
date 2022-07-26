@@ -8,11 +8,14 @@ import { loginService } from "./handler/loginHandler";
 loadFonts();
 
 const app = createApp(App);
-try {
-  const role = ref(await loginService.getUserRole());
-  app.provide("role", role.value);
-} catch (e) {
-  console.error(e);
+export async function boot(): Promise<void> {
+
+  try {
+    const role = ref(await loginService.getUserRole());
+    app.provide("role", role.value);
+  } catch (e) {
+    console.error(e);
+  }
 }
 app.use(router);
 app.use(vuetify);

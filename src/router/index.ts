@@ -6,7 +6,7 @@ import MainPage from "../views/Berichtsheft/Main.vue";
 import DashboardDefault from "../views/Dashboard/Dashboard-Default.vue";
 import AdminDefault from "../views/Admin/Admin-Default.vue";
 import { loginService } from "@/handler/loginHandler";
-
+import { boot } from "../main"
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -32,15 +32,18 @@ const router = createRouter({
       component: RegisterDefault,
     },
   ],
-  
 });
 
 router.beforeEach(async (to, from, next) => {
   if (to.meta.requiresAuth) {
+    await loginService.getUserRole()
+    await boot()
     try {
       const statusCheck = await loginService.checkStatus();
-      console.log(statusCheck);
-      if (statusCheck) next();
+      console.log(statusCheck);      
+      if (statusCheck) 
+      { next();}
+      
       else next({ path: "/Login" })
     } catch (e) {
       next({ path: "/Login" });
