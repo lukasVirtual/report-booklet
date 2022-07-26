@@ -31,8 +31,7 @@
 </template>
 
 <script lang="ts">
-import { storingArray } from "@/handler/store";
-import { defineComponent, ref, watchEffect } from "vue";
+import { defineComponent, ref } from "vue";
 
 export default defineComponent({
   name: "TimerTextField",

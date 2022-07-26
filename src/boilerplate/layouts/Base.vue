@@ -14,6 +14,9 @@
           >mdi-content-save-outline</v-icon
         ></v-btn
       >
+
+      <slot name="navIcons"></slot>
+
       <v-spacer></v-spacer>
       <div class="text-right" style="margin: 20px">
         <v-btn rounded v-if="showHearbeat"

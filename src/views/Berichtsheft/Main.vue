@@ -14,9 +14,11 @@
           <v-btn :disabled="toggleStage" @click="submit" color="blue"
             >Submit</v-btn
           >
+
           <h5 style="color: grey">{{ time }}</h5>
         </v-card-actions>
       </v-card>
+
       <v-container
         class="d-flex justify-center mb-6"
         v-for="i in daysOfMonth"
@@ -28,6 +30,13 @@
       </v-container>
     </v-main>
 
+    <template v-slot:navIcons>
+      <v-btn icon
+        ><v-icon style="width: 35px" size="22"
+          >mdi-file-export-outline</v-icon
+        ></v-btn
+      >
+    </template>
     <router-view />
   </base-layout>
 </template>

@@ -6,15 +6,23 @@
   >
     <v-container fluid>
       <v-card
-        style="width: 900px; border: 2px solid black; overflow-x: hidden"
+        style="width: 1100px; border: 2px solid black; overflow-x: hidden"
         tile
         class="mt-5 overflow-y-auto"
       >
-        <v-card-title>{{ propsDate }}</v-card-title>
+        <v-card-actions style="margin: auto">
+          <v-card-title>{{ propsDate }}</v-card-title>
+          <v-spacer></v-spacer>
+          <v-select
+            :items="envItems"
+            variant="underlined"
+            style="max-width: 120px; max-height: 60px"
+          ></v-select>
+        </v-card-actions>
       </v-card>
       <v-card
         style="
-          width: 900px;
+          width: 1100px;
           height: 500px;
           border: 1px solid black;
           overflow-x: hidden;
@@ -65,7 +73,6 @@
 
 <script lang="ts">
 import { dataService } from "@/handler/dataHandler";
-import { storingArray } from "@/handler/store";
 import { defineComponent, onBeforeUnmount, ref } from "vue";
 import QualificationsDefault from "./Qualifications-Default.vue";
 import TypingField from "./Typing-Field.vue";
@@ -82,6 +89,7 @@ export default defineComponent({
     let anyNumber = ref(1);
     let themeSelection = ref<string>("dark");
     const date = ref<string | undefined>("");
+    const envItems = ["School", "Office"];
 
     function add() {
       num.value.push(1);
@@ -107,6 +115,7 @@ export default defineComponent({
       anyNumber,
       themeSelection,
       date,
+      envItems,
       save,
       showDate,
       removeItems,

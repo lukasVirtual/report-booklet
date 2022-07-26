@@ -10,6 +10,7 @@ export class dataService {
     const input = JSON.stringify({
       name: name,
     });
+    
     const res = await fetch("http://127.0.0.1:5000/api/delete", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -23,6 +24,7 @@ export class dataService {
       input: text,
       timeStamp: time,
     });
+
     const res = await fetch("http://127.0.0.1:5000/api/insertinput", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
