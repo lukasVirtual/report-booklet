@@ -29,3 +29,21 @@ func GetAllData() []User {
 func DeleteItemAt(name string) {
 	db.Debug().Unscoped().Where("name=?", name).Delete(&User{})
 }
+
+func InsertInputField(text, time string) InputField {
+	inputField := InputField{
+		Input:     text,
+		TimeStamp: time,
+	}
+
+	return inputField
+}
+
+func InsertTextField(date string, inputField *InputField) {
+	textField := TextField{
+		CalendarDate: date,
+		InputField:   inputField,
+	}
+
+	db.Debug().Create(&textField)
+}

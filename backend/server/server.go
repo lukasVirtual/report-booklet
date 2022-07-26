@@ -42,9 +42,11 @@ func Init() {
 	router.Post("/api/register", Register)
 	router.Post("/api/login", Login)
 	router.Post("/api/logout", Logout)
+	router.Post("/api/delete", DeleteElem)
+	router.Post("/api/insertinput", InsertInputField)
+	router.Post("/api/inserttext", InsertTextField)
 	router.Get("/api/statuscheck", StatusCheck)
 	router.Get("/api/dataware", DataWare)
-	router.Post("/api/delete", DeleteElem)
 
 	router.Get("/api/user", GetUserData)
 
@@ -262,6 +264,36 @@ func DeleteElem(c *fiber.Ctx) error {
 	dbmodels.DeleteItemAt(data.Name)
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"message": "Successfull Delted",
+		"message": "Successfully Deleted",
+	})
+}
+
+var inpField dbmodels.InputField
+
+func InsertInputField(c *fiber.Ctx) error {
+	var input dbmodels.InputField
+	err := c.BodyParser(&input)
+
+	if err != nil {
+		fmt.Println("Could not read input data")
+	}
+
+	inpField = dbmodels.InsertInputField(input.Input, input.TimeStamp)
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message": "Successfully inserted InputField",
+	})
+}
+
+func InsertTextField(c *fiber.Ctx) error {
+	var textField dbmodels.TextField
+	err := c.BodyParser(&textField)
+	if err != nil {
+		fmt.Println("Could not read TextField data")
+	}
+
+	dbmodels.InsertTextField(textField.CalendarDate, &inpField)
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message": "Successfully inserted TextField",
 	})
 }

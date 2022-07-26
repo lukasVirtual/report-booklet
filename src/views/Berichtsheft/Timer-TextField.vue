@@ -1,5 +1,8 @@
 <template>
-  <div class="d-flex justify-space-around" v-if="$route.path === '/Berichtsheft'">
+  <div
+    class="d-flex justify-space-around"
+    v-if="$route.path === '/Berichtsheft'"
+  >
     <v-menu justify-center ref="parentMenu" v-model="ruler">
       <template v-slot:activator="{ props }">
         <v-btn
@@ -26,7 +29,6 @@
     </v-menu>
   </div>
 </template>
-
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";

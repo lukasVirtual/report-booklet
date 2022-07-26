@@ -2,10 +2,7 @@
   <div v-if="$route.path == '/Berichtsheft'">
     <v-menu anchor="center" transition="slide-x-transition">
       <template v-slot:activator="{ props }">
-        <v-btn
-          v-bind="props"
-          style="margin-bottom: 30px; border-radius: 15px; min-width: 20px"
-          elevation="20"
+        <v-btn v-bind="props" icon style="margin-bottom: 30px" elevation="20"
           ><v-icon size="25">mdi-text-box-outline</v-icon></v-btn
         >
       </template>

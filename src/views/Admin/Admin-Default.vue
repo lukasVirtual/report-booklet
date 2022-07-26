@@ -9,7 +9,7 @@
           >
         </template>
 
-        <v-card width="550" height="450">
+        <v-card width="550" height="450" rounded>
           <v-card-title class="text-h5 grey lighten-2">
             Register new User
           </v-card-title>
@@ -30,6 +30,7 @@
                 <v-text-field
                   label="Password"
                   variant="underlined"
+                  type="password"
                   v-model="input.password"
                   :rules="[rules.required, rules.minLen]"
                 ></v-text-field>
@@ -57,7 +58,10 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
-      <v-table style="width: 1000px" class="mt-5">
+      <v-table
+        style="width: 1100px; max-width: 1400px; border-radius: 10px"
+        class="mt-5"
+      >
         <thead>
           <tr>
             <th class="text-left">Name</th>
@@ -83,7 +87,13 @@
 
 <script lang="ts">
 import { loginService } from "@/handler/loginHandler";
-import { defineComponent, onMounted, reactive } from "@vue/runtime-core";
+import { dataService } from "@/handler/dataHandler";
+import {
+  defineComponent,
+  onMounted,
+  onUpdated,
+  reactive,
+} from "@vue/runtime-core";
 import { inject, ref } from "vue";
 import BaseLayout from "../../boilerplate/layouts/Base.vue";
 
@@ -110,11 +120,10 @@ export default defineComponent({
     });
 
     const dialog = ref(false);
-
     const roleItems = ["admin", "instructor", "user"];
 
     onMounted(async () => {
-      const data = await loginService.getAllData();
+      const data = await dataService.getAllData();
       for (const elem of data) {
         resultArr.value.push({
           name: elem.Name,
@@ -139,11 +148,16 @@ export default defineComponent({
     };
 
     const deleteElemAt = async (elem: any) => {
+      if (
+        !confirm("You sure you want to delete? Deleted Items will be immutable")
+      )
+        return;
       try {
-        await loginService.deleteItem(elem.name);
+        await dataService.deleteItem(elem.name);
       } catch (e) {
         console.log(e);
       }
+      await dataService.getAllData();
     };
 
     return {

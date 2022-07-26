@@ -14,13 +14,15 @@
           <v-btn :disabled="toggleStage" @click="submit" color="blue"
             >Submit</v-btn
           >
+
           <h5 style="color: grey">{{ time }}</h5>
         </v-card-actions>
       </v-card>
+
       <v-container
         class="d-flex justify-center mb-6"
         v-for="i in daysOfMonth"
-        :key="i"
+        :key="`${i}.${currMonth}.${currYear}`"
         ref="container"
         id="test"
       >
@@ -28,6 +30,13 @@
       </v-container>
     </v-main>
 
+    <template v-slot:navIcons>
+      <v-btn icon
+        ><v-icon style="width: 35px" size="22"
+          >mdi-file-export-outline</v-icon
+        ></v-btn
+      >
+    </template>
     <router-view />
   </base-layout>
 </template>
@@ -44,8 +53,6 @@ export default defineComponent({
   setup() {
     const date = new Date();
     const role = ref(inject("role"));
-    // const { appContext } = getCurrentInstance() as any;
-    // console.log(appContext);
 
     let daysOfMonth = ref(31);
     let toggleStage = ref(false);
@@ -84,7 +91,7 @@ export default defineComponent({
 
       computeDays();
 
-      localStorage.getItem(props.propsDate);
+      // localStorage.getItem(props.propsDate);
     };
 
     const switchPageLeft = async () => {
@@ -101,6 +108,7 @@ export default defineComponent({
     const today = () => {
       currMonth.value = date.getMonth() + 1;
       currYear.value = date.getFullYear();
+      computeDays();
     };
 
     const submit = () => {
@@ -108,7 +116,7 @@ export default defineComponent({
 
       time.value = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
 
-      localStorage.setItem("stage", JSON.stringify(document.body.innerHTML));
+      // localStorage.setItem("stage", JSON.stringify(document.body.innerHTML));
     };
 
     return {
