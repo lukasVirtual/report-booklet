@@ -38,6 +38,7 @@
               variant="underlined"
               :rules="[rules.required, rules.minLen]"
               v-model="validation.password"
+              @keyup.enter="login()"
             ></v-text-field>
           </v-col>
           <v-col>
