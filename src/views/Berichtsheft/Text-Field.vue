@@ -39,7 +39,11 @@
         <v-row dense>
           <v-col cols="1" class="text-center">
             <div
-              style="background-color: azure; height: 320%; border-radius: 10px"
+              style="
+                background-color: #3e8ede;
+                height: 320%;
+                border-radius: 10px;
+              "
             >
               <div style="height: 15px"></div>
               <v-btn @click="anyNumber++" icon elevation="20"
