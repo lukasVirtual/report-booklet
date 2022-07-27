@@ -7,13 +7,14 @@
     <v-container fluid>
       <v-card
         style="
-          width: 1100px;
+          width: 1180px;
           border: 2px solid black;
           overflow-x: hidden;
+          overflow-y: hidden;
           border-radius: 10px;
         "
         tile
-        class="mt-5 overflow-y-auto"
+        class="mt-5"
       >
         <v-card-actions style="margin: auto">
           <v-card-title>{{ propsDate }}</v-card-title>
@@ -25,56 +26,59 @@
           ></v-select>
         </v-card-actions>
       </v-card>
-      <v-card
-        style="
-          width: 1100px;
-          height: 500px;
-          border: 1px solid black;
-          overflow-x: hidden;
-          border-radius: 10px;
-        "
-        tile
-        class="mt-4 overflow-y-auto"
-      >
-        <v-row dense>
-          <v-col cols="1" class="text-center">
-            <div
-              style="
-                background-color: #3e8ede;
-                height: 320%;
-                border-radius: 10px;
-              "
+      <!-- <v-virtual-scroll :items="1000" :item-height="50" height="300"> -->
+      <div style="display: flex">
+        <v-card width="80" class="text-center mt-4">
+          <div
+            style="
+              background-color: #3e8ede;
+              height: 500px;
+              border-radius: 10px;
+            "
+          >
+            <div style="height: 15px"></div>
+            <v-btn @click="anyNumber++" icon elevation="20"
+              ><v-icon size="35" color="blue">mdi-plus</v-icon></v-btn
             >
-              <div style="height: 15px"></div>
-              <v-btn @click="anyNumber++" icon elevation="20"
-                ><v-icon size="30" color="blue">mdi-plus</v-icon></v-btn
-              >
-              <div style="height: 10px"></div>
-              <v-btn icon elevation="20"
-                ><v-icon size="30" color="red" @click="removeItems"
-                  >mdi-trash-can</v-icon
-                ></v-btn
-              >
-              <div style="height: 10px"></div>
+            <div style="height: 10px"></div>
+            <v-btn icon elevation="20"
+              ><v-icon size="30" color="red" @click="removeItems"
+                >mdi-trash-can</v-icon
+              ></v-btn
+            >
+            <div style="height: 10px"></div>
 
-              <qualifications-default></qualifications-default>
-            </div>
-          </v-col>
-          <div style="width: 5px"></div>
-          <v-row>
-            <v-col cols="12" md="12">
-              <div v-for="j in anyNumber" :key="j">
-                <v-card-actions>
-                  <typing-field></typing-field>
-                </v-card-actions>
-              </div>
-            </v-col>
-            <v-spacer></v-spacer>
-            <v-col cols="2"> </v-col>
-            <v-spacer></v-spacer>
+            <qualifications-default></qualifications-default>
+          </div>
+        </v-card>
+        <v-card
+          style="
+            width: 1100px;
+            height: 500px;
+            border: 1px solid black;
+            overflow-x: hidden;
+
+            border-radius: 10px;
+          "
+          max-height="500"
+          class="mt-4 overflow-y-auto"
+        >
+          <v-row dense>
+            <div style="width: 5px"></div>
+            <v-row style="max-height: 30px">
+              <v-col cols="12" md="12">
+                <div v-for="j in anyNumber" :key="j">
+                  <v-card-actions>
+                    <typing-field></typing-field>
+                  </v-card-actions>
+                </div>
+              </v-col>
+              <v-spacer></v-spacer>
+            </v-row>
           </v-row>
-        </v-row>
-      </v-card>
+        </v-card>
+      </div>
+      <!-- </v-virtual-scroll> -->
     </v-container>
   </div>
 </template>

@@ -6,7 +6,7 @@ import MainPage from "../views/Berichtsheft/Main.vue";
 import DashboardDefault from "../views/Dashboard/Dashboard-Default.vue";
 import AdminDefault from "../views/Admin/Admin-Default.vue";
 import { loginService } from "@/handler/loginHandler";
-import { boot } from "../main"
+import { boot } from "../main";
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -16,9 +16,24 @@ const router = createRouter({
       name: "home",
       component: App,
       children: [
-        { path: "/Dashboard", name: "Dashboard", component: DashboardDefault, meta: { requiresAuth: true} },
-        { path: "/Berichtsheft", name: "Berichtsheft", component: MainPage, meta: { requiresAuth: true } },
-        { path: "/Admin", name: "Admin", component: AdminDefault, meta: { requiresAuth: true } },
+        {
+          path: "/Dashboard",
+          name: "Dashboard",
+          component: DashboardDefault,
+          meta: { requiresAuth: true },
+        },
+        {
+          path: "/Berichtsheft",
+          name: "Berichtsheft",
+          component: MainPage,
+          meta: { requiresAuth: true },
+        },
+        {
+          path: "/Admin",
+          name: "Admin",
+          component: AdminDefault,
+          meta: { requiresAuth: true },
+        },
       ],
     },
     {
@@ -36,23 +51,18 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
   if (to.meta.requiresAuth) {
-    
     try {
       const statusCheck = await loginService.checkStatus();
-      console.log(statusCheck);      
-      if (statusCheck) 
-      {
-        await boot()
+      console.log(statusCheck);
+      if (statusCheck) {
+        await boot();
         next();
-      }
-      
-      else next({ path: "/Login" })
+      } else next({ path: "/Login" });
     } catch (e) {
       next({ path: "/Login" });
     }
   } else {
-    next()
+    next();
   }
-
-})
+});
 export default router;

@@ -18,7 +18,7 @@
           </v-progress-circular>
           <v-progress-circular
             style="margin: 2rem"
-            :rotate="360"
+            :rotate="180"
             :size="450"
             :width="25"
             :model-value="progressItems.value2"

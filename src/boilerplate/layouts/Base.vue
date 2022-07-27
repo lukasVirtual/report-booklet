@@ -9,11 +9,6 @@
           >mdi-format-list-bulleted</v-icon
         ></v-btn
       >
-      <v-btn icon
-        ><v-icon style="width: 35px" size="22"
-          >mdi-content-save-outline</v-icon
-        ></v-btn
-      >
 
       <slot name="navIcons"></slot>
 
