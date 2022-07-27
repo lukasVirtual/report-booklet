@@ -1,9 +1,13 @@
 <template v-if="$route.path === '/Berichtsheft'">
-  <v-text-field
-    :auto-grow="true"
+  <v-textarea
+    auto-grow
     spellcheck="true"
+    :rows="rowCounter"
+    @keyup.enter="rowCounter++"
+    @keydown.delete="rowCounter > 1 ? rowCounter-- : (rowCounter = 1)"
+    style="min-height: 60px"
     v-model="inputText"
-  ></v-text-field>
+  ></v-textarea>
   <timer-text-field></timer-text-field>
 </template>
 
@@ -17,8 +21,9 @@ export default defineComponent({
 
   setup() {
     const inputText = ref("");
+    const rowCounter = ref(1);
 
-    return { inputText };
+    return { inputText, rowCounter };
   },
 });
 </script>

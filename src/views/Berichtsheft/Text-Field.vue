@@ -26,7 +26,6 @@
           ></v-select>
         </v-card-actions>
       </v-card>
-      <!-- <v-virtual-scroll :items="1000" :item-height="50" height="300"> -->
       <div style="display: flex">
         <v-card width="80" class="text-center mt-4">
           <div
@@ -79,7 +78,6 @@
           </v-row>
         </v-card>
       </div>
-      <!-- </v-virtual-scroll> -->
     </v-container>
   </div>
 </template>
