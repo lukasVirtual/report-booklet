@@ -30,7 +30,7 @@
         <v-card width="80" class="text-center mt-4">
           <div
             style="
-              background-color: #3e8ede;
+              background-color: #3e5ede;
               height: 500px;
               border-radius: 10px;
             "
@@ -41,7 +41,7 @@
             >
             <div style="height: 10px"></div>
             <v-btn icon elevation="20"
-              ><v-icon size="30" color="red" @click="removeItems"
+              ><v-icon size="30" color="#D32F2F" @click="removeItems"
                 >mdi-trash-can</v-icon
               ></v-btn
             >
