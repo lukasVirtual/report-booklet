@@ -74,7 +74,9 @@
             <td>{{ elem.name }}</td>
             <td>{{ elem.role }}</td>
             <td class="text-right">
-              <v-btn v-if="elem.role !== 'admin'" @click="deleteElemAt(elem)"
+              <v-btn
+                v-if="elem.role !== 'admin'"
+                @click="deleteElemAt(elem, idx)"
                 ><v-icon size="20" color="red">mdi-trash-can</v-icon></v-btn
               >
             </td>
@@ -88,12 +90,7 @@
 <script lang="ts">
 import { loginService } from "@/handler/loginHandler";
 import { dataService } from "@/handler/dataHandler";
-import {
-  defineComponent,
-  onMounted,
-  onUpdated,
-  reactive,
-} from "@vue/runtime-core";
+import { defineComponent, onMounted, reactive } from "@vue/runtime-core";
 import { inject, ref } from "vue";
 import BaseLayout from "../../boilerplate/layouts/Base.vue";
 
@@ -143,17 +140,22 @@ export default defineComponent({
         input.role !== ""
       ) {
         loginService.register(input.name, input.password, input.role);
+        resultArr.value.push({ name: input.name, role: input.role });
+        input.name = "";
+        input.password = "";
+        input.role = "";
       } else alert("Some fields are Empty or incorrect entered");
       dialog.value = false;
     };
 
-    const deleteElemAt = async (elem: any) => {
+    const deleteElemAt = async (elem: any, idx: number) => {
       if (
         !confirm("You sure you want to delete? Deleted Items will be immutable")
       )
         return;
       try {
         await dataService.deleteItem(elem.name);
+        resultArr.value.splice(idx, 1);
       } catch (e) {
         console.log(e);
       }

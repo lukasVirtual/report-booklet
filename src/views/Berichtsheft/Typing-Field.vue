@@ -6,6 +6,7 @@
     @keyup.enter="rowCounter++"
     @keydown.delete="rowCounter > 1 ? rowCounter-- : (rowCounter = 1)"
     style="min-height: 60px"
+    color="cyan"
     v-model="inputText"
   ></v-textarea>
   <timer-text-field></timer-text-field>
