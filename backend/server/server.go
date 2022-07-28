@@ -45,6 +45,7 @@ func Init() {
 	router.Post("/api/delete", DeleteElem)
 	router.Post("/api/insertinput", InsertInputField)
 	router.Post("/api/inserttext", InsertTextField)
+	router.Post("/api/getTextFieldData", GetTextFieldData)
 	router.Get("/api/statuscheck", StatusCheck)
 	router.Get("/api/dataware", DataWare)
 
@@ -296,4 +297,17 @@ func InsertTextField(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"message": "Successfully inserted TextField",
 	})
+}
+
+func GetTextFieldData(c *fiber.Ctx) error {
+	var textField dbmodels.TextField
+	err := c.BodyParser(&textField)
+
+	if err != nil {
+		fmt.Println("Could not read Date")
+	}
+
+	dates := dbmodels.GetTextFieldData(textField.CalendarDate)
+
+	return c.Status(fiber.StatusOK).JSON(dates)
 }

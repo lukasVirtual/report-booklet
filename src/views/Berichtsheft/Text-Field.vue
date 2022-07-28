@@ -4,7 +4,7 @@
     v-if="$route.path === '/Berichtsheft'"
     @click="showDate(propsDate)"
   >
-    <v-container fluid>
+    <v-container fluid @vnode-mounted="date = propsDate">
       <v-card
         style="
           width: 1180px;
@@ -18,6 +18,7 @@
       >
         <v-card-actions style="margin: auto">
           <v-card-title>{{ propsDate }}</v-card-title>
+          <v-btn @click="save(propsDate)">mdi-safe</v-btn>
           <v-spacer></v-spacer>
           <v-select
             :items="envItems"
@@ -36,7 +37,7 @@
             "
           >
             <div style="height: 15px"></div>
-            <v-btn @click="anyNumber++" icon elevation="20"
+            <v-btn @click="add(propsDate, index)" icon elevation="20"
               ><v-icon size="35" color="blue">mdi-plus</v-icon></v-btn
             >
             <div style="height: 10px"></div>
@@ -68,8 +69,8 @@
             <v-row style="max-height: 30px">
               <v-col cols="12" md="12">
                 <div v-for="j in anyNumber" :key="j">
-                  <v-card-actions>
-                    <typing-field></typing-field>
+                  <v-card-actions v-on:vnode-mounted="index = j">
+                    <typing-field :input="inputField"></typing-field>
                   </v-card-actions>
                 </div>
               </v-col>
@@ -106,8 +107,9 @@
 </style>
 
 <script lang="ts">
+import { store } from "@/Auth/store";
 import { dataService } from "@/handler/dataHandler";
-import { defineComponent, ref } from "vue";
+import { defineComponent, onMounted, ref } from "vue";
 import QualificationsDefault from "./Qualifications-Default.vue";
 import TypingField from "./Typing-Field.vue";
 
@@ -120,13 +122,29 @@ export default defineComponent({
   setup() {
     const selectedItem = ref(1);
     let num = ref<number[]>([]);
-    let anyNumber = ref(1);
+    let anyNumber = ref(0);
     let themeSelection = ref<string>("dark");
     const date = ref<string | undefined>("");
     const envItems = ["School", "Office"];
+    const inputField = ref("");
+    const index = ref<number>(0);
+    let arr: [{ id: number; date: string; input: string; time: string }] = [
+      { id: 0, date: "", input: "", time: "" },
+    ];
 
-    function add() {
-      num.value.push(1);
+    function add(propsDate: string | undefined, idx: number | undefined) {
+      anyNumber.value++;
+      console.log(idx);
+      // dataService.saveForm(store[0].input, store[0].time);
+      // dataService.saveTextField(propsDate as string);
+
+      arr.push({
+        id: idx as number,
+        date: propsDate as string,
+        input: store[0].input,
+        time: store[0].time,
+      });
+      console.log(arr);
     }
 
     const removeItems = () => {
@@ -134,13 +152,38 @@ export default defineComponent({
     };
 
     const showDate = (propsDate: string | undefined) => {
-      // console.log(propsDate);
+      console.log(propsDate);
       date.value = propsDate;
       console.log("propsDate = ", date.value);
     };
 
-    const save = (propsDate: string | undefined, text: string) => {
+    onMounted(async () => {
+      // console.log(arr);
+      arr.splice(0, 1);
+      const data = await dataService.getTextFieldData(date.value as string);
+      for (const input of data) {
+        console.log(input.CalendarDate, input.Input, input.TimeStamp);
+        arr.push({
+          id: index.value,
+          date: input.CalendarDate,
+          input: input.Input,
+          time: input.TimeStamp,
+        });
+      }
+      for (const v of arr) {
+        inputField.value = v.input;
+      }
+      anyNumber.value = arr.length;
+      console.log(arr);
+    });
+
+    const save = (propsDate: string | undefined) => {
       console.warn("saving...");
+      store[0].date = propsDate as string;
+      console.log("saving props: ", propsDate);
+      console.log(store[0].input);
+      dataService.saveForm(store[0].input, store[0].time);
+      dataService.saveTextField(propsDate as string);
     };
 
     return {
@@ -150,6 +193,8 @@ export default defineComponent({
       themeSelection,
       date,
       envItems,
+      inputField,
+      index,
       save,
       showDate,
       removeItems,

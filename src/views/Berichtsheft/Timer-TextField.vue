@@ -16,7 +16,6 @@
         </v-btn>
       </template>
       <v-list height="150">
-        <!-- @click="input = item.title" -->
         <v-list-item
           v-for="(item, index) in times"
           :key="index"
@@ -31,10 +30,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { store } from "@/Auth/store";
+import { defineComponent, ref, watchEffect } from "vue";
 
 export default defineComponent({
   name: "TimerTextField",
+  props: {
+    timeStamp: String,
+  },
 
   setup() {
     const times = [
@@ -59,9 +62,11 @@ export default defineComponent({
       { title: "09:30" },
       { title: "10:00" },
     ];
-    let input = ref("00:00");
+    let input = ref<string | undefined>("00:00");
     let ruler = ref(false);
-
+    watchEffect(() => {
+      store[0].time = input.value as string;
+    });
     return {
       times,
       input,

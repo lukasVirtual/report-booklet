@@ -50,5 +50,4 @@ func InitDB() {
 	db.AutoMigrate(&User{})
 	// db.AutoMigrate(&TextField{})
 	// db.AutoMigrate(&InputField{})
-
 }

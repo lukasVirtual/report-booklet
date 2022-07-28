@@ -16,6 +16,7 @@
           >
             {{ progressItems.value }} Qualifications
           </v-progress-circular>
+
           <v-progress-circular
             style="margin: 2rem"
             :rotate="180"
@@ -27,6 +28,7 @@
             {{ progressItems.value2 }} Qualifications
           </v-progress-circular>
         </div>
+
         <div class="d-flex justify-center">
           <v-progress-linear
             v-model="knowledge"

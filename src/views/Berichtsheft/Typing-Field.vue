@@ -1,5 +1,6 @@
 <template v-if="$route.path === '/Berichtsheft'">
   <v-textarea
+    @vnode-mounted="inputText = input"
     auto-grow
     spellcheck="true"
     :rows="rowCounter"
@@ -14,15 +15,23 @@
 
 <script lang="ts">
 import TimerTextField from "./Timer-TextField.vue";
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, watchEffect } from "vue";
+import { store } from "@/Auth/store";
 
 export default defineComponent({
   name: "TypingField",
   components: { TimerTextField },
+  props: {
+    input: String,
+  },
 
   setup() {
-    const inputText = ref("");
+    const inputText = ref<string | undefined>("");
     const rowCounter = ref(1);
+
+    watchEffect(() => {
+      store[0].input = inputText.value as string;
+    });
 
     return { inputText, rowCounter };
   },
