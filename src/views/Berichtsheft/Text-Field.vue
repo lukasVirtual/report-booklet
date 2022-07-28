@@ -18,7 +18,7 @@
       >
         <v-card-actions style="margin: auto">
           <v-card-title>{{ propsDate }}</v-card-title>
-          <v-btn @click="save(propsDate)">mdi-safe</v-btn>
+          <v-btn @click="save(propsDate)"><v-icon>mdi-safe</v-icon></v-btn>
           <v-spacer></v-spacer>
           <v-select
             :items="envItems"
@@ -125,7 +125,7 @@ export default defineComponent({
     let anyNumber = ref(0);
     let themeSelection = ref<string>("dark");
     const date = ref<string | undefined>("");
-    const envItems = ["School", "Office"];
+    const envItems = ["School", "Office", "Remote", "Holiday", "Sick"];
     const inputField = ref("");
     const index = ref<number>(0);
     let arr: [{ id: number; date: string; input: string; time: string }] = [
