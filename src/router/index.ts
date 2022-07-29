@@ -17,17 +17,6 @@ const router = createRouter({
       component: App,
       children: [
         {
-          path: "/Dashboard",
-          name: "Dashboard",
-          component: DashboardDefault,
-          meta: { requiresAuth: true },
-          beforeEnter: async (to, from, next) => {
-            const role = await loginService.getUserRole();
-            if (role === "user") next();
-            else next("/Login");
-          },
-        },
-        {
           path: "/Berichtsheft",
           name: "Berichtsheft",
           component: MainPage,
@@ -35,6 +24,17 @@ const router = createRouter({
           beforeEnter: async (to, from, next) => {
             const role = await loginService.getUserRole();
             if (role === "user" || role === "instructor") next();
+            else next("/Login");
+          },
+        },
+        {
+          path: "/Dashboard",
+          name: "Dashboard",
+          component: DashboardDefault,
+          meta: { requiresAuth: true },
+          beforeEnter: async (to, from, next) => {
+            const role = await loginService.getUserRole();
+            if (role === "user") next();
             else next("/Login");
           },
         },
