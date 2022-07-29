@@ -3,7 +3,12 @@
     class="d-flex justify-space-around"
     v-if="$route.path === '/Berichtsheft'"
   >
-    <v-menu justify-center ref="parentMenu" v-model="ruler">
+    <v-menu
+      justify-center
+      ref="parentMenu"
+      v-model="ruler"
+      @vnode-mounted="timeStamp ? (input = timeStamp) : input"
+    >
       <template v-slot:activator="{ props }">
         <v-btn
           @click="ruler = true"
@@ -30,7 +35,7 @@
 </template>
 
 <script lang="ts">
-import { store } from "@/Auth/store";
+import { store } from "@/handler/store";
 import { defineComponent, ref, watchEffect } from "vue";
 
 export default defineComponent({

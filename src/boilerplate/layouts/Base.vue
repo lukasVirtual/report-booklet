@@ -33,7 +33,7 @@
         src="src\assets\vhf-logo.png"
       ></v-img>
     </v-app-bar>
-    <v-navigation-drawer :rail="!toggleList">
+    <v-navigation-drawer :rail="toggleList">
       <v-list nav>
         <v-list-item
           v-if="role === 'user'"
@@ -96,7 +96,11 @@ export default defineComponent({
     const router = useRouter();
     const overlay = ref(true);
     const showHearbeat = ref(false);
-    const toggleList = ref(true);
+    console.log(localStorage.getItem("list-state"));
+    const toggleList =
+      localStorage.getItem("list-state") == "true" ? ref(true) : ref(false);
+
+    console.log("value: ", toggleList.value);
     let role = ref("");
     onMounted(() => {
       role.value = inject("role") as string;
@@ -122,7 +126,9 @@ export default defineComponent({
     };
 
     const togglelistState = () => {
+      localStorage.removeItem("list-state");
       toggleList.value = !toggleList.value;
+      localStorage.setItem("list-state", `${toggleList.value}`);
     };
 
     setInterval(() => {

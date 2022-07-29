@@ -31,7 +31,7 @@
     </v-main>
 
     <template v-slot:navIcons>
-      <v-btn icon
+      <v-btn icon @click="saving"
         ><v-icon style="width: 35px" size="22"
           >mdi-content-save-outline</v-icon
         ></v-btn
@@ -47,23 +47,35 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, inject, ref } from "vue";
+import { defineComponent, inject, onMounted, ref } from "vue";
 import BaseLayout from "../../boilerplate/layouts/Base.vue";
-import TextField from "./Text-Field.vue";
+import TextField, { save, date } from "./Text-Field.vue";
 
 export default defineComponent({
   components: { BaseLayout, TextField },
   name: "MainPage",
 
   setup() {
-    const date = new Date();
+    const calendarDate = new Date();
     const role = ref(inject("role"));
 
     let daysOfMonth = ref(31);
     let toggleStage = ref(false);
-    let currMonth = ref(date.getMonth() + 1);
-    const currYear = ref(date.getFullYear());
+    let currMonth = ref(calendarDate.getMonth() + 1);
+    const currYear = ref(calendarDate.getFullYear());
     let time = ref<string | null>(null);
+    const saving = () => {
+      save(date.value);
+    };
+
+    onMounted(() => {
+      window.addEventListener("keydown", (e) => {
+        if (e.key == "s" && e.altKey) {
+          saving();
+          e.preventDefault();
+        }
+      });
+    });
 
     const computeDays = () => {
       if (
@@ -85,7 +97,6 @@ export default defineComponent({
         if (currYear.value % 400 == 0) daysOfMonth.value++;
       }
     };
-    let props: { propsDate: string } = { propsDate: "" };
 
     const switchPageRight = () => {
       currMonth.value++;
@@ -100,7 +111,7 @@ export default defineComponent({
     };
 
     const switchPageLeft = async () => {
-      if (currYear.value >= date.getFullYear()) {
+      if (currYear.value >= calendarDate.getFullYear()) {
         currMonth.value--;
         if (currMonth.value < 1) {
           currMonth.value = 12;
@@ -111,15 +122,15 @@ export default defineComponent({
     };
 
     const today = () => {
-      currMonth.value = date.getMonth() + 1;
-      currYear.value = date.getFullYear();
+      currMonth.value = calendarDate.getMonth() + 1;
+      currYear.value = calendarDate.getFullYear();
       computeDays();
     };
 
     const submit = () => {
       toggleStage.value = !toggleStage.value;
 
-      time.value = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+      time.value = `${calendarDate.getHours()}:${calendarDate.getMinutes()}:${calendarDate.getSeconds()}`;
 
       // localStorage.setItem("stage", JSON.stringify(document.body.innerHTML));
     };
@@ -131,6 +142,7 @@ export default defineComponent({
       toggleStage,
       time,
       role,
+      saving,
       submit,
       switchPageRight,
       switchPageLeft,
