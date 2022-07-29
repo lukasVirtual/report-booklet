@@ -65,11 +65,12 @@
 <script lang="ts">
 import { loginService } from "@/handler/loginHandler";
 import { defineComponent, reactive, ref } from "vue";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   name: "LoginDefault",
 
-  data() {
+  setup() {
     const rules = {
       required: (value: string) => !!value || "Required",
       minLen: (v: string) => v.length >= 8 || "Min. 8 Characters",
@@ -79,6 +80,8 @@ export default defineComponent({
       username: "",
       password: "",
     });
+
+    const router = useRouter();
 
     const login = async () => {
       let registerRequest = ref(false);
@@ -90,22 +93,30 @@ export default defineComponent({
             validation.password
           );
           if (registerRequest.value)
-            this.$router.push({ name: "home", query: { redirect: "/" } });
+            for (const route of router.getRoutes()) {
+              if (route.meta.requiresAuth) {
+                let err = await router.push({
+                  name: route.name,
+                });
+
+                if (err == undefined) return;
+              }
+              router.push({ path: "/Login" });
+            }
           else alert("something went wrong. Check your password and username.");
         } catch (e) {
           alert("something went wrong. Check your password and username.");
         }
         console.log(registerRequest.value);
-      } else {
-        alert("Something went wrong. Wrong username or password");
-      }
+      } else alert("Something went wrong. Wrong username or password");
     };
 
+    const valid = ref(null);
     const reset = () => {
-      const obj = this.$refs.valid as any;
+      const obj = valid.value as any;
       if (obj !== undefined) obj.reset();
     };
-    return { rules, validation, login, reset };
+    return { rules, validation, valid, login, reset };
   },
 });
 </script>

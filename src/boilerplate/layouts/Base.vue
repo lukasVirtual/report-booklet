@@ -110,7 +110,7 @@ export default defineComponent({
       const logoutHandling = await loginService.logout();
       console.log(logoutHandling);
 
-      router.push({ name: "Login", query: { redirect: "/Login" } });
+      router.push({ path: "/Login" });
     };
 
     const switchTheme = () => {

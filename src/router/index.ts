@@ -21,18 +21,33 @@ const router = createRouter({
           name: "Dashboard",
           component: DashboardDefault,
           meta: { requiresAuth: true },
+          beforeEnter: async (to, from, next) => {
+            const role = await loginService.getUserRole();
+            if (role === "user") next();
+            else next("/Login");
+          },
         },
         {
           path: "/Berichtsheft",
           name: "Berichtsheft",
           component: MainPage,
           meta: { requiresAuth: true },
+          beforeEnter: async (to, from, next) => {
+            const role = await loginService.getUserRole();
+            if (role === "user" || role === "instructor") next();
+            else next("/Login");
+          },
         },
         {
           path: "/Admin",
           name: "Admin",
           component: AdminDefault,
           meta: { requiresAuth: true },
+          beforeEnter: async (to, from, next) => {
+            const role = await loginService.getUserRole();
+            if (role === "admin") next();
+            else next("/Login");
+          },
         },
       ],
     },
