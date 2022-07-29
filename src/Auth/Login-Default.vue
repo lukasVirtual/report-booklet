@@ -23,11 +23,11 @@
             <v-text-field
               label="Username"
               type="text"
+              color="teal"
               style="padding-left: 25%; padding-right: 25%"
               :rules="[rules.required]"
               variant="underlined"
               v-model="validation.username"
-              single-line
             ></v-text-field>
           </v-col>
           <v-col cols="12">
@@ -36,16 +36,13 @@
               type="password"
               style="padding-left: 25%; padding-right: 25%"
               variant="underlined"
+              color="teal"
               :rules="[rules.required, rules.minLen]"
               v-model="validation.password"
               @keyup.enter="login"
             ></v-text-field>
           </v-col>
-          <v-col>
-            <router-link style="font-size: 15px" :to="{ path: '/Register' }"
-              >Not Registered? Register here</router-link
-            >
-          </v-col>
+
           <v-divider length="800px"></v-divider>
           <v-col>
             <div class="text-right">

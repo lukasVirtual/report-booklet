@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import App from "../App.vue";
 import LoginDefault from "../Auth/Login-Default.vue";
-import RegisterDefault from "../Auth/Register-Default.vue";
 import MainPage from "../views/Berichtsheft/Main.vue";
 import DashboardDefault from "../views/Dashboard/Dashboard-Default.vue";
 import AdminDefault from "../views/Admin/Admin-Default.vue";
@@ -55,11 +54,6 @@ const router = createRouter({
       path: "/Login",
       name: "Login",
       component: LoginDefault,
-    },
-    {
-      path: "/Register",
-      name: "Register",
-      component: RegisterDefault,
     },
   ],
 });
