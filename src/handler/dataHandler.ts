@@ -27,7 +27,10 @@ export class dataService {
 
     const res = await fetch("http://127.0.0.1:5000/api/insertinput", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
+      },
       body: input,
     });
 
@@ -40,9 +43,12 @@ export class dataService {
       calendarDate: date,
     });
 
-    const res = await fetch("http://localhost:5000/api/inserttext", {
+    const res = await fetch("http://127.0.0.1:5000/api/inserttext", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
+      },
       body: input,
     });
 
@@ -55,9 +61,12 @@ export class dataService {
       calendarDate: date,
     });
 
-    const res = await fetch("http://localhost:5000/api/getTextFieldData", {
+    const res = await fetch("http://127.0.0.1:5000/api/getTextFieldData", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
+      },
       body: input,
     });
 
