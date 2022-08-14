@@ -23,7 +23,7 @@
             <v-text-field
               label="Username"
               type="text"
-              color="teal"
+              color="cyan"
               style="padding-left: 25%; padding-right: 25%"
               :rules="[rules.required]"
               variant="underlined"
@@ -36,7 +36,7 @@
               type="password"
               style="padding-left: 25%; padding-right: 25%"
               variant="underlined"
-              color="teal"
+              color="cyan"
               :rules="[rules.required, rules.minLen]"
               v-model="validation.password"
               @keyup.enter="login"
