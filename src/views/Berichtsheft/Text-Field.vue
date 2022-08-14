@@ -69,8 +69,11 @@
             <v-row style="max-height: 30px">
               <v-col cols="12" md="12">
                 <div v-for="j in anyNumber" :key="j">
-                  <v-card-actions @click="index = j" @input="test(j)">
-                    <typing-field :input="inputField"></typing-field>
+                  <v-card-actions>
+                    <typing-field
+                      @vnode-mounted="index = j"
+                      :input="inputField"
+                    ></typing-field>
                   </v-card-actions>
                 </div>
               </v-col>
@@ -120,6 +123,7 @@ export const save = (propsDate: string | undefined) => {
   console.log(store[0].input);
   // console.log(index.value);
   // if (arr.findIndex((elem) => elem.id == index.value) == -1) {
+
   dataService.saveForm(store[0].input, store[0].time);
   dataService.saveTextField(propsDate as string);
   /*} else {
@@ -146,19 +150,32 @@ export default defineComponent({
     const envItems = ["School", "Office", "Remote", "Holiday", "Sick"];
     const inputField = ref("");
 
-    function add(propsDate: string | undefined, idx: number | undefined) {
+    const add = async (
+      propsDate: string | undefined,
+      idx: number | undefined
+    ) => {
       anyNumber.value++;
-      console.log(idx);
+      console.log(anyNumber.value);
 
-      arr.push({
-        id: idx as number,
-        date: propsDate as string,
-        input: store[0].input,
-        time: store[0].time,
-      });
+      // arr.push({
+      //   id: idx as number,
+      //   date: propsDate as string,
+      //   input: store[0].input,
+      //   time: store[0].time,
+      // });
+
+      // if (anyNumber.value <= 1) {
+      //   await dataService.writeJson(
+      //     anyNumber.value,
+      //     propsDate as string,
+      //     store[0].input,
+      //     store[0].time
+      //   );
+      // }
+
       // dataService.saveForm(store[0].input, store[0].time);
       // dataService.saveTextField(propsDate as string);
-    }
+    };
 
     const removeItems = () => {
       localStorage.removeItem("inputs");
@@ -172,40 +189,55 @@ export default defineComponent({
 
     onMounted(async () => {
       arr.splice(0, 1);
-      const data = await dataService.getTextFieldData(date.value as string);
-      for (const input of data) {
-        // console.log(input.CalendarDate, input.Input, input.TimeStamp);
-        arr.push({
-          id: index.value++,
-          date: input.CalendarDate,
-          input: input.Input,
-          time: input.TimeStamp,
-        });
-        localStorage.removeItem(input.CalendarDate);
-        localStorage.setItem(input.CalendarDate, JSON.stringify(arr));
-      }
-      for (const v of arr) {
-        inputField.value = v.input;
-        timeStmp.value = v.time;
+      // const data = await dataService.getTextFieldData(date.value as string);
+      // for (const input of data) {
+      //   // console.log(input.CalendarDate, input.Input, input.TimeStamp);
+      //   arr.push({
+      //     id: index.value++,
+      //     date: input.CalendarDate,
+      //     input: input.Input,
+      //     time: input.TimeStamp,
+      //   });
+      //   localStorage.removeItem(input.CalendarDate);
+      //   localStorage.setItem(input.CalendarDate, JSON.stringify(arr));
+      // }
+      // for (const v of arr) {
+      //   inputField.value = v.input;
+      //   timeStmp.value = v.time;
+      // }
+      // anyNumber.value = arr.length;
+      // if (arr.length > 0) console.log(arr);
+      let out = await dataService.readJson(date.value as string);
+      if (out) {
+        if (out.length > 0) {
+          anyNumber.value = out.length;
+          console.log(out);
+          for (let i = 0; i < out.length; i++) {
+            inputField.value = out[i].Input;
+            timeStmp.value = out[i].Time;
+          }
+        }
       }
 
-      anyNumber.value = arr.length;
-
-      if (arr.length > 0) console.log(arr);
+      // const someArray = [];
+      // someArray.push(out);
+      // console.log(someArray);
     });
 
-    const test = (idx: number) => {
-      // console.log(idx);
-      // console.log("arr input: ", store[0].input);
-      // if (arr.findIndex((elem) => elem.id == idx) !== -1)
-      //   inputField.value = store[0].input;
-    };
+    const saveeee = async (propsDate: string | undefined) => {
+      // console.warn("saving...");
+      // store[0].date = propsDate as string;
+      // dataService.saveForm(store[0].input, store[0].time);
+      // dataService.saveTextField(propsDate as string);
 
-    const saveeee = (propsDate: string | undefined) => {
-      console.warn("saving...");
-      store[0].date = propsDate as string;
-      dataService.saveForm(store[0].input, store[0].time);
-      dataService.saveTextField(propsDate as string);
+      await dataService.writeJson(
+        index.value,
+        propsDate as string,
+        store[0].input,
+        store[0].time
+      );
+
+      console.log("success");
     };
 
     return {
@@ -217,7 +249,6 @@ export default defineComponent({
       envItems,
       inputField,
       index,
-      test,
       saveeee,
       save,
       showDate,

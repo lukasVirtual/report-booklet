@@ -336,14 +336,14 @@ func ReadJson(c *fiber.Ctx) error {
 		fmt.Println(err)
 	}
 
-	fmt.Println(jsonOutput.Date)
+	// fmt.Println(jsonOutput.Date)
 
-	output, err := dbmodels.ReadFromJson(jsonOutput.Date)
-	fmt.Println(output)
-	if err != nil {
-		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-			"message": err,
-		})
-	}
+	output, _ := dbmodels.ReadFromJson(jsonOutput.Date)
+	// fmt.Println(output)
+	// if err != nil {
+	// 	return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+	// 		"message": err,
+	// 	})
+	// }
 	return c.Status(fiber.StatusOK).JSON(output)
 }

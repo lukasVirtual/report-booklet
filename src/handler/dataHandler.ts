@@ -73,4 +73,43 @@ export class dataService {
     console.log("status getting TextField data", res.status);
     return res.json();
   }
+
+  static async writeJson(
+    Id: number,
+    Date: string,
+    Input: string,
+    Time: string
+  ): Promise<void> {
+    const values = JSON.stringify({
+      id: Id,
+      date: Date,
+      input: Input,
+      time: Time,
+    });
+    const res = await fetch("http://127.0.0.1:5000/api/writeJson", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
+      },
+      body: values,
+    });
+
+    console.log(res.status);
+  }
+
+  static async readJson(date: string): Promise<any> {
+    const values = JSON.stringify({
+      date: date,
+    });
+    const res = await fetch("http://127.0.0.1:5000/api/readJson", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
+      },
+      body: values,
+    });
+    return res.json();
+  }
 }

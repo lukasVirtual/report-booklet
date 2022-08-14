@@ -102,10 +102,10 @@ func SaveAsJson(id int, date, input, time string) {
 		output, _ := ReadFromJson(date)
 		local = append(local, output[:]...)
 		local = append(local, obj)
-		fmt.Println(local)
+		// fmt.Println(local)
 		appendData, _ := json.MarshalIndent(local, " ", " ")
 
-		fmt.Println("obj: ", obj)
+		// fmt.Println("obj: ", obj)
 		if _, err := file.Write(appendData); err != nil {
 			fmt.Println(err)
 		}
