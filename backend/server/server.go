@@ -45,6 +45,8 @@ func Init() {
 	router.Post("/api/delete", DeleteElem)
 	router.Post("/api/insertinput", InsertInputField)
 	router.Post("/api/inserttext", InsertTextField)
+	router.Post("/api/writeJson", WriteJson)
+	router.Post("/api/readJson", ReadJson)
 	router.Post("/api/getTextFieldData", GetTextFieldData)
 	router.Get("/api/statuscheck", StatusCheck)
 	router.Get("/api/dataware", DataWare)
@@ -310,4 +312,38 @@ func GetTextFieldData(c *fiber.Ctx) error {
 	dates := dbmodels.GetTextFieldData(textField.CalendarDate)
 
 	return c.Status(fiber.StatusOK).JSON(dates)
+}
+
+func WriteJson(c *fiber.Ctx) error {
+	var jdata dbmodels.JsonData
+	err := c.BodyParser(&jdata)
+
+	if err != nil {
+		fmt.Println("Could not read data")
+	}
+	fmt.Println(jdata.Date)
+	dbmodels.SaveAsJson(jdata.Id, jdata.Date, jdata.Input, jdata.Time)
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message": "Successfully created Json",
+	})
+}
+
+func ReadJson(c *fiber.Ctx) error {
+	var jsonOutput dbmodels.JsonData
+	err := c.BodyParser(&jsonOutput)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Println(jsonOutput.Date)
+
+	output, err := dbmodels.ReadFromJson(jsonOutput.Date)
+	fmt.Println(output)
+	if err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"message": err,
+		})
+	}
+	return c.Status(fiber.StatusOK).JSON(output)
 }
