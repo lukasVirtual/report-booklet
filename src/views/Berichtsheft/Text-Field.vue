@@ -37,7 +37,7 @@
             "
           >
             <div style="height: 15px"></div>
-            <v-btn @click="add(propsDate, index)" icon elevation="20"
+            <v-btn @click="add(propsDate)" icon elevation="20"
               ><v-icon size="35" color="blue">mdi-plus</v-icon></v-btn
             >
             <div style="height: 10px"></div>
@@ -68,11 +68,16 @@
             <div style="width: 5px"></div>
             <v-row style="max-height: 30px">
               <v-col cols="12" md="12">
-                <div v-for="j in anyNumber" :key="j">
+                <div
+                  v-for="j in out"
+                  :key="j"
+                  @click="returnIndex(j.Id, propsDate)"
+                >
                   <v-card-actions>
                     <typing-field
-                      @vnode-mounted="index = j"
-                      :input="inputField"
+                      @vnode-mounted="index = out.length"
+                      :input="j.Input"
+                      :time="j.Time"
                     ></typing-field>
                   </v-card-actions>
                 </div>
@@ -121,14 +126,9 @@ export const save = (propsDate: string | undefined) => {
   store[0].date = propsDate as string;
   console.log("saving props: ", propsDate);
   console.log(store[0].input);
-  // console.log(index.value);
-  // if (arr.findIndex((elem) => elem.id == index.value) == -1) {
 
   dataService.saveForm(store[0].input, store[0].time);
   dataService.saveTextField(propsDate as string);
-  /*} else {
-    arr[index.value].input = store[0].input;
-  }*/
 };
 export const date = ref<string | undefined>("");
 export const timeStmp = ref("");
@@ -138,43 +138,27 @@ export default defineComponent({
   props: {
     propsDate: String,
   },
+
   setup() {
-    const index = ref<number>(1);
-    let arr: [{ id: number; date: string; input: string; time: string }] = [
-      { id: 0, date: "", input: "", time: "" },
-    ];
+    const index = ref<number>(0);
     const selectedItem = ref(1);
     let num = ref<number[]>([]);
-    let anyNumber = ref(0);
     let themeSelection = ref<string>("dark");
     const envItems = ["School", "Office", "Remote", "Holiday", "Sick"];
     const inputField = ref("");
+    const out = ref();
 
-    const add = async (
-      propsDate: string | undefined,
-      idx: number | undefined
-    ) => {
-      anyNumber.value++;
-      console.log(anyNumber.value);
+    const add = async (propsDate: string | undefined) => {
+      console.log(index.value);
+      await dataService.writeJson(
+        index.value,
+        propsDate as string,
+        "",
+        "00:00"
+      );
 
-      // arr.push({
-      //   id: idx as number,
-      //   date: propsDate as string,
-      //   input: store[0].input,
-      //   time: store[0].time,
-      // });
-
-      // if (anyNumber.value <= 1) {
-      //   await dataService.writeJson(
-      //     anyNumber.value,
-      //     propsDate as string,
-      //     store[0].input,
-      //     store[0].time
-      //   );
-      // }
-
-      // dataService.saveForm(store[0].input, store[0].time);
-      // dataService.saveTextField(propsDate as string);
+      out.value = await dataService.readJson(propsDate as string);
+      console.log(out.value);
     };
 
     const removeItems = () => {
@@ -182,54 +166,25 @@ export default defineComponent({
     };
 
     const showDate = (propsDate: string | undefined) => {
-      // console.log(propsDate);
       date.value = propsDate;
       console.log("propsDate = ", date.value);
     };
 
     onMounted(async () => {
-      arr.splice(0, 1);
-      // const data = await dataService.getTextFieldData(date.value as string);
-      // for (const input of data) {
-      //   // console.log(input.CalendarDate, input.Input, input.TimeStamp);
-      //   arr.push({
-      //     id: index.value++,
-      //     date: input.CalendarDate,
-      //     input: input.Input,
-      //     time: input.TimeStamp,
-      //   });
-      //   localStorage.removeItem(input.CalendarDate);
-      //   localStorage.setItem(input.CalendarDate, JSON.stringify(arr));
-      // }
-      // for (const v of arr) {
-      //   inputField.value = v.input;
-      //   timeStmp.value = v.time;
-      // }
-      // anyNumber.value = arr.length;
-      // if (arr.length > 0) console.log(arr);
-      let out = await dataService.readJson(date.value as string);
-      if (out) {
-        if (out.length > 0) {
-          anyNumber.value = out.length;
-          console.log(out);
-          for (let i = 0; i < out.length; i++) {
-            inputField.value = out[i].Input;
-            timeStmp.value = out[i].Time;
-          }
+      out.value = await dataService.readJson(date.value as string);
+      if (out.value?.length > 0) {
+        console.log(out.value);
+        console.warn(out.value[index.value]);
+        if (out.value[index.value]) {
+          inputField.value = out.value[index.value].Input;
+          timeStmp.value = out.value[index.value].Time;
         }
       }
-
-      // const someArray = [];
-      // someArray.push(out);
-      // console.log(someArray);
     });
 
     const saveeee = async (propsDate: string | undefined) => {
-      // console.warn("saving...");
-      // store[0].date = propsDate as string;
-      // dataService.saveForm(store[0].input, store[0].time);
-      // dataService.saveTextField(propsDate as string);
-
+      console.log(index.value);
+      if (out.value[index.value]) return;
       await dataService.writeJson(
         index.value,
         propsDate as string,
@@ -240,15 +195,22 @@ export default defineComponent({
       console.log("success");
     };
 
+    const returnIndex = async (idx: number, date: string | undefined) => {
+      console.log(idx);
+      // console.log(out.value[idx]);
+      // dataService.writeJson(idx, date as string, store[0].input, store[0].time);
+    };
+
     return {
       selectedItem,
       num,
-      anyNumber,
       themeSelection,
       date,
       envItems,
       inputField,
       index,
+      out,
+      returnIndex,
       saveeee,
       save,
       showDate,

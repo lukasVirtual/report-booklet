@@ -10,32 +10,35 @@
     color="cyan"
     v-model="inputText"
   ></v-textarea>
-  <timer-text-field :timeStamp="time"></timer-text-field>
+  <div>
+    <timer-text-field :timeStamp="time"></timer-text-field>
+  </div>
 </template>
 
 <script lang="ts">
 import TimerTextField from "./Timer-TextField.vue";
 import { defineComponent, ref, watchEffect } from "vue";
 import { store } from "@/handler/store";
-import { timeStmp } from "./Text-Field.vue";
+// import { timeStmp } from "./Text-Field.vue";
 
 export default defineComponent({
   name: "TypingField",
   components: { TimerTextField },
   props: {
     input: String,
+    time: String,
   },
 
   setup() {
     const inputText = ref<string | undefined>("");
     const rowCounter = ref(1);
-    const time = timeStmp;
 
     watchEffect(() => {
       store[0].input = inputText.value as string;
+      // context.emit("inputData", inputText.value);
     });
 
-    return { inputText, rowCounter, time };
+    return { inputText, rowCounter };
   },
 });
 </script>
