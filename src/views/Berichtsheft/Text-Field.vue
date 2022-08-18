@@ -24,6 +24,7 @@
             :items="envItems"
             variant="underlined"
             style="max-width: 120px; max-height: 60px"
+            v-model="selected"
           ></v-select>
         </v-card-actions>
       </v-card>
@@ -42,7 +43,7 @@
             >
             <div style="height: 10px"></div>
             <v-btn icon elevation="20"
-              ><v-icon size="30" color="#D32F2F" @click="removeItems"
+              ><v-icon size="30" color="#D32F2F" @click="remove = !remove"
                 >mdi-trash-can</v-icon
               ></v-btn
             >
@@ -69,15 +70,22 @@
             <v-row style="max-height: 30px">
               <v-col cols="12" md="12">
                 <div
-                  v-for="j in out"
+                  v-for="(j, idx) in out"
                   :key="j"
-                  @click="returnIndex(j.Id, propsDate)"
+                  @change="returnIndex(j.Id, propsDate)"
                 >
                   <v-card-actions>
+                    <v-btn
+                      icon
+                      v-if="remove"
+                      @click="removeItem(propsDate, idx)"
+                      ><v-icon>mdi-close</v-icon></v-btn
+                    >
                     <typing-field
                       @vnode-mounted="index = out.length"
                       :input="j.Input"
                       :time="j.Time"
+                      :id="idx"
                     ></typing-field>
                   </v-card-actions>
                 </div>
@@ -117,7 +125,7 @@
 <script lang="ts">
 import { store } from "@/handler/store";
 import { dataService } from "@/handler/dataHandler";
-import { defineComponent, onMounted, ref } from "vue";
+import { defineComponent, onMounted, ref, watchEffect } from "vue";
 import QualificationsDefault from "./Qualifications-Default.vue";
 import TypingField from "./Typing-Field.vue";
 
@@ -130,6 +138,7 @@ export const save = (propsDate: string | undefined) => {
   dataService.saveForm(store[0].input, store[0].time);
   dataService.saveTextField(propsDate as string);
 };
+
 export const date = ref<string | undefined>("");
 export const timeStmp = ref("");
 export default defineComponent({
@@ -147,9 +156,9 @@ export default defineComponent({
     const envItems = ["School", "Office", "Remote", "Holiday", "Sick"];
     const inputField = ref("");
     const out = ref();
-
+    const remove = ref(false);
+    const selected = ref("");
     const add = async (propsDate: string | undefined) => {
-      console.log(index.value);
       await dataService.writeJson(
         index.value,
         propsDate as string,
@@ -158,11 +167,7 @@ export default defineComponent({
       );
 
       out.value = await dataService.readJson(propsDate as string);
-      console.log(out.value);
-    };
-
-    const removeItems = () => {
-      localStorage.removeItem("inputs");
+      console.error(out.value.length);
     };
 
     const showDate = (propsDate: string | undefined) => {
@@ -197,8 +202,28 @@ export default defineComponent({
 
     const returnIndex = async (idx: number, date: string | undefined) => {
       console.log(idx);
-      // console.log(out.value[idx]);
-      // dataService.writeJson(idx, date as string, store[0].input, store[0].time);
+
+      dataService.writeJson(
+        store[0].id as number,
+        date as string,
+        store[0].input,
+        store[0].time
+      );
+      store[0].input = "";
+      store[0].time = "";
+      // out.value.splice(idx, 1);
+      // out.value = await dataService.readJson(date as string);
+    };
+
+    const removeItem = async (date: string | undefined, idx: number) => {
+      // remove.value = !remove.value;
+      console.warn(date, idx);
+
+      await dataService.removeJson(date as string, idx);
+      out.value = await dataService.readJson(date as string);
+
+      remove.value = !remove.value;
+      console.error(out.value.length);
     };
 
     return {
@@ -210,11 +235,13 @@ export default defineComponent({
       inputField,
       index,
       out,
+      remove,
+      selected,
+      removeItem,
       returnIndex,
       saveeee,
       save,
       showDate,
-      removeItems,
       add,
     };
   },

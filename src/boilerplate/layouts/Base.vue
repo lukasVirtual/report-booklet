@@ -55,7 +55,7 @@
 
         <v-list-item
           v-if="role === 'instructor'"
-          :to="{ name: 'Berichtsheft' }"
+          :to="{ name: 'Instructor' }"
           height="50"
           prepend-icon="mdi-account-search-outline"
           title="Control Center"

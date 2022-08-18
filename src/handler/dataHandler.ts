@@ -112,4 +112,22 @@ export class dataService {
     });
     return res.json();
   }
+
+  static async removeJson(date: string, index: number): Promise<void> {
+    const values = JSON.stringify({
+      index: index,
+      date: date,
+    });
+
+    const res = await fetch("http://127.0.0.1:5000/api/removeJson", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
+      },
+      body: values,
+    });
+
+    console.log(res.status);
+  }
 }

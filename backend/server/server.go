@@ -2,6 +2,7 @@ package server
 
 import (
 	"fmt"
+	"log"
 	"strings"
 	"time"
 
@@ -47,6 +48,7 @@ func Init() {
 	router.Post("/api/inserttext", InsertTextField)
 	router.Post("/api/writeJson", WriteJson)
 	router.Post("/api/readJson", ReadJson)
+	router.Post("/api/removeJson", RemoveJson)
 	router.Post("/api/getTextFieldData", GetTextFieldData)
 	router.Get("/api/statuscheck", StatusCheck)
 	router.Get("/api/dataware", DataWare)
@@ -347,3 +349,35 @@ func ReadJson(c *fiber.Ctx) error {
 	// }
 	return c.Status(fiber.StatusOK).JSON(output)
 }
+
+type RemoveJsonStruct struct {
+	Index int    `json: "index"`
+	Date  string `json: "date"`
+}
+
+func RemoveJson(c *fiber.Ctx) error {
+	var jsonOutput RemoveJsonStruct
+	err := c.BodyParser(&jsonOutput)
+
+	if err != nil {
+		log.Fatalf("something went wrong parsing json: %v", err)
+	}
+
+	dbmodels.RemoveFromJson(jsonOutput.Date, jsonOutput.Index)
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message": "successfully removed from Json",
+	})
+
+}
+
+// func WriteJsonCostum(c *fiber.Ctx) error {
+// 	var input dbmodels.GlobalWriteJson
+
+// 	dbmodels.GlobalWriteJson(input.Path, input.Date, input.Input)
+
+// 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+// 		"message": "successfully written Json",
+// 	})
+
+// }

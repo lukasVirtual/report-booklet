@@ -4,6 +4,7 @@ import LoginDefault from "../Auth/Login-Default.vue";
 import MainPage from "../views/Berichtsheft/Main.vue";
 import DashboardDefault from "../views/Dashboard/Dashboard-Default.vue";
 import AdminDefault from "../views/Admin/Admin-Default.vue";
+import InstructorDefault from "../views/Instructor/Instructor-Default.vue";
 import { loginService } from "@/handler/loginHandler";
 import { boot } from "../main";
 const router = createRouter({
@@ -22,7 +23,7 @@ const router = createRouter({
           meta: { requiresAuth: true },
           beforeEnter: async (to, from, next) => {
             const role = await loginService.getUserRole();
-            if (role === "user" || role === "instructor") next();
+            if (role === "user") next();
             else next("/Login");
           },
         },
@@ -34,6 +35,17 @@ const router = createRouter({
           beforeEnter: async (to, from, next) => {
             const role = await loginService.getUserRole();
             if (role === "user") next();
+            else next("/Login");
+          },
+        },
+        {
+          path: "/Instructor",
+          name: "Instructor",
+          component: InstructorDefault,
+          meta: { requiresAuth: true },
+          beforeEnter: async (to, from, next) => {
+            const role = await loginService.getUserRole();
+            if (role === "instructor") next();
             else next("/Login");
           },
         },

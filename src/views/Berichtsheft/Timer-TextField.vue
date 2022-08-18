@@ -7,7 +7,10 @@
       justify-center
       ref="parentMenu"
       v-model="ruler"
-      @vnode-mounted="timeStamp ? (input = timeStamp) : input"
+      @vnode-mounted="
+        timeStamp ? (input = timeStamp) : input;
+        idx = index;
+      "
     >
       <template v-slot:activator="{ props }">
         <v-btn
@@ -42,6 +45,7 @@ export default defineComponent({
   name: "TimerTextField",
   props: {
     timeStamp: String,
+    index: Number,
   },
 
   setup() {
@@ -69,13 +73,19 @@ export default defineComponent({
     ];
     let input = ref<string | undefined>("00:00");
     let ruler = ref(false);
+    let idx = ref<number | undefined>(undefined);
+
     watchEffect(() => {
+      // console.log(idx.value);
       store[0].time = input.value as string;
+      store[0].id = idx.value;
     });
+
     return {
       times,
       input,
       ruler,
+      idx,
     };
   },
 });

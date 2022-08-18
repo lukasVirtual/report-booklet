@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 )
 
@@ -12,6 +13,11 @@ type JsonData struct {
 	Date  string `json: "date"`
 	Input string `json: "Input"`
 	Time  string `json: "time"`
+}
+type GlobalWriteJsonStructure struct {
+	Path  string      `json: "path"`
+	Date  string      `json: "date"`
+	Input interface{} `json: "input"`
 }
 
 var (
@@ -72,7 +78,7 @@ func GetTextFieldData(date string) []TextField {
 	return textField
 }
 
-//TODO Currently using map, problem with that it saves old data which we dont want. Just need to add new Data regardless of existing data.
+//TODO CleanUp
 
 func SaveAsJson(id int, date, input, time string) {
 	m := []JsonData{}
@@ -83,32 +89,45 @@ func SaveAsJson(id int, date, input, time string) {
 		fmt.Println("Something went wrong saving json")
 	}
 
-	if _, err := ioutil.ReadDir(destinationPath + "/Documents/calendarOutput/"); err != nil {
+	if _, err := ioutil.ReadDir(destinationPath + "/Documents/TextFieldOutput/"); err != nil {
 		fmt.Println("Creating Directory...")
-		os.Mkdir(destinationPath+"/Documents/calendarOutput/", 0755)
+		os.Mkdir(destinationPath+"/Documents/TextFieldOutput/", 0755)
 	}
 
-	if _, err := ioutil.ReadFile(destinationPath + "/Documents/calendarOutput/" + date + ".json"); err != nil {
+	if _, err := ioutil.ReadFile(destinationPath + "/Documents/TextFieldOutput/" + date + ".json"); err != nil {
 		fmt.Println("Creating File...")
-		ioutil.WriteFile(destinationPath+"/Documents/calendarOutput/"+date+".json", data, 0645)
+		ioutil.WriteFile(destinationPath+"/Documents/TextFieldOutput/"+date+".json", data, 0645)
 
 	} else {
-		file, err := os.OpenFile(destinationPath+"/Documents/calendarOutput/"+date+".json", os.O_RDWR|os.O_CREATE, 0644)
+		file, err := os.OpenFile(destinationPath+"/Documents/TextFieldOutput/"+date+".json", os.O_RDWR|os.O_CREATE, 0755)
 		if err != nil {
 			fmt.Println(err)
 		}
 
 		local := []JsonData{}
 		output, _ := ReadFromJson(date)
+		allowed := true
+		for i, v := range output {
+			if v.Id == obj.Id {
+				output[i].Input = obj.Input
+				output[i].Time = obj.Time
+				allowed = false
+				break
+			}
+		}
 		local = append(local, output[:]...)
-		local = append(local, obj)
+		if allowed {
+			local = append(local, obj)
+		}
 		// fmt.Println(local)
 		appendData, _ := json.MarshalIndent(local, " ", " ")
 
+		ioutil.WriteFile(destinationPath+"/Documents/TextFieldOutput/"+date+".json", appendData, 0755)
+
 		// fmt.Println("obj: ", obj)
-		if _, err := file.Write(appendData); err != nil {
-			fmt.Println(err)
-		}
+		// if _, err := file.Write(appendData); err != nil {
+		// 	fmt.Println(err)
+		// }
 
 		defer file.Close()
 	}
@@ -116,7 +135,7 @@ func SaveAsJson(id int, date, input, time string) {
 }
 
 func ReadFromJson(date string) ([]JsonData, error) {
-	file, err := ioutil.ReadFile(destinationPath + "/Documents/calendarOutput/" + date + ".json")
+	file, err := ioutil.ReadFile(destinationPath + "/Documents/TextFieldOutput/" + date + ".json")
 	if err != nil {
 		return nil, err
 	}
@@ -129,4 +148,38 @@ func ReadFromJson(date string) ([]JsonData, error) {
 	// 	fmt.Println(v)
 	// }
 	return output, nil
+}
+
+func RemoveFromJson(date string, index int) {
+	output, err := ReadFromJson(date)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	if len(output) >= index {
+		output = append(output[:index], output[index+1:]...)
+	}
+	// for i, v := range output {
+	// 	v.Id = i
+	// 	fmt.Println(v.Id, i)
+	// }
+	for i, _ := range output {
+		output[i].Id = i
+	}
+	rawData, _ := json.MarshalIndent(output, " ", " ")
+
+	ioutil.WriteFile(destinationPath+"/Documents/TextFieldOutput/"+date+".json", rawData, 0755)
+
+}
+
+func GlobalWriteJson(path, date string, input ...interface{}) {
+	obj := GlobalWriteJsonStructure{Input: input}
+	rawData, err := json.MarshalIndent(obj, " ", " ")
+	if err != nil {
+		fmt.Println(err)
+	}
+	err = ioutil.WriteFile(path+date+".json", rawData, 0755)
+	if err != nil {
+		log.Fatalln("wrong: ", err)
+	}
 }

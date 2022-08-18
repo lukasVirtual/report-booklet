@@ -1,6 +1,9 @@
 <template v-if="$route.path === '/Berichtsheft'">
   <v-textarea
-    @vnode-mounted="inputText = input"
+    @vnode-mounted="
+      inputText = input;
+      indexField = id;
+    "
     auto-grow
     spellcheck="true"
     :rows="rowCounter"
@@ -11,13 +14,13 @@
     v-model="inputText"
   ></v-textarea>
   <div>
-    <timer-text-field :timeStamp="time"></timer-text-field>
+    <timer-text-field :timeStamp="time" :index="id"></timer-text-field>
   </div>
 </template>
 
 <script lang="ts">
 import TimerTextField from "./Timer-TextField.vue";
-import { defineComponent, ref, watchEffect } from "vue";
+import { defineComponent, onMounted, ref, watchEffect } from "vue";
 import { store } from "@/handler/store";
 // import { timeStmp } from "./Text-Field.vue";
 
@@ -27,18 +30,25 @@ export default defineComponent({
   props: {
     input: String,
     time: String,
+    id: Number,
   },
 
   setup() {
     const inputText = ref<string | undefined>("");
+    const indexField = ref<number | undefined>(0);
     const rowCounter = ref(1);
+
+    // onMounted(() => {
+    //   console.log(indexField.value);
+    // });
 
     watchEffect(() => {
       store[0].input = inputText.value as string;
+      store[0].id = indexField.value;
       // context.emit("inputData", inputText.value);
     });
 
-    return { inputText, rowCounter };
+    return { inputText, rowCounter, indexField };
   },
 });
 </script>
