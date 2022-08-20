@@ -47,8 +47,9 @@ export default defineComponent({
     timeStamp: String,
     index: Number,
   },
+  emits: ["updateTime"],
 
-  setup() {
+  setup(props, { emit }) {
     const times = [
       { title: "00:00" },
       { title: "00:30" },
@@ -79,6 +80,9 @@ export default defineComponent({
       // console.log(idx.value);
       store[0].time = input.value as string;
       store[0].id = idx.value;
+      if (store[0].time !== "" && store[0].id !== undefined) {
+        emit("updateTime");
+      }
     });
 
     return {

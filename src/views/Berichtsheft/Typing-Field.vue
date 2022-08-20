@@ -14,7 +14,11 @@
     v-model="inputText"
   ></v-textarea>
   <div>
-    <timer-text-field :timeStamp="time" :index="id"></timer-text-field>
+    <timer-text-field
+      @update-time="callback"
+      :timeStamp="time"
+      :index="id"
+    ></timer-text-field>
   </div>
 </template>
 
@@ -32,23 +36,32 @@ export default defineComponent({
     time: String,
     id: Number,
   },
+  emits: ["update"],
 
-  setup() {
+  setup(props, { emit }) {
     const inputText = ref<string | undefined>("");
     const indexField = ref<number | undefined>(0);
     const rowCounter = ref(1);
 
-    // onMounted(() => {
-    //   console.log(indexField.value);
-    // });
+    onMounted(() => {
+      //   console.log(indexField.value);
+      console.log(inputText.value);
+    });
 
     watchEffect(() => {
       store[0].input = inputText.value as string;
       store[0].id = indexField.value;
-      // context.emit("inputData", inputText.value);
+      // console.log(inputText.value);
+      if (store[0].input !== "" && store[0].time !== "") {
+        emit("update");
+      }
     });
 
-    return { inputText, rowCounter, indexField };
+    const callback = () => {
+      emit("update");
+    };
+
+    return { inputText, rowCounter, indexField, callback };
   },
 });
 </script>

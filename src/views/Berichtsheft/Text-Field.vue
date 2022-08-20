@@ -72,13 +72,13 @@
                 <div
                   v-for="(j, idx) in out"
                   :key="j"
-                  @change="returnIndex(j.Id, propsDate)"
+                  @click="returnIndex(j.Id, propsDate)"
                 >
                   <v-card-actions>
                     <v-btn
                       icon
                       v-if="remove"
-                      @click="removeItem(propsDate, idx)"
+                      @click.stop="removeItem(propsDate, idx)"
                       ><v-icon>mdi-close</v-icon></v-btn
                     >
                     <typing-field
@@ -86,6 +86,7 @@
                       :input="j.Input"
                       :time="j.Time"
                       :id="idx"
+                      @update="returnIndex(j.Id, propsDate)"
                     ></typing-field>
                   </v-card-actions>
                 </div>
@@ -202,28 +203,23 @@ export default defineComponent({
 
     const returnIndex = async (idx: number, date: string | undefined) => {
       console.log(idx);
-
+      console.warn("Creating...");
       dataService.writeJson(
         store[0].id as number,
         date as string,
         store[0].input,
         store[0].time
       );
-      store[0].input = "";
-      store[0].time = "";
-      // out.value.splice(idx, 1);
-      // out.value = await dataService.readJson(date as string);
     };
 
     const removeItem = async (date: string | undefined, idx: number) => {
-      // remove.value = !remove.value;
       console.warn(date, idx);
 
       await dataService.removeJson(date as string, idx);
       out.value = await dataService.readJson(date as string);
 
       remove.value = !remove.value;
-      console.error(out.value.length);
+      console.error(out.value);
     };
 
     return {

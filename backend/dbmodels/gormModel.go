@@ -78,8 +78,6 @@ func GetTextFieldData(date string) []TextField {
 	return textField
 }
 
-//TODO CleanUp
-
 func SaveAsJson(id int, date, input, time string) {
 	m := []JsonData{}
 	obj := JsonData{Id: id, Date: date, Input: input, Time: time}
@@ -99,11 +97,6 @@ func SaveAsJson(id int, date, input, time string) {
 		ioutil.WriteFile(destinationPath+"/Documents/TextFieldOutput/"+date+".json", data, 0645)
 
 	} else {
-		file, err := os.OpenFile(destinationPath+"/Documents/TextFieldOutput/"+date+".json", os.O_RDWR|os.O_CREATE, 0755)
-		if err != nil {
-			fmt.Println(err)
-		}
-
 		local := []JsonData{}
 		output, _ := ReadFromJson(date)
 		allowed := true
@@ -123,13 +116,6 @@ func SaveAsJson(id int, date, input, time string) {
 		appendData, _ := json.MarshalIndent(local, " ", " ")
 
 		ioutil.WriteFile(destinationPath+"/Documents/TextFieldOutput/"+date+".json", appendData, 0755)
-
-		// fmt.Println("obj: ", obj)
-		// if _, err := file.Write(appendData); err != nil {
-		// 	fmt.Println(err)
-		// }
-
-		defer file.Close()
 	}
 
 }
@@ -155,18 +141,16 @@ func RemoveFromJson(date string, index int) {
 	if err != nil {
 		fmt.Println(err)
 	}
-
+	var local []JsonData
 	if len(output) >= index {
 		output = append(output[:index], output[index+1:]...)
 	}
-	// for i, v := range output {
-	// 	v.Id = i
-	// 	fmt.Println(v.Id, i)
-	// }
-	for i, _ := range output {
-		output[i].Id = i
+	local = append(local, output[:]...)
+	fmt.Println(local)
+	for i, _ := range local {
+		local[i].Id = i
 	}
-	rawData, _ := json.MarshalIndent(output, " ", " ")
+	rawData, _ := json.MarshalIndent(local, " ", " ")
 
 	ioutil.WriteFile(destinationPath+"/Documents/TextFieldOutput/"+date+".json", rawData, 0755)
 
