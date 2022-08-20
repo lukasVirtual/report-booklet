@@ -63,6 +63,7 @@
 import { loginService } from "@/handler/loginHandler";
 import { defineComponent, reactive, ref } from "vue";
 import { useRouter } from "vue-router";
+import { useToast } from "vue-toastification";
 
 export default defineComponent({
   name: "LoginDefault",
@@ -79,6 +80,7 @@ export default defineComponent({
     });
 
     const router = useRouter();
+    const toastMessage = useToast();
 
     const login = async () => {
       let registerRequest = ref(false);
@@ -100,12 +102,18 @@ export default defineComponent({
               }
               router.push({ path: "/Login" });
             }
-          else alert("something went wrong. Check your password and username.");
+          else
+            toastMessage.error(
+              "something went wrong. Check your password and username."
+            );
         } catch (e) {
-          alert("something went wrong. Check your password and username.");
+          toastMessage.error(
+            "something went wrong. Check your password and username."
+          );
         }
         console.log(registerRequest.value);
-      } else alert("Something went wrong. Wrong username or password");
+      } else
+        toastMessage.error("Something went wrong. Wrong username or password");
     };
 
     const valid = ref(null);

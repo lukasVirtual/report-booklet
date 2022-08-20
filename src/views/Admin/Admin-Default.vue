@@ -20,6 +20,7 @@
                 <v-text-field
                   label="Name"
                   variant="underlined"
+                  color="cyan"
                   v-model="input.name"
                   :rules="[rules.required]"
                 ></v-text-field>
@@ -30,6 +31,7 @@
                 <v-text-field
                   label="Password"
                   variant="underlined"
+                  color="cyan"
                   type="password"
                   v-model="input.password"
                   :rules="[rules.required, rules.minLen]"
@@ -42,6 +44,7 @@
                   :items="roleItems"
                   label="Role"
                   variant="underlined"
+                  color="cyan"
                   v-model="input.role"
                   :rules="[rules.required]"
                 ></v-select>
@@ -93,6 +96,7 @@ import { dataService } from "@/handler/dataHandler";
 import { defineComponent, onMounted, reactive } from "@vue/runtime-core";
 import { inject, ref } from "vue";
 import BaseLayout from "../../boilerplate/layouts/Base.vue";
+import { useToast } from "vue-toastification";
 
 export default defineComponent({
   name: "AdminDefault",
@@ -104,6 +108,7 @@ export default defineComponent({
     ]);
 
     const role = ref(inject("role"));
+    const toast = useToast();
 
     const rules = {
       required: (value: string) => !!value || "Required",
@@ -144,13 +149,15 @@ export default defineComponent({
         input.name = "";
         input.password = "";
         input.role = "";
-      } else alert("Some fields are Empty or incorrect entered");
+      } else toast.error("Some fields are Empty or incorrect entered");
       dialog.value = false;
     };
 
     const deleteElemAt = async (elem: any, idx: number) => {
       if (
-        !confirm("You sure you want to delete? Deleted Items will be immutable")
+        !confirm(
+          "You sure you want to delete? Deleted Items will be gone forever"
+        )
       )
         return;
       try {
