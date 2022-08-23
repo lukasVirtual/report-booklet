@@ -12,6 +12,7 @@
     style="min-height: 60px"
     color="cyan"
     v-model="inputText"
+    @blur="$emit('update')"
   ></v-textarea>
   <div>
     <timer-text-field
@@ -24,7 +25,7 @@
 
 <script lang="ts">
 import TimerTextField from "./Timer-TextField.vue";
-import { defineComponent, onMounted, ref, watchEffect } from "vue";
+import { defineComponent, onMounted, onUpdated, ref, watchEffect } from "vue";
 import { store } from "@/handler/store";
 // import { timeStmp } from "./Text-Field.vue";
 
@@ -43,19 +44,15 @@ export default defineComponent({
     const indexField = ref<number | undefined>(0);
     const rowCounter = ref(1);
 
-    onMounted(() => {
-      //   console.log(indexField.value);
-      console.log(inputText.value);
-    });
-
     watchEffect(() => {
-      store[0].input = inputText.value as string;
-      store[0].id = indexField.value;
-      // console.log(inputText.value);
-      if (store[0].input !== "" && store[0].time !== "") {
-        emit("update");
-      }
+      store.input = inputText.value as string;
+      store.id = indexField.value;
+      store.time = "00:00";
     });
+    if (store.input !== "") {
+      emit("update");
+    }
+    // });
 
     const callback = () => {
       emit("update");

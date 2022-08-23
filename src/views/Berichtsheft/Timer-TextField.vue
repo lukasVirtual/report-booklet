@@ -29,6 +29,7 @@
           :key="index"
           :value="index"
           @click="(input = item.title) && (ruler = false)"
+          @blur="$emit('updateTime')"
         >
           <v-list-item-title>{{ item.title }}</v-list-item-title>
         </v-list-item>
@@ -77,12 +78,9 @@ export default defineComponent({
     let idx = ref<number | undefined>(undefined);
 
     watchEffect(() => {
-      // console.log(idx.value);
-      store[0].time = input.value as string;
-      store[0].id = idx.value;
-      if (store[0].time !== "" && store[0].id !== undefined) {
-        emit("updateTime");
-      }
+      store.time = input.value as string;
+      store.input = "";
+      store.id = idx.value;
     });
 
     return {

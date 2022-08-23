@@ -132,11 +132,11 @@ import TypingField from "./Typing-Field.vue";
 
 export const save = (propsDate: string | undefined) => {
   console.warn("saving...");
-  store[0].date = propsDate as string;
+  store.date = propsDate as string;
   console.log("saving props: ", propsDate);
-  console.log(store[0].input);
+  console.log(store.input);
 
-  dataService.saveForm(store[0].input, store[0].time);
+  dataService.saveForm(store.input, store.time);
   dataService.saveTextField(propsDate as string);
 };
 
@@ -160,8 +160,9 @@ export default defineComponent({
     const remove = ref(false);
     const selected = ref("");
     const add = async (propsDate: string | undefined) => {
+      console.log(index.value);
       await dataService.writeJson(
-        index.value,
+        out.value?.length,
         propsDate as string,
         "",
         "00:00"
@@ -194,22 +195,26 @@ export default defineComponent({
       await dataService.writeJson(
         index.value,
         propsDate as string,
-        store[0].input,
-        store[0].time
+        store.input,
+        store.time
       );
 
       console.log("success");
     };
 
     const returnIndex = async (idx: number, date: string | undefined) => {
-      console.log(idx);
+      // console.log(store.id);
+      console.log(store.input, store.time);
       console.warn("Creating...");
       dataService.writeJson(
-        store[0].id as number,
+        store.id as number,
         date as string,
-        store[0].input,
-        store[0].time
+        store.input,
+        store.time
       );
+
+      // store.input = "";
+      // store.time = "";
     };
 
     const removeItem = async (date: string | undefined, idx: number) => {

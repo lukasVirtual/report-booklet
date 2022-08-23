@@ -102,8 +102,14 @@ func SaveAsJson(id int, date, input, time string) {
 		allowed := true
 		for i, v := range output {
 			if v.Id == obj.Id {
-				output[i].Input = obj.Input
-				output[i].Time = obj.Time
+				if obj.Time == "00:00" {
+					output[i].Input = obj.Input
+				} else if obj.Input == "" {
+					output[i].Time = obj.Time
+				} else {
+					output[i].Input = obj.Input
+					output[i].Time = obj.Time
+				}
 				allowed = false
 				break
 			}

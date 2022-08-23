@@ -1,3 +1,5 @@
+import { reactive } from "vue";
+
 type Store = {
   id: undefined | number;
   date: string;
@@ -5,6 +7,11 @@ type Store = {
   time: string;
 };
 
-export const store: Store[] = [
-  { id: undefined, date: "", input: "", time: "" },
-];
+export const store: Store = {
+  id: undefined,
+  date: "",
+  input: "",
+  time: "",
+};
+
+export const storage: Store[] = [];
