@@ -42,10 +42,8 @@
               ><v-icon size="35" color="blue">mdi-plus</v-icon></v-btn
             >
             <div style="height: 10px"></div>
-            <v-btn icon elevation="20"
-              ><v-icon size="30" color="#D32F2F" @click="remove = !remove"
-                >mdi-trash-can</v-icon
-              ></v-btn
+            <v-btn icon elevation="20" @click="remove = !remove"
+              ><v-icon size="30" color="#D32F2F">mdi-trash-can</v-icon></v-btn
             >
             <div style="height: 10px"></div>
 

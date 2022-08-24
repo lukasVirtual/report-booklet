@@ -152,7 +152,7 @@ func RemoveFromJson(date string, index int) {
 		output = append(output[:index], output[index+1:]...)
 	}
 	local = append(local, output[:]...)
-	fmt.Println(local)
+	//fmt.Println(local)
 	for i, _ := range local {
 		local[i].Id = i
 	}
