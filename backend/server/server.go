@@ -53,6 +53,8 @@ func Init() {
 	router.Post("/api/getTextFieldData", GetTextFieldData)
 	router.Post("/api/insertQualifications", InsertQualifications)
 	router.Post("/api/getQualifications", GetQualifications)
+	router.Post("/api/writeStatusJson", WriteStatus)
+	router.Post("/api/readStatusJson", ReadStatus)
 	router.Get("/api/statuscheck", StatusCheck)
 	router.Get("/api/dataware", DataWare)
 
@@ -395,4 +397,30 @@ func GetQualifications(c *fiber.Ctx) error {
 	}
 	output := mongodb.GetQualis(qualis.Date)
 	return c.Status(fiber.StatusOK).JSON(output)
+}
+
+func WriteStatus(c *fiber.Ctx) error {
+	var inputData dbmodels.StatusJson
+	err := c.BodyParser(&inputData)
+	if err != nil {
+		log.Fatalf("Could not read data: %v", err)
+	}
+
+	dbmodels.WriteStatusJson(inputData.Date, inputData.Status)
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message": "successfully inserted status",
+	})
+}
+
+func ReadStatus(c *fiber.Ctx) error {
+	var inputData dbmodels.StatusJson
+	err := c.BodyParser(&inputData)
+	if err != nil {
+		log.Fatalf("Could not read data: %v", err)
+	}
+
+	out, _ := dbmodels.ReadStatusJson(inputData.Date)
+
+	return c.Status(fiber.StatusOK).JSON(out)
 }

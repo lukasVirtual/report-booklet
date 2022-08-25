@@ -14,10 +14,10 @@ type JsonData struct {
 	Input string `json: "Input"`
 	Time  string `json: "time"`
 }
-type GlobalWriteJsonStructure struct {
-	Path  string      `json: "path"`
-	Date  string      `json: "date"`
-	Input interface{} `json: "input"`
+
+type StatusJson struct {
+	Date   string `json: "date"`
+	Status string `json: "status"`
 }
 
 var (
@@ -162,14 +162,31 @@ func RemoveFromJson(date string, index int) {
 
 }
 
-func GlobalWriteJson(path, date string, input ...interface{}) {
-	obj := GlobalWriteJsonStructure{Input: input}
-	rawData, err := json.MarshalIndent(obj, " ", " ")
-	if err != nil {
-		fmt.Println(err)
+type Form struct {
+	Status string
+}
+
+func WriteStatusJson(date, status string) {
+	if _, err := ioutil.ReadDir(destinationPath + "/Documents/AbsenceStatus/"); err != nil {
+		fmt.Println("Creating Directory...")
+		os.Mkdir(destinationPath+"/Documents/AbsenceStatus/", 0755)
 	}
-	err = ioutil.WriteFile(path+date+".json", rawData, 0755)
+	rec := Form{Status: status}
+	data, _ := json.MarshalIndent(rec, " ", " ")
+
+	ioutil.WriteFile(destinationPath+"/Documents/AbsenceStatus/"+date+".json", data, 0755)
+}
+
+func ReadStatusJson(date string) (StatusJson, error) {
+	data, err := ioutil.ReadFile(destinationPath + "/Documents/AbsenceStatus/" + date + ".json")
 	if err != nil {
-		log.Fatalln("wrong: ", err)
+		return StatusJson{}, err
 	}
+	output := StatusJson{}
+	err = json.Unmarshal(data, &output)
+	if err != nil {
+		log.Fatalf("error unmarshal json: %v", err)
+	}
+
+	return output, nil
 }

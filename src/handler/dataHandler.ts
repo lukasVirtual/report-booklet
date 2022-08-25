@@ -171,4 +171,39 @@ export class dataService {
 
     return res.json();
   }
+
+  static async WriteStatus(date: string, status: string): Promise<void> {
+    const values = JSON.stringify({
+      date: date,
+      status: status,
+    });
+
+    const res = await fetch("http://127.0.0.1:5000/api/writeStatusJson", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
+      },
+      body: values,
+    });
+
+    console.log(res.status);
+  }
+
+  static async ReadStatus(date: string): Promise<any> {
+    const values = JSON.stringify({
+      date: date,
+    });
+
+    const res = await fetch("http://127.0.0.1:5000/api/readStatusJson", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
+      },
+      body: values,
+    });
+
+    return res.json();
+  }
 }

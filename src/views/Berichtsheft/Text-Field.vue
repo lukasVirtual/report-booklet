@@ -22,9 +22,14 @@
           <v-spacer></v-spacer>
           <v-select
             :items="envItems"
+            @blur="changeStatus(propsDate)"
             variant="underlined"
             style="max-width: 120px; max-height: 60px"
             v-model="selected"
+            :menu-props="{
+              closeOnClick: true,
+              closeOnContentClick: true,
+            }"
           ></v-select>
         </v-card-actions>
       </v-card>
@@ -150,7 +155,7 @@ export default defineComponent({
     propsDate: String,
   },
 
-  setup() {
+  data() {
     const index = ref<number>(0);
     const selectedItem = ref(1);
     let num = ref<number[]>([]);
@@ -160,6 +165,8 @@ export default defineComponent({
     const out = ref();
     const remove = ref(false);
     const selected = ref("");
+    const status = ref();
+
     const add = async (propsDate: string | undefined) => {
       console.log(index.value);
       await dataService.writeJson(
@@ -178,6 +185,7 @@ export default defineComponent({
       console.log("propsDate = ", date.value);
     };
 
+    //TODO 2 awaits are not loading properly together
     onMounted(async () => {
       out.value = await dataService.readJson(date.value as string);
       if (out.value?.length > 0) {
@@ -188,6 +196,9 @@ export default defineComponent({
           timeStmp.value = out.value[index.value].Time;
         }
       }
+
+      status.value = await dataService.ReadStatus(date.value as string);
+      selected.value = status.value.Status;
     });
 
     const saveeee = async (propsDate: string | undefined) => {
@@ -228,6 +239,17 @@ export default defineComponent({
       console.error(out.value);
     };
 
+    const changeStatus = async (date: string | undefined) => {
+      await dataService.WriteStatus(date as string, selected.value);
+      status.value = await dataService.ReadStatus(date as string);
+      console.log(status.value.Status);
+      // if (status !== undefined) {
+      //   console.log("status: ", status.Status);
+      //   selected.value = status.Status;
+      // }
+      // console.log(selected.value);
+    };
+
     return {
       selectedItem,
       num,
@@ -239,6 +261,8 @@ export default defineComponent({
       out,
       remove,
       selected,
+      status,
+      changeStatus,
       removeItem,
       returnIndex,
       saveeee,
