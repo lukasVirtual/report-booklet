@@ -130,4 +130,45 @@ export class dataService {
 
     console.log(res.status);
   }
+
+  static async insertQualifications(
+    qualis: {
+      text: string;
+      state: boolean;
+    }[],
+    date: string
+  ): Promise<void> {
+    const values = JSON.stringify({
+      date: date,
+      qualifications: qualis,
+    });
+
+    const res = await fetch("http://127.0.0.1:5000/api/insertQualifications", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
+      },
+      body: values,
+    });
+
+    console.log(res.status);
+  }
+
+  static async getQualifications(date: string): Promise<any> {
+    const values = JSON.stringify({
+      date: date,
+    });
+
+    const res = await fetch("http://127.0.0.1:5000/api/getQualifications", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
+      },
+      body: values,
+    });
+
+    return res.json();
+  }
 }

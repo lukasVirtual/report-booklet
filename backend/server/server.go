@@ -12,6 +12,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/session"
 	"golang.org/x/crypto/bcrypt"
 	"www.github.com/backend/dbmodels"
+	"www.github.com/backend/mongodb"
 )
 
 var (
@@ -50,6 +51,8 @@ func Init() {
 	router.Post("/api/readJson", ReadJson)
 	router.Post("/api/removeJson", RemoveJson)
 	router.Post("/api/getTextFieldData", GetTextFieldData)
+	router.Post("/api/insertQualifications", InsertQualifications)
+	router.Post("/api/getQualifications", GetQualifications)
 	router.Get("/api/statuscheck", StatusCheck)
 	router.Get("/api/dataware", DataWare)
 
@@ -371,13 +374,25 @@ func RemoveJson(c *fiber.Ctx) error {
 
 }
 
-// func WriteJsonCostum(c *fiber.Ctx) error {
-// 	var input dbmodels.GlobalWriteJson
+func InsertQualifications(c *fiber.Ctx) error {
+	var qualis mongodb.QualificationForm
+	err := c.BodyParser(&qualis)
+	if err != nil {
+		log.Fatalf("something went wrong parsing json: %v", err)
+	}
+	mongodb.InsertQualis(qualis.Qualifications, qualis.Date)
 
-// 	dbmodels.GlobalWriteJson(input.Path, input.Date, input.Input)
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message": "successfully inserted data into mongodb",
+	})
+}
 
-// 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-// 		"message": "successfully written Json",
-// 	})
-
-// }
+func GetQualifications(c *fiber.Ctx) error {
+	var qualis mongodb.QualificationForm
+	err := c.BodyParser(&qualis)
+	if err != nil {
+		log.Fatalf("something went wrong parsing json: %v", err)
+	}
+	output := mongodb.GetQualis(qualis.Date)
+	return c.Status(fiber.StatusOK).JSON(output)
+}

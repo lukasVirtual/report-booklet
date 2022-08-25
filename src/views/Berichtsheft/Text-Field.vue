@@ -47,7 +47,10 @@
             >
             <div style="height: 10px"></div>
 
-            <qualifications-default></qualifications-default>
+            <qualifications-default
+              :dateTextField="propsDate"
+              :statusTextField="selected"
+            ></qualifications-default>
           </div>
         </v-card>
         <v-card

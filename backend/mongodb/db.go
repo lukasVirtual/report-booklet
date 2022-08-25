@@ -13,11 +13,21 @@ import (
 )
 
 var client *mongo.Client
+var ctx, _ = context.WithTimeout(context.Background(), 24*time.Hour)
+
+type QualificationForm struct {
+	Date           string        `json: "date"`
+	Qualifications []interface{} `json: "qualifications"`
+}
+
+type QualificationFormReturn struct {
+	Text  string `bson:"text,omitempty"`
+	State bool   `bson:"state,omitempty"`
+}
 
 func InitMongoDb() {
 	fmt.Println("Connecting to MongoDb...")
 	var err error
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	client, err = mongo.NewClient(options.Client().ApplyURI("mongodb://127.0.0.1:27017"))
 	if err != nil {
 		log.Fatalf("error occured when trying to connect to mongodb err = %v", err)
@@ -31,13 +41,12 @@ func InitMongoDb() {
 	if err := client.Ping(context.TODO(), readpref.Primary()); err != nil {
 		log.Fatalf("Database error: %v", err)
 	}
-	defer client.Disconnect(ctx)
+	// defer client.Disconnect(ctx)
 
-	databases, err := client.ListDatabaseNames(ctx, bson.M{})
+	_, err = client.ListDatabaseNames(ctx, bson.M{})
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Println(databases)
 	fmt.Println("Successfully connected to mongoDB Server")
 }
