@@ -163,6 +163,7 @@ export default defineComponent({
       try {
         await dataService.deleteItem(elem.name);
         resultArr.value.splice(idx, 1);
+        toast.success("successfully deleted user");
       } catch (e) {
         console.log(e);
       }

@@ -98,7 +98,7 @@ export class dataService {
     console.log(res.status);
   }
 
-  static async readJson(date: string): Promise<any> {
+  static async readJson(date: string): Promise<[]> {
     const values = JSON.stringify({
       date: date,
     });
@@ -190,7 +190,7 @@ export class dataService {
     console.log(res.status);
   }
 
-  static async ReadStatus(date: string): Promise<any> {
+  static async ReadStatus(date: string): Promise<[]> {
     const values = JSON.stringify({
       date: date,
     });

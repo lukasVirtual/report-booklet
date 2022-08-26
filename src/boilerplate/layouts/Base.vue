@@ -73,12 +73,10 @@
       </v-list>
     </v-navigation-drawer>
     <Suspense>
-      <template #default>
-        <slot></slot>
-      </template>
       <template #fallback>
         <v-overlay v-model="overlay"></v-overlay>
       </template>
+      <slot></slot>
     </Suspense>
   </v-app>
 </template>

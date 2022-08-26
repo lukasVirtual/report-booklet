@@ -132,7 +132,15 @@
 <script lang="ts">
 import { store } from "@/handler/store";
 import { dataService } from "@/handler/dataHandler";
-import { defineComponent, onMounted, ref, watchEffect } from "vue";
+import {
+  defineComponent,
+  nextTick,
+  onBeforeMount,
+  onMounted,
+  onServerPrefetch,
+  ref,
+  watchEffect,
+} from "vue";
 import QualificationsDefault from "./Qualifications-Default.vue";
 import TypingField from "./Typing-Field.vue";
 
@@ -155,17 +163,18 @@ export default defineComponent({
     propsDate: String,
   },
 
-  data() {
+  async setup() {
     const index = ref<number>(0);
     const selectedItem = ref(1);
     let num = ref<number[]>([]);
     let themeSelection = ref<string>("dark");
     const envItems = ["School", "Office", "Remote", "Holiday", "Sick"];
     const inputField = ref("");
-    const out = ref();
+    const out = ref<any | null>(null);
     const remove = ref(false);
     const selected = ref("");
-    const status = ref();
+    const status = ref<any | null>(null);
+    const dataReady = ref(false);
 
     const add = async (propsDate: string | undefined) => {
       console.log(index.value);
@@ -185,20 +194,27 @@ export default defineComponent({
       console.log("propsDate = ", date.value);
     };
 
-    //TODO 2 awaits are not loading properly together
     onMounted(async () => {
-      out.value = await dataService.readJson(date.value as string);
-      if (out.value?.length > 0) {
-        console.log(out.value);
-        console.warn(out.value[index.value]);
-        if (out.value[index.value]) {
-          inputField.value = out.value[index.value].Input;
-          timeStmp.value = out.value[index.value].Time;
+      await Promise.all([
+        dataService.ReadStatus(date.value as string),
+        dataService.readJson(date.value as string),
+      ]).then((v) => {
+        status.value = v[0];
+        out.value = v[1];
+      });
+      if (out.value !== null) {
+        if (out.value?.length > 0) {
+          console.log(out.value);
+          // console.warn(out.value[index.value]);
+          if (out.value[index.value]) {
+            inputField.value = out.value[index.value].Input;
+            timeStmp.value = out.value[index.value].Time;
+          }
         }
       }
-
-      status.value = await dataService.ReadStatus(date.value as string);
-      selected.value = status.value.Status;
+      if (status.value !== null) {
+        selected.value = status.value.Status;
+      }
     });
 
     const saveeee = async (propsDate: string | undefined) => {
