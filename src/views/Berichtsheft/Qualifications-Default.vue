@@ -9,15 +9,18 @@
       "
     >
       <template v-slot:activator="{ props }">
-        <v-btn
-          @click="test"
-          v-bind="props"
-          icon
-          style="margin-bottom: 30px"
-          elevation="20"
-          ><v-icon size="30">mdi-text-box-outline</v-icon>
-        </v-btn>
-        <v-btn icon size="15">{{ stateTrue?.length ?? 0 }}</v-btn>
+        <v-badge :content="stateTrue?.length ?? 0" color="accent">
+          <v-btn
+            @click="test"
+            v-bind="props"
+            icon
+            style="margin-bottom: 30px"
+            elevation="20"
+            class="text-none"
+          >
+            <v-icon size="30">mdi-text-box-outline</v-icon>
+          </v-btn>
+        </v-badge>
       </template>
       <v-list width="400px" height="500">
         <v-list-item v-for="(quali, idx) in qualis" :key="idx">
