@@ -15,8 +15,9 @@
           icon
           style="margin-bottom: 30px"
           elevation="20"
-          ><v-icon size="30">mdi-text-box-outline</v-icon></v-btn
-        >
+          ><v-icon size="30">mdi-text-box-outline</v-icon>
+        </v-btn>
+        <v-btn icon size="15">{{ stateTrue?.length ?? 0 }}</v-btn>
       </template>
       <v-list width="400px" height="500">
         <v-list-item v-for="(quali, idx) in qualis" :key="idx">
@@ -52,6 +53,7 @@ export default defineComponent({
     const date = ref<string | undefined>("");
     const qualis = ref();
     const status = ref<string | undefined>("");
+    const stateTrue = ref();
 
     const qualifications = [
       {
@@ -122,6 +124,7 @@ export default defineComponent({
 
     onMounted(async () => {
       qualis.value = await dataService.getQualifications(date.value as string);
+      stateTrue.value = qualis.value?.filter((v: any) => v.State == true);
     });
 
     const test = async () => {
@@ -147,9 +150,18 @@ export default defineComponent({
         date.value as string
       );
       qualis.value = await dataService.getQualifications(date.value as string);
+      stateTrue.value = qualis.value?.filter((v: any) => v.State == true);
     };
 
-    return { test, changeState, status, date, qualifications, qualis };
+    return {
+      test,
+      changeState,
+      status,
+      date,
+      stateTrue,
+      qualifications,
+      qualis,
+    };
   },
 });
 </script>
