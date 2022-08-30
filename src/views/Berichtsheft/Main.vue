@@ -44,10 +44,14 @@
     </template>
     <router-view />
   </base-layout>
+  <v-overlay :model-value="overlay" class="align-center justify-center">
+    <v-progress-circular indeterminate size="64"></v-progress-circular>
+  </v-overlay>
 </template>
 
 <script lang="ts">
 import { defineComponent, inject, onMounted, ref } from "vue";
+import { useToast } from "vue-toastification";
 import BaseLayout from "../../boilerplate/layouts/Base.vue";
 import TextField, { save, date } from "./Text-Field.vue";
 
@@ -58,6 +62,8 @@ export default defineComponent({
   setup() {
     const calendarDate = new Date();
     const role = ref(inject("role"));
+    const toast = useToast();
+    const overlay = ref(false);
 
     let daysOfMonth = ref(31);
     let toggleStage = ref(false);
@@ -128,10 +134,13 @@ export default defineComponent({
     };
 
     const submit = () => {
+      overlay.value = true;
       toggleStage.value = !toggleStage.value;
-
       time.value = `${calendarDate.getHours()}:${calendarDate.getMinutes()}:${calendarDate.getSeconds()}`;
-
+      setTimeout(() => {
+        toast.success("successfully submitted");
+        overlay.value = false;
+      }, 3000);
       // localStorage.setItem("stage", JSON.stringify(document.body.innerHTML));
     };
 
@@ -142,6 +151,7 @@ export default defineComponent({
       toggleStage,
       time,
       role,
+      overlay,
       saving,
       submit,
       switchPageRight,

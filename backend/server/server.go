@@ -382,7 +382,8 @@ func InsertQualifications(c *fiber.Ctx) error {
 	if err != nil {
 		log.Fatalf("something went wrong parsing json: %v", err)
 	}
-	mongodb.InsertQualis(qualis.Qualifications, qualis.Date)
+	// mongodb.InsertQualis(qualis.Qualifications, qualis.Date)
+	dbmodels.WriteQualificationsJson(qualis.Qualifications, qualis.Date)
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"message": "successfully inserted data into mongodb",
@@ -395,7 +396,8 @@ func GetQualifications(c *fiber.Ctx) error {
 	if err != nil {
 		log.Fatalf("something went wrong parsing json: %v", err)
 	}
-	output := mongodb.GetQualis(qualis.Date)
+	// output := mongodb.GetQualis(qualis.Date)
+	output := dbmodels.ReadQualificationsJson(qualis.Date)
 	return c.Status(fiber.StatusOK).JSON(output)
 }
 

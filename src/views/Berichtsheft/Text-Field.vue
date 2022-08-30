@@ -18,7 +18,7 @@
       >
         <v-card-actions style="margin: auto">
           <v-card-title>{{ propsDate }}</v-card-title>
-          <v-btn @click="saveeee(propsDate)">safe</v-btn>
+          <!-- <v-btn @click="saveeee(propsDate)">safe</v-btn> -->
           <v-spacer></v-spacer>
           <v-select
             :items="envItems"
@@ -75,11 +75,7 @@
             <div style="width: 5px"></div>
             <v-row style="max-height: 30px">
               <v-col cols="12" md="12">
-                <div
-                  v-for="(j, idx) in out"
-                  :key="j"
-                  @click="returnIndex(j.Id, propsDate)"
-                >
+                <div v-for="(j, idx) in out" :key="j">
                   <v-card-actions>
                     <v-btn
                       icon
@@ -103,6 +99,13 @@
         </v-card>
       </div>
     </v-container>
+    <!-- <v-overlay
+      background-color="primary"
+      :model-value="overlay"
+      class="align-center justify-center"
+    >
+      <v-progress-circular indeterminate size="64"></v-progress-circular>
+    </v-overlay> -->
   </div>
 </template>
 
@@ -163,7 +166,7 @@ export default defineComponent({
     propsDate: String,
   },
 
-  async setup() {
+  setup() {
     const index = ref<number>(0);
     const selectedItem = ref(1);
     let num = ref<number[]>([]);
@@ -174,7 +177,7 @@ export default defineComponent({
     const remove = ref(false);
     const selected = ref("");
     const status = ref<any | null>(null);
-    const dataReady = ref(false);
+    const overlay = ref(false);
 
     const add = async (propsDate: string | undefined) => {
       console.log(index.value);
@@ -195,6 +198,7 @@ export default defineComponent({
     };
 
     onMounted(async () => {
+      overlay.value = true;
       await Promise.all([
         dataService.ReadStatus(date.value as string),
         dataService.readJson(date.value as string),
@@ -215,20 +219,8 @@ export default defineComponent({
       if (status.value !== null) {
         selected.value = status.value.Status;
       }
+      overlay.value = false;
     });
-
-    const saveeee = async (propsDate: string | undefined) => {
-      console.log(index.value);
-      if (out.value[index.value]) return;
-      await dataService.writeJson(
-        index.value,
-        propsDate as string,
-        store.input,
-        store.time
-      );
-
-      console.log("success");
-    };
 
     const returnIndex = async (idx: number, date: string | undefined) => {
       // console.log(store.id);
@@ -278,10 +270,10 @@ export default defineComponent({
       remove,
       selected,
       status,
+      overlay,
       changeStatus,
       removeItem,
       returnIndex,
-      saveeee,
       save,
       showDate,
       add,

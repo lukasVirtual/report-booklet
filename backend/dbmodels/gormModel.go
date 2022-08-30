@@ -106,7 +106,7 @@ func SaveAsJson(id int, date, input, time string) {
 					output[i].Input = obj.Input
 				} else if obj.Input == "" {
 					output[i].Time = obj.Time
-				} else {
+				} else if obj.Time != "00:00" && obj.Input != "" {
 					output[i].Input = obj.Input
 					output[i].Time = obj.Time
 				}
@@ -189,4 +189,28 @@ func ReadStatusJson(date string) (StatusJson, error) {
 	}
 
 	return output, nil
+}
+
+func WriteQualificationsJson(qualis []interface{}, date string) {
+	if _, err := ioutil.ReadDir(destinationPath + "/Documents/Qualifications/"); err != nil {
+		fmt.Println("Creating Directory...")
+		os.Mkdir(destinationPath+"/Documents/Qualifications/", 0755)
+	}
+
+	data, _ := json.MarshalIndent(qualis, " ", " ")
+	ioutil.WriteFile(destinationPath+"/Documents/Qualifications/"+date+".json", data, 0755)
+}
+
+type QualificationFormReturn struct {
+	Text  string `bson:"text,omitempty"`
+	State bool   `bson:"state,omitempty"`
+}
+
+func ReadQualificationsJson(date string) []QualificationFormReturn {
+	data, _ := ioutil.ReadFile(destinationPath + "/Documents/Qualifications/" + date + ".json")
+
+	var qualis []QualificationFormReturn
+	_ = json.Unmarshal(data, &qualis)
+
+	return qualis
 }
