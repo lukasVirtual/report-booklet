@@ -65,7 +65,6 @@
             height: 500px;
             border: 1px solid black;
             overflow-x: hidden;
-
             border-radius: 10px;
           "
           max-height="500"
