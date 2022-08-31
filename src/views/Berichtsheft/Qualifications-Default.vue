@@ -28,13 +28,14 @@
             <v-list-item-title>{{ quali.Text }}</v-list-item-title>
           </v-list-item-title>
           <v-spacer></v-spacer>
-          <v-list-item-action>
+          <v-list-item>
             <v-checkbox
+              class=""
               v-model="quali.State"
               @click="changeState(idx)"
               color="deep-purple accent-4"
             ></v-checkbox>
-          </v-list-item-action>
+          </v-list-item>
         </v-list-item>
       </v-list>
     </v-menu>
@@ -43,7 +44,7 @@
 
 <script lang="ts">
 import { dataService } from "@/handler/dataHandler";
-import { defineComponent, onMounted, ref } from "vue";
+import { defineComponent, onMounted, ref } from "@vue/runtime-core";
 
 export default defineComponent({
   name: "QualificationsDefault",

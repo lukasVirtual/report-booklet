@@ -42,15 +42,15 @@
         ></v-btn
       >
     </template>
+    <v-overlay :model-value="overlay" class="align-center justify-center">
+      <v-progress-circular indeterminate size="64"></v-progress-circular>
+    </v-overlay>
     <router-view />
   </base-layout>
-  <v-overlay :model-value="overlay" class="align-center justify-center">
-    <v-progress-circular indeterminate size="64"></v-progress-circular>
-  </v-overlay>
 </template>
 
 <script lang="ts">
-import { defineComponent, inject, onMounted, ref } from "vue";
+import { defineComponent, inject, onMounted, ref } from "@vue/runtime-core";
 import { useToast } from "vue-toastification";
 import BaseLayout from "../../boilerplate/layouts/Base.vue";
 import TextField, { save, date } from "./Text-Field.vue";
@@ -74,14 +74,14 @@ export default defineComponent({
       save(date.value);
     };
 
-    onMounted(() => {
-      window.addEventListener("keydown", (e) => {
-        if (e.key == "s" && e.altKey) {
-          saving();
-          e.preventDefault();
-        }
-      });
-    });
+    // onMounted(() => {
+    //   window.addEventListener("keydown", (e) => {
+    //     if (e.key == "s" && e.altKey) {
+    //       saving();
+    //       e.preventDefault();
+    //     }
+    //   });
+    // });
 
     const computeDays = () => {
       if (

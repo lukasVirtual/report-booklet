@@ -1,5 +1,5 @@
-<template v-if="$route.name === 'Instructor'">
-  <base-layout>
+<template>
+  <base-layout v-if="$route.name === 'Instructor'">
     <v-main style="margin: 1rem">
       <h1>Instructor</h1>
     </v-main>
@@ -18,4 +18,3 @@ export default defineComponent({
   },
 });
 </script>
-

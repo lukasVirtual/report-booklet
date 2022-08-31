@@ -40,7 +40,7 @@
 
 <script lang="ts">
 import { store } from "@/handler/store";
-import { defineComponent, ref, watchEffect } from "vue";
+import { defineComponent, ref, watchEffect } from "@vue/runtime-core";
 
 export default defineComponent({
   name: "TimerTextField",

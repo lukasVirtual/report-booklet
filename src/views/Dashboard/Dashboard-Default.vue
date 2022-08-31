@@ -1,5 +1,5 @@
-<template v-if="$route.path === '/Dashboard'">
-  <base-layout>
+<template>
+  <base-layout v-if="$route.name == 'Dashboard'">
     <v-main style="margin: 1.5rem">
       <v-card height="100%" width="100%">
         <div
@@ -46,7 +46,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onBeforeMount, onMounted, reactive, ref } from "vue";
+import {
+  defineComponent,
+  onBeforeMount,
+  onMounted,
+  reactive,
+  ref,
+} from "@vue/runtime-core";
 import BaseLayout from "../../boilerplate/layouts/Base.vue";
 
 export default defineComponent({

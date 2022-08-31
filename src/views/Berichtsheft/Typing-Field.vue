@@ -27,7 +27,7 @@
 
 <script lang="ts">
 import TimerTextField from "./Timer-TextField.vue";
-import { defineComponent, ref, watchEffect } from "vue";
+import { defineComponent, ref, watchEffect } from "@vue/runtime-core";
 import { store } from "@/handler/store";
 // import { timeStmp } from "./Text-Field.vue";
 
@@ -55,11 +55,11 @@ export default defineComponent({
       store.time = "00:00";
       console.log(fields.value, rowCounter.value);
     });
-    if (store.input !== "") {
-      console.log(store.input);
-      emit("update");
-    }
-    // });
+    // if (store.input !== "") {
+    //   console.log(store.input);
+    //   emit("update");
+    // }
+
     const update = () => {
       if (
         store.input !== "" ||

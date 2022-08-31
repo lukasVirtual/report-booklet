@@ -101,11 +101,20 @@
       </div>
     </v-container>
     <!-- <v-overlay
-      background-color="primary"
+      style="opacity: unset"
       :model-value="overlay"
-      class="align-center justify-center"
+      class="justify-center align-center"
     >
-      <v-progress-circular indeterminate size="64"></v-progress-circular>
+      <v-card dark width="300">
+        <v-card-text>
+          Loading... Please wait.
+          <v-progress-linear
+            indeterminate
+            color="white"
+            class="mb-0"
+          ></v-progress-linear>
+        </v-card-text>
+      </v-card>
     </v-overlay> -->
   </div>
 </template>
@@ -136,15 +145,7 @@
 <script lang="ts">
 import { store } from "@/handler/store";
 import { dataService } from "@/handler/dataHandler";
-import {
-  defineComponent,
-  nextTick,
-  onBeforeMount,
-  onMounted,
-  onServerPrefetch,
-  ref,
-  watchEffect,
-} from "vue";
+import { defineComponent, onMounted, ref } from "@vue/runtime-core";
 import QualificationsDefault from "./Qualifications-Default.vue";
 import TypingField from "./Typing-Field.vue";
 

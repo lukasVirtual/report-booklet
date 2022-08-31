@@ -7,6 +7,7 @@ import AdminDefault from "../views/Admin/Admin-Default.vue";
 import InstructorDefault from "../views/Instructor/Instructor-Default.vue";
 import { loginService } from "@/handler/loginHandler";
 import { boot } from "../main";
+import CurriculumDefault from "@/views/Instructor/Curriculum-Default.vue";
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -42,6 +43,17 @@ const router = createRouter({
           path: "/Instructor",
           name: "Instructor",
           component: InstructorDefault,
+          meta: { requiresAuth: true },
+          beforeEnter: async (to, from, next) => {
+            const role = await loginService.getUserRole();
+            if (role === "instructor") next();
+            else next("/Login");
+          },
+        },
+        {
+          path: "/Curriculum",
+          name: "Curriculum",
+          component: CurriculumDefault,
           meta: { requiresAuth: true },
           beforeEnter: async (to, from, next) => {
             const role = await loginService.getUserRole();

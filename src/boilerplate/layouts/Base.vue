@@ -63,6 +63,15 @@
         ></v-list-item>
 
         <v-list-item
+          v-if="role === 'instructor'"
+          :to="{ name: 'Curriculum' }"
+          height="50"
+          prepend-icon="mdi-beaker-check"
+          title="Curriculum"
+          value="Curriculum"
+        ></v-list-item>
+
+        <v-list-item
           v-if="role === 'admin'"
           :to="{ name: 'Admin' }"
           height="50"
@@ -73,10 +82,12 @@
       </v-list>
     </v-navigation-drawer>
     <Suspense>
+      <template #default>
+        <slot></slot>
+      </template>
       <template #fallback>
         <v-overlay v-model="overlay"></v-overlay>
       </template>
-      <slot></slot>
     </Suspense>
   </v-app>
 </template>
@@ -87,7 +98,7 @@ import { useRouter } from "vue-router";
 
 export default defineComponent({
   name: "BaseLayout",
-  // components: { NavigationListItem },
+
   setup() {
     let isAuthenticated = ref(false);
     let theme = ref("dark");
