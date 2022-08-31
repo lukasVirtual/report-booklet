@@ -203,7 +203,7 @@ export default defineComponent({
       },
       {
         title:
-          "Vorgehensmodelle und -methoden sowie Entwicklungsumgebungen und -bibliotheken auswählen und einsetze",
+          "Vorgehensmodelle und -methoden sowie Entwicklungsumgebungen und bibliotheken auswählen und einsetzen",
         value: 4,
       },
       {

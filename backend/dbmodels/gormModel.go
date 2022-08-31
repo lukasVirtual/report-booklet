@@ -204,8 +204,8 @@ func WriteQualificationsJson(qualis []interface{}, date string) {
 }
 
 type QualificationFormReturn struct {
-	Text  string `bson:"text,omitempty"`
-	State bool   `bson:"state,omitempty"`
+	Text  string
+	State bool
 }
 
 func ReadQualificationsJson(date string) []QualificationFormReturn {
