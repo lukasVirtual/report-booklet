@@ -329,7 +329,7 @@ func WriteJson(c *fiber.Ctx) error {
 		fmt.Println("Could not read data")
 	}
 	//fmt.Println(jdata.Date)
-	dbmodels.SaveAsJson(jdata.Id, jdata.Date, jdata.Input, jdata.Time)
+	dbmodels.SaveAsJson(jdata.Id, jdata.Date, jdata.Input, jdata.Time, jdata.Rows)
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"message": "Successfully created Json",
 	})

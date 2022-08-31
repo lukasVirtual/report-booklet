@@ -78,13 +78,15 @@ export class dataService {
     Id: number,
     Date: string,
     Input: string,
-    Time: string
+    Time: string,
+    Rows: number
   ): Promise<void> {
     const values = JSON.stringify({
       id: Id,
       date: Date,
       input: Input,
       time: Time,
+      rows: Rows,
     });
     const res = await fetch("http://127.0.0.1:5000/api/writeJson", {
       method: "POST",

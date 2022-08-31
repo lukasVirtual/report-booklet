@@ -13,6 +13,7 @@ type JsonData struct {
 	Date  string `json: "date"`
 	Input string `json: "Input"`
 	Time  string `json: "time"`
+	Rows  int    `json: "rows"`
 }
 
 type StatusJson struct {
@@ -78,9 +79,9 @@ func GetTextFieldData(date string) []TextField {
 	return textField
 }
 
-func SaveAsJson(id int, date, input, time string) {
+func SaveAsJson(id int, date, input, time string, rows int) {
 	m := []JsonData{}
-	obj := JsonData{Id: id, Date: date, Input: input, Time: time}
+	obj := JsonData{Id: id, Date: date, Input: input, Time: time, Rows: rows}
 	m = append(m, obj)
 	data, err := json.MarshalIndent(m, " ", " ")
 	if err != nil {
@@ -104,6 +105,7 @@ func SaveAsJson(id int, date, input, time string) {
 			if v.Id == obj.Id {
 				if obj.Time == "00:00" {
 					output[i].Input = obj.Input
+					output[i].Rows = obj.Rows
 				} else if obj.Input == "" {
 					output[i].Time = obj.Time
 				} else if obj.Time != "00:00" && obj.Input != "" {

@@ -85,6 +85,7 @@
                     >
                     <typing-field
                       @vnode-mounted="index = out.length"
+                      :rows="j.Rows"
                       :input="j.Input"
                       :time="j.Time"
                       :id="idx"
@@ -185,7 +186,8 @@ export default defineComponent({
         out.value?.length,
         propsDate as string,
         "",
-        "00:00"
+        "00:00",
+        1
       );
 
       out.value = await dataService.readJson(propsDate as string);
@@ -224,13 +226,14 @@ export default defineComponent({
 
     const returnIndex = async (idx: number, date: string | undefined) => {
       // console.log(store.id);
-      console.log(store.input, store.time);
+      console.log(store.input, store.rows);
       console.warn("Creating...");
       dataService.writeJson(
         store.id as number,
         date as string,
         store.input,
-        store.time
+        store.time,
+        store.rows
       );
 
       // store.input = "";

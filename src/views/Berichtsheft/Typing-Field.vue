@@ -3,6 +3,8 @@
     @vnode-mounted="
       inputText = input;
       indexField = id;
+      rowCounter = Number(rows);
+      fields = rowCounter;
     "
     auto-grow
     spellcheck="true"
@@ -36,18 +38,22 @@ export default defineComponent({
     input: String,
     time: String,
     id: Number,
+    rows: Number,
   },
   emits: ["update"],
 
   setup(props, { emit }) {
     const inputText = ref<string | undefined>("");
     const indexField = ref<number | undefined>(0);
-    const rowCounter = ref(1);
+    const rowCounter = ref<number>(1);
+    const fields = ref(rowCounter.value);
 
     watchEffect(() => {
       store.input = inputText.value as string;
       store.id = indexField.value;
+      store.rows = rowCounter.value as number;
       store.time = "00:00";
+      console.log(fields.value, rowCounter.value);
     });
     if (store.input !== "") {
       console.log(store.input);
@@ -55,7 +61,11 @@ export default defineComponent({
     }
     // });
     const update = () => {
-      if (store.input !== "" || inputText.value == "") {
+      if (
+        store.input !== "" ||
+        inputText.value == "" ||
+        rowCounter.value !== fields.value
+      ) {
         console.log(store.input);
         emit("update");
       }
@@ -65,7 +75,7 @@ export default defineComponent({
       emit("update");
     };
 
-    return { inputText, rowCounter, update, indexField, callback };
+    return { inputText, rowCounter, indexField, fields, update, callback };
   },
 });
 </script>

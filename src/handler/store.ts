@@ -5,6 +5,7 @@ type Store = {
   date: string;
   input: string;
   time: string;
+  rows: number;
 };
 
 export const store: Store = {
@@ -12,6 +13,7 @@ export const store: Store = {
   date: "",
   input: "",
   time: "",
+  rows: 1,
 };
 
 export const storage: Store[] = [];
