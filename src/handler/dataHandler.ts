@@ -208,4 +208,40 @@ export class dataService {
 
     return res.json();
   }
+
+  static async AssignUserToInstructor(
+    instructorsName: string,
+    usersName: string
+  ): Promise<void> {
+    const values = JSON.stringify({
+      instructorsName: instructorsName,
+      usersName: usersName,
+    });
+    const res = await fetch("http://127.0.0.1:5000/api/assigne", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
+      },
+      body: values,
+    });
+
+    console.log(res.status);
+  }
+
+  static async GetAllUserForInstructor(instructor: string): Promise<[]> {
+    const values = JSON.stringify({
+      instructorsName: instructor,
+    });
+    const res = await fetch("http://127.0.0.1:5000/api/returnUsers", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
+      },
+      body: values,
+    });
+
+    return res.json();
+  }
 }

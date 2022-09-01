@@ -15,10 +15,11 @@ var (
 
 type User struct {
 	gorm.Model
-	ID       uint64 `json: "id"`
-	Name     string `json: "name"`
-	Password string `json: "password"`
-	Role     string `json: "role"`
+	ID        uint64 `json: "id"`
+	Parent_id uint64 `json: "parent_id"`
+	Name      string `json: "name"`
+	Password  string `json: "password"`
+	Role      string `json: "role"`
 }
 
 type InputField struct {

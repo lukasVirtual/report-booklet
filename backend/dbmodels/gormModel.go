@@ -47,7 +47,7 @@ func CheckUser(name string, user *User) bool {
 
 func GetAllData() []User {
 	var user []User
-	db.Raw("select name, role from users").Scan(&user)
+	db.Raw("select name, parent_id, role from users").Scan(&user)
 	return user
 }
 
@@ -215,4 +215,24 @@ func ReadQualificationsJson(date string) []QualificationFormReturn {
 	_ = json.Unmarshal(data, &qualis)
 
 	return qualis
+}
+
+func UpdateId(nameInstructor, nameUser string) {
+	var user User
+
+	db.Debug().Find(&user, "name = ?", nameInstructor)
+	fmt.Println(user.Model.ID)
+	db.Debug().Table("users").Where("name = ?", nameUser).Update("parent_id", user.Model.ID)
+}
+
+func ShowRelations(instructor string) []User {
+	var user User
+	var users []User
+
+	db.Debug().Find(&user, "name = ?", instructor)
+	// db.Debug().Find(&users, "parent_id = ?", user.Model.ID)
+	db.Raw("select id, parent_id, name from users where parent_id = ?", user.Model.ID).Scan(&users)
+
+	fmt.Println(users)
+	return users
 }
