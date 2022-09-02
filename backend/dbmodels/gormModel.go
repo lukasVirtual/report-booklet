@@ -225,7 +225,7 @@ func UpdateId(nameInstructor, nameUser string) {
 	db.Debug().Table("users").Where("name = ?", nameUser).Update("parent_id", user.Model.ID)
 }
 
-func ShowRelations(instructor string) []User {
+func GetRelations(instructor string) []User {
 	var user User
 	var users []User
 
@@ -235,4 +235,11 @@ func ShowRelations(instructor string) []User {
 
 	fmt.Println(users)
 	return users
+}
+
+func DeleteUserFromInstructor(instructor string) {
+	var user User
+	db.Debug().Find(&user, "name = ?", instructor)
+
+	db.Debug().Table("users").Where("parent_id = ?", user.Model.ID).Update("parent_id", 0)
 }

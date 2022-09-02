@@ -68,7 +68,10 @@
             style="margin-left: 10px"
             icon
             v-bind="attrs"
-            @click="relationDialog = true"
+            @click="
+              relationDialog = true;
+              loadData();
+            "
             ><v-icon>mdi-relation-one-or-many-to-only-one</v-icon></v-btn
           >
         </template>
@@ -114,7 +117,15 @@
           <v-divider></v-divider>
 
           <v-card-actions>
-            <v-btn color="red" text @click="relationDialog = false">
+            <v-btn
+              color="red"
+              text
+              @click="
+                relationDialog = false;
+                chef = '';
+                selected = [];
+              "
+            >
               Cancel
             </v-btn>
             <v-spacer></v-spacer>
@@ -140,6 +151,7 @@
             <td>{{ elem.role }}</td>
             <td class="text-right">
               <v-btn
+                icon
                 v-if="elem.role === 'instructor'"
                 @click="
                   showRelations(elem.name);
@@ -147,10 +159,8 @@
                 "
                 ><v-icon size="20">mdi-cogs</v-icon></v-btn
               >
-              <!-- <v-dialog v-if="toggled">
-                <template v-slot:activator="{ attrs }"> </template>
-              </v-dialog> -->
               <v-btn
+                icon
                 v-if="elem.role !== 'admin'"
                 @click="deleteElemAt(elem, idx)"
                 ><v-icon size="20" color="red">mdi-trash-can</v-icon></v-btn
@@ -159,7 +169,19 @@
           </tr>
         </tbody>
       </v-table>
-      <v-card width="550" height="450" rounded v-if="toggled">
+
+      <div style="height: 50px"></div>
+      <v-select
+        v-if="toggled"
+        style="max-width: 300px"
+        multiple
+        chips
+        density="compact"
+        closable-chips
+        v-model="belongingUsers"
+        :items="belongingUsers"
+      ></v-select>
+      <!-- <v-card width="550" height="450" rounded v-if="toggled">
         <v-select
           multiple
           chips
@@ -167,7 +189,7 @@
           v-model="belongingUsers"
           :items="belongingUsers"
         ></v-select>
-      </v-card>
+      </v-card> -->
     </v-main>
   </base-layout>
 </template>
@@ -181,7 +203,6 @@ import {
   reactive,
   inject,
   ref,
-  watchEffect,
 } from "@vue/runtime-core";
 import BaseLayout from "../../boilerplate/layouts/Base.vue";
 import { useToast } from "vue-toastification";
@@ -193,8 +214,8 @@ export default defineComponent({
   setup() {
     const role = ref(inject("role"));
     const toast = useToast();
-    let instructors: string[] = [];
-    let users: string[] = [];
+    let instructors = ref<string[]>([]);
+    let users = ref<string[]>([]);
     const selected = ref([]);
     const chef = ref("");
     const belongingUsers = ref<any>([]);
@@ -221,6 +242,25 @@ export default defineComponent({
     const counter = ref(1);
     const roleItems = ["admin", "instructor", "user"];
 
+    const loadData = async (): Promise<void> => {
+      data.value = await dataService.getAllData();
+      instructors.value = [];
+      users.value = [];
+      let getInstructors = data.value.filter(
+        (v: any) => v.Role === "instructor" || v.Role === "user"
+      );
+      for (const p of getInstructors) {
+        if (p.Role === "instructor" && !instructors.value.includes(p.name))
+          instructors.value.push(p.Name);
+        else if (
+          p.Role === "user" &&
+          p.Parent_id === 0 &&
+          !users.value.includes(p.name)
+        )
+          users.value.push(p.Name);
+      }
+    };
+
     onMounted(async () => {
       data.value = await dataService.getAllData();
       for (const elem of data.value) {
@@ -234,13 +274,14 @@ export default defineComponent({
         if (value.name == "") resultArr.value.splice(idx, 1);
       });
 
-      let getInstructors = data.value.filter(
-        (v: any) => v.Role === "instructor" || v.Role === "user"
-      );
-      for (const p of getInstructors) {
-        if (p.Role === "instructor") instructors.push(p.Name);
-        else if (p.Role === "user" && p.Parent_id === 0) users.push(p.Name);
-      }
+      // let getInstructors = data.value.filter(
+      //   (v: any) => v.Role === "instructor" || v.Role === "user"
+      // );
+      // for (const p of getInstructors) {
+      //   if (p.Role === "instructor") instructors.value.push(p.Name);
+      //   else if (p.Role === "user" && p.Parent_id === 0)
+      //     users.value.push(p.Name);
+      // }
     });
 
     const addNewUser = async () => {
@@ -259,6 +300,7 @@ export default defineComponent({
     };
 
     const deleteElemAt = async (elem: any, idx: number) => {
+      //TODO: if the deleted person was a instructor his id from all parent id's of his users
       if (
         !confirm(
           "You sure you want to delete? Deleted Items will be gone forever"
@@ -266,8 +308,12 @@ export default defineComponent({
       )
         return;
       try {
+        if (elem.role === "instructor") {
+          await dataService.DelteUsersFromInstructor(elem.name);
+        }
         await dataService.deleteItem(elem.name);
         resultArr.value.splice(idx, 1);
+
         toast.success("successfully deleted user");
       } catch (e) {
         console.log(e);
@@ -275,11 +321,10 @@ export default defineComponent({
       await dataService.getAllData();
     };
 
-    //TODO: Error checking is not working properly
     const assignUser = async () => {
       // console.log(selected.value);
       // console.log(chef.value);
-      if (selected.value === [] || chef.value === "") {
+      if (selected.value?.length <= 0 || chef.value === "") {
         toast.error("Some fields are empty please choose a value");
         relationDialog.value = false;
         selected.value = [];
@@ -324,6 +369,7 @@ export default defineComponent({
       assignUser,
       addNewUser,
       deleteElemAt,
+      loadData,
     };
   },
 });
