@@ -68,7 +68,10 @@
             style="margin-left: 10px"
             icon
             v-bind="attrs"
-            @click="relationDialog = true"
+            @click="
+              relationDialog = true;
+              loadData();
+            "
             ><v-icon>mdi-relation-one-or-many-to-only-one</v-icon></v-btn
           >
         </template>
@@ -85,20 +88,26 @@
                   label="Select Instructor"
                   variant="underlined"
                   color="cyan"
+                  v-model="chef"
                   :items="instructors"
                 ></v-select>
               </v-col>
             </v-row>
             <v-row>
-              <v-col cols="2">
+              <!-- <v-col cols="2">
                 <v-btn icon @click="counter++"><v-icon>mdi-plus</v-icon></v-btn>
-              </v-col>
-              <v-col cols="12" v-for="i in counter" :key="i">
+              </v-col> -->
+              <v-col cols="12">
                 <v-select
+                  :items="users"
                   label="Select User"
                   variant="underlined"
                   color="cyan"
-                  :items="users"
+                  item-text="role"
+                  item-value="name"
+                  v-model="selected"
+                  multiple
+                  chips
                 >
                 </v-select>
               </v-col>
@@ -108,7 +117,15 @@
           <v-divider></v-divider>
 
           <v-card-actions>
-            <v-btn color="red" text @click="relationDialog = false">
+            <v-btn
+              color="red"
+              text
+              @click="
+                relationDialog = false;
+                chef = '';
+                selected = [];
+              "
+            >
               Cancel
             </v-btn>
             <v-spacer></v-spacer>
@@ -134,6 +151,16 @@
             <td>{{ elem.role }}</td>
             <td class="text-right">
               <v-btn
+                icon
+                v-if="elem.role === 'instructor'"
+                @click="
+                  showRelations(elem.name);
+                  toggled = !toggled;
+                "
+                ><v-icon size="20">mdi-cogs</v-icon></v-btn
+              >
+              <v-btn
+                icon
                 v-if="elem.role !== 'admin'"
                 @click="deleteElemAt(elem, idx)"
                 ><v-icon size="20" color="red">mdi-trash-can</v-icon></v-btn
@@ -142,6 +169,27 @@
           </tr>
         </tbody>
       </v-table>
+
+      <div style="height: 50px"></div>
+      <v-select
+        v-if="toggled"
+        style="max-width: 300px"
+        multiple
+        chips
+        density="compact"
+        closable-chips
+        v-model="belongingUsers"
+        :items="belongingUsers"
+      ></v-select>
+      <!-- <v-card width="550" height="450" rounded v-if="toggled">
+        <v-select
+          multiple
+          chips
+          closable-chips
+          v-model="belongingUsers"
+          :items="belongingUsers"
+        ></v-select>
+      </v-card> -->
     </v-main>
   </base-layout>
 </template>
@@ -149,8 +197,13 @@
 <script lang="ts">
 import { loginService } from "@/handler/loginHandler";
 import { dataService } from "@/handler/dataHandler";
-import { defineComponent, onMounted, reactive } from "@vue/runtime-core";
-import { inject, ref } from "vue";
+import {
+  defineComponent,
+  onMounted,
+  reactive,
+  inject,
+  ref,
+} from "@vue/runtime-core";
 import BaseLayout from "../../boilerplate/layouts/Base.vue";
 import { useToast } from "vue-toastification";
 
@@ -161,8 +214,13 @@ export default defineComponent({
   setup() {
     const role = ref(inject("role"));
     const toast = useToast();
-    let instructors: string[] = [];
-    let users: string[] = [];
+    let instructors = ref<string[]>([]);
+    let users = ref<string[]>([]);
+    const selected = ref([]);
+    const chef = ref("");
+    const belongingUsers = ref<any>([]);
+    const toggled = ref(false);
+    const data = ref<any>([]);
 
     const resultArr = ref<[{ name: string; role: string }]>([
       { name: "", role: "" },
@@ -184,9 +242,28 @@ export default defineComponent({
     const counter = ref(1);
     const roleItems = ["admin", "instructor", "user"];
 
+    const loadData = async (): Promise<void> => {
+      data.value = await dataService.getAllData();
+      instructors.value = [];
+      users.value = [];
+      let getInstructors = data.value.filter(
+        (v: any) => v.Role === "instructor" || v.Role === "user"
+      );
+      for (const p of getInstructors) {
+        if (p.Role === "instructor" && !instructors.value.includes(p.name))
+          instructors.value.push(p.Name);
+        else if (
+          p.Role === "user" &&
+          p.Parent_id === 0 &&
+          !users.value.includes(p.name)
+        )
+          users.value.push(p.Name);
+      }
+    };
+
     onMounted(async () => {
-      const data = await dataService.getAllData();
-      for (const elem of data) {
+      data.value = await dataService.getAllData();
+      for (const elem of data.value) {
         resultArr.value.push({
           name: elem.Name,
           role: elem.Role,
@@ -197,13 +274,14 @@ export default defineComponent({
         if (value.name == "") resultArr.value.splice(idx, 1);
       });
 
-      let getInstructors = data.filter(
-        (v: any) => v.Role === "instructor" || v.Role === "user"
-      );
-      for (const p of getInstructors) {
-        if (p.Role === "instructor") instructors.push(p.Name);
-        else if (p.Role === "user") users.push(p.Name);
-      }
+      // let getInstructors = data.value.filter(
+      //   (v: any) => v.Role === "instructor" || v.Role === "user"
+      // );
+      // for (const p of getInstructors) {
+      //   if (p.Role === "instructor") instructors.value.push(p.Name);
+      //   else if (p.Role === "user" && p.Parent_id === 0)
+      //     users.value.push(p.Name);
+      // }
     });
 
     const addNewUser = async () => {
@@ -222,6 +300,7 @@ export default defineComponent({
     };
 
     const deleteElemAt = async (elem: any, idx: number) => {
+      //TODO: if the deleted person was a instructor his id from all parent id's of his users
       if (
         !confirm(
           "You sure you want to delete? Deleted Items will be gone forever"
@@ -229,8 +308,12 @@ export default defineComponent({
       )
         return;
       try {
+        if (elem.role === "instructor") {
+          await dataService.DelteUsersFromInstructor(elem.name);
+        }
         await dataService.deleteItem(elem.name);
         resultArr.value.splice(idx, 1);
+
         toast.success("successfully deleted user");
       } catch (e) {
         console.log(e);
@@ -238,9 +321,33 @@ export default defineComponent({
       await dataService.getAllData();
     };
 
-    const assignUser = () => {
+    const assignUser = async () => {
+      // console.log(selected.value);
+      // console.log(chef.value);
+      if (selected.value?.length <= 0 || chef.value === "") {
+        toast.error("Some fields are empty please choose a value");
+        relationDialog.value = false;
+        selected.value = [];
+        chef.value = "";
+        return;
+      }
+
+      for (const user of selected.value) {
+        await dataService.AssignUserToInstructor(chef.value, user);
+      }
       toast.success("Successfully assigned User/Users to Instructor");
       relationDialog.value = false;
+
+      selected.value = [];
+      chef.value = "";
+    };
+
+    const showRelations = async (chef: string) => {
+      belongingUsers.value = [];
+      const out: any[] = await dataService.GetAllUserForInstructor(chef);
+      for (const elem of out) {
+        belongingUsers.value.push(elem.Name);
+      }
     };
 
     return {
@@ -254,9 +361,15 @@ export default defineComponent({
       instructors,
       users,
       counter,
+      selected,
+      chef,
+      belongingUsers,
+      toggled,
+      showRelations,
       assignUser,
       addNewUser,
       deleteElemAt,
+      loadData,
     };
   },
 });

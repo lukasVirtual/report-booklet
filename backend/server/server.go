@@ -55,6 +55,9 @@ func Init() {
 	router.Post("/api/getQualifications", GetQualifications)
 	router.Post("/api/writeStatusJson", WriteStatus)
 	router.Post("/api/readStatusJson", ReadStatus)
+	router.Post("/api/assigne", AssignUsertoInstructor)
+	router.Post("/api/delteUserInstructor", DelteUserInstructor)
+	router.Post("/api/returnUsers", GetUserBelongInstructor)
 	router.Get("/api/statuscheck", StatusCheck)
 	router.Get("/api/dataware", DataWare)
 
@@ -425,4 +428,49 @@ func ReadStatus(c *fiber.Ctx) error {
 	out, _ := dbmodels.ReadStatusJson(inputData.Date)
 
 	return c.Status(fiber.StatusOK).JSON(out)
+}
+
+type UserInstructor struct {
+	UsersName       string `json: "usersName`
+	InstructorsName string `json: "instructorsName`
+}
+
+func AssignUsertoInstructor(c *fiber.Ctx) error {
+	var data UserInstructor
+	err := c.BodyParser(&data)
+	if err != nil {
+		log.Fatalf("Could not parse data from json: %v", err)
+	}
+
+	dbmodels.UpdateId(data.InstructorsName, data.UsersName)
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message": "successfully updated user",
+	})
+}
+
+func GetUserBelongInstructor(c *fiber.Ctx) error {
+	var data UserInstructor
+	err := c.BodyParser(&data)
+	if err != nil {
+		log.Fatalf("Could not parse data from json: %v", err)
+	}
+
+	users := dbmodels.GetRelations(data.InstructorsName)
+
+	return c.Status(fiber.StatusOK).JSON(users)
+}
+
+func DelteUserInstructor(c *fiber.Ctx) error {
+	var data UserInstructor
+
+	err := c.BodyParser(&data)
+	if err != nil {
+		log.Fatalf("Could not parse data from json: %v", err)
+	}
+
+	dbmodels.DeleteUserFromInstructor(data.InstructorsName)
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message": "successfully deleted users relation to instructor",
+	})
+
 }
