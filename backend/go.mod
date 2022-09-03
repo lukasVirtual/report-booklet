@@ -9,6 +9,8 @@ require (
 )
 
 require (
+	github.com/gorilla/websocket v1.5.0
 	github.com/jinzhu/gorm v1.9.16
+	github.com/valyala/fasthttp v1.37.0
 	go.mongodb.org/mongo-driver v1.10.1
 )
