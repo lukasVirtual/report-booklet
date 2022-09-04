@@ -8,8 +8,9 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
-	_ "github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/session"
+	"github.com/gofiber/websocket/v2"
+	_ "github.com/gofiber/websocket/v2"
 	"golang.org/x/crypto/bcrypt"
 	"www.github.com/backend/dbmodels"
 	"www.github.com/backend/mongodb"
@@ -41,6 +42,14 @@ func Init() {
 		AllowHeaders:     "Access-Control-Allow-Origin, Content-Type, Origin, Accept",
 	})))
 
+	router.Use("/ws", func(c *fiber.Ctx) error {
+		if websocket.IsWebSocketUpgrade(c) {
+			c.Locals("allowed", true)
+			return c.Next()
+		}
+		return fiber.ErrUpgradeRequired
+	})
+
 	router.Post("/api/register", Register)
 	router.Post("/api/login", Login)
 	router.Post("/api/logout", Logout)
@@ -60,6 +69,7 @@ func Init() {
 	router.Post("/api/returnUsers", GetUserBelongInstructor)
 	router.Get("/api/statuscheck", StatusCheck)
 	router.Get("/api/dataware", DataWare)
+	router.Get("/ws/helloworld", ReadMessages)
 
 	router.Get("/api/user", GetUserData)
 
@@ -73,7 +83,7 @@ func NewMiddleware() fiber.Handler {
 
 func AuthMiddleware(c *fiber.Ctx) error {
 	sess, err := store.Get(c)
-	if strings.Split(c.Path(), "/")[1] == "api" {
+	if strings.Split(c.Path(), "/")[1] == "api" || strings.Split(c.Path(), "/")[1] == "ws" {
 		return c.Next()
 	}
 	if err != nil {
@@ -474,3 +484,25 @@ func DelteUserInstructor(c *fiber.Ctx) error {
 	})
 
 }
+
+var ReadMessages = websocket.New(func(c *websocket.Conn) {
+	var (
+		mt  int
+		msg []byte
+		err error
+	)
+
+	for {
+		if mt, msg, err = c.ReadMessage(); err != nil {
+			log.Println("read: ", err)
+			break
+		}
+
+		log.Printf("message recieved: %s", msg)
+
+		if err = c.WriteMessage(mt, msg); err != nil {
+			log.Println("write:", err)
+			break
+		}
+	}
+})
