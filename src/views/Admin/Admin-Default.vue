@@ -156,6 +156,7 @@
                 @click="
                   showRelations(elem.name);
                   toggled = !toggled;
+                  instructor = elem.name;
                 "
                 ><v-icon size="20">mdi-cogs</v-icon></v-btn
               >
@@ -203,6 +204,7 @@ import {
   reactive,
   inject,
   ref,
+  watchEffect,
 } from "@vue/runtime-core";
 import BaseLayout from "../../boilerplate/layouts/Base.vue";
 import { useToast } from "vue-toastification";
@@ -215,10 +217,12 @@ export default defineComponent({
     const role = ref(inject("role"));
     const toast = useToast();
     let instructors = ref<string[]>([]);
+    const instructor = ref("");
     let users = ref<string[]>([]);
     const selected = ref([]);
     const chef = ref("");
     const belongingUsers = ref<any>([]);
+    const previousBelongingUsers = ref<any>([]);
     const toggled = ref(false);
     const data = ref<any>([]);
 
@@ -348,8 +352,20 @@ export default defineComponent({
       for (const elem of out) {
         belongingUsers.value.push(elem.Name);
       }
-    };
 
+      previousBelongingUsers.value = [...belongingUsers.value];
+    };
+    //TODO: delete single user when clicked
+
+    // watchEffect(() => {
+    //   let diff = previousBelongingUsers.value.filter(
+    //     (v: any) => !belongingUsers.value.includes(v)
+    //   );
+    //   console.log(instructor.value);
+    //   for (const user of diff) {
+    //     dataService.DelteSingleUserFromInstructor(user);
+    //   }
+    // });
     return {
       resultArr,
       dialog,
@@ -365,6 +381,7 @@ export default defineComponent({
       chef,
       belongingUsers,
       toggled,
+      instructor,
       showRelations,
       assignUser,
       addNewUser,

@@ -261,4 +261,21 @@ export class dataService {
 
     console.log(`delted all users from instructor with status: ${res.status}`);
   }
+
+  static async DelteSingleUserFromInstructor(user: string): Promise<void> {
+    const values = JSON.stringify({
+      usersName: user,
+    });
+
+    const res = await fetch("http://127.0.0.1:5000/api/removeUserInstructor", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
+      },
+      body: values,
+    });
+
+    console.log(res.status);
+  }
 }

@@ -243,3 +243,7 @@ func DeleteUserFromInstructor(instructor string) {
 
 	db.Debug().Table("users").Where("parent_id = ?", user.Model.ID).Update("parent_id", 0)
 }
+
+func DelteSingleUserFromInstructor(client string) {
+	db.Debug().Table("users").Where("name = ?", client).Update("parent_id", 0)
+}

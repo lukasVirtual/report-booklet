@@ -66,6 +66,7 @@ func Init() {
 	router.Post("/api/readStatusJson", ReadStatus)
 	router.Post("/api/assigne", AssignUsertoInstructor)
 	router.Post("/api/delteUserInstructor", DelteUserInstructor)
+	router.Post("/api/removeUserInstructor", RemoveSingleUserFromInstructor)
 	router.Post("/api/returnUsers", GetUserBelongInstructor)
 	router.Get("/api/statuscheck", StatusCheck)
 	router.Get("/api/dataware", DataWare)
@@ -483,6 +484,19 @@ func DelteUserInstructor(c *fiber.Ctx) error {
 		"message": "successfully deleted users relation to instructor",
 	})
 
+}
+
+func RemoveSingleUserFromInstructor(c *fiber.Ctx) error {
+	var data UserInstructor
+	err := c.BodyParser(&data)
+	if err != nil {
+		log.Fatalf("Could not parse data from json: %v", err)
+	}
+
+	dbmodels.DelteSingleUserFromInstructor(data.UsersName)
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message": "successfully deleted user relation to instructor",
+	})
 }
 
 var ReadMessages = websocket.New(func(c *websocket.Conn) {
