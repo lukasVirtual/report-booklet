@@ -3,6 +3,7 @@ package dbmodels
 import (
 	"fmt"
 	"log"
+	"runtime"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
@@ -34,9 +35,22 @@ type TextField struct {
 
 func InitDB() {
 	fmt.Println("INIT DB")
+	// fmt.Println(runtime.GOOS == "windows")
+	var dsn string
+	switch runtime.GOOS {
+	case "windows":
+		dsn = "root:1234@tcp(127.0.0.1:3306)/test"
+		break
+	case "linux":
+		dsn = "sqluser:password@tcp(localhost:3306)/test"
+		break
+	default:
+		dsn = "sqluser:password@tcp(localhost:3306)/test"
+		break
+	}
 	// dsnWindows := "root:1234@tcp(127.0.0.1:3306)/test"
-	dsnLinux := "sqluser:password@tcp(localhost:3306)/test"
-	db, err = gorm.Open("mysql", dsnLinux)
+	// dsnLinux := "sqluser:password@tcp(localhost:3306)/test"
+	db, err = gorm.Open("mysql", dsn)
 
 	if err != nil {
 		panic("Error Occured when tried to open DB")
@@ -49,6 +63,4 @@ func InitDB() {
 	}
 
 	db.AutoMigrate(&User{})
-	// db.AutoMigrate(&TextField{})
-	// db.AutoMigrate(&InputField{})
 }
