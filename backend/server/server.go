@@ -18,8 +18,9 @@ import (
 
 var (
 	store    *session.Store
-	AUTH_KEY string = "authenticated"
-	USER_ID  string = "ID"
+	AUTH_KEY string                  = "authenticated"
+	USER_ID  string                  = "ID"
+	clients  map[*dbmodels.User]bool = make(map[*dbmodels.User]bool)
 )
 
 type User struct {
@@ -164,6 +165,9 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	sess, sessErr := store.Get(c)
+	fmt.Println("Clients before: ", clients)
+	clients[&user] = true
+	fmt.Println("Clients after: ", clients)
 
 	if sessErr != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -505,4 +509,8 @@ var ReadMessages = websocket.New(func(c *websocket.Conn) {
 			break
 		}
 	}
+})
+
+var EmitToSpecificUser = websocket.New(func(c *websocket.Conn) {
+
 })

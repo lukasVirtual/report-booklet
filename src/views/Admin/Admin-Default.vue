@@ -180,7 +180,8 @@
         closable-chips
         v-model="belongingUsers"
         :items="belongingUsers"
-      ></v-select>
+      >
+      </v-select>
       <!-- <v-card width="550" height="450" rounded v-if="toggled">
         <v-select
           multiple
@@ -273,15 +274,6 @@ export default defineComponent({
       resultArr.value.map((value, idx) => {
         if (value.name == "") resultArr.value.splice(idx, 1);
       });
-
-      // let getInstructors = data.value.filter(
-      //   (v: any) => v.Role === "instructor" || v.Role === "user"
-      // );
-      // for (const p of getInstructors) {
-      //   if (p.Role === "instructor") instructors.value.push(p.Name);
-      //   else if (p.Role === "user" && p.Parent_id === 0)
-      //     users.value.push(p.Name);
-      // }
     });
 
     const addNewUser = async () => {
@@ -300,7 +292,6 @@ export default defineComponent({
     };
 
     const deleteElemAt = async (elem: any, idx: number) => {
-      //TODO: if the deleted person was a instructor his id from all parent id's of his users
       if (
         !confirm(
           "You sure you want to delete? Deleted Items will be gone forever"
@@ -322,8 +313,6 @@ export default defineComponent({
     };
 
     const assignUser = async () => {
-      // console.log(selected.value);
-      // console.log(chef.value);
       if (selected.value?.length <= 0 || chef.value === "") {
         toast.error("Some fields are empty please choose a value");
         relationDialog.value = false;

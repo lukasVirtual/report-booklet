@@ -50,7 +50,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, inject, onMounted, ref } from "@vue/runtime-core";
+import { defineComponent, inject, ref } from "@vue/runtime-core";
 import { useToast } from "vue-toastification";
 import BaseLayout from "../../boilerplate/layouts/Base.vue";
 import TextField, { save, date } from "./Text-Field.vue";
@@ -141,7 +141,6 @@ export default defineComponent({
         toast.success("successfully submitted");
         overlay.value = false;
       }, 3000);
-      // localStorage.setItem("stage", JSON.stringify(document.body.innerHTML));
     };
 
     return {
