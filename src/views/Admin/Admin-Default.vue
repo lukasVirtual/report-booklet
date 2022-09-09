@@ -205,7 +205,6 @@ import {
   reactive,
   inject,
   ref,
-  watchEffect,
 } from "@vue/runtime-core";
 import BaseLayout from "../../boilerplate/layouts/Base.vue";
 import { useToast } from "vue-toastification";
@@ -252,7 +251,7 @@ export default defineComponent({
       instructors.value = [];
       users.value = [];
       let getInstructors = data.value.filter(
-        (v: any) => v.Role === "instructor" || v.Role === "user"
+        (v: { Role: string }) => v.Role === "instructor" || v.Role === "user"
       );
       for (const p of getInstructors) {
         if (p.Role === "instructor" && !instructors.value.includes(p.name))

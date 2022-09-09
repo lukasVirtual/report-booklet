@@ -487,7 +487,6 @@ func DelteUserInstructor(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"message": "successfully deleted users relation to instructor",
 	})
-
 }
 
 func RemoveSingleUserFromInstructor(c *fiber.Ctx) error {
@@ -525,6 +524,6 @@ var ReadMessages = websocket.New(func(c *websocket.Conn) {
 	}
 })
 
-var EmitToSpecificUser = websocket.New(func(c *websocket.Conn) {
-
-})
+// var EmitToSpecificUser = websocket.New(func(c *websocket.Conn) {
+// 	SendToInstructor()
+// })

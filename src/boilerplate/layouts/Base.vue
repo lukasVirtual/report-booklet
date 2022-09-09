@@ -30,6 +30,7 @@
       <v-img
         class="logo--light"
         max-width="80"
+        lazy-src="src\assets\vhf-logo.png"
         src="src\assets\vhf-logo.png"
       ></v-img>
     </v-app-bar>

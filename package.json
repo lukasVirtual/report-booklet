@@ -6,7 +6,7 @@
     "build": "vite build",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
     "dev": "vite",
-    "GoService:run": "go run /home/lukas/Documents/berichtsheft-project/backend/main.go",
+    "GoService:run": "backend.exe",
     "preview": "vite preview --port 5050",
     "typecheck": "vue-tsc --noEmit"
   },
