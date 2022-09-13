@@ -55,13 +55,16 @@
           </v-col>
         </v-row>
       </v-form>
+      <!-- <v-overlay :model-value="loading" class="align-center justify-center">
+        <v-progress-circular indeterminate size="64"></v-progress-circular>
+      </v-overlay> -->
     </v-main>
   </v-app>
 </template>
 
 <script lang="ts">
 import { loginService } from "@/handler/loginHandler";
-import { defineComponent, reactive, ref } from "vue";
+import { defineComponent, reactive, ref } from "@vue/runtime-core";
 import { useRouter } from "vue-router";
 import { useToast } from "vue-toastification";
 
@@ -82,7 +85,10 @@ export default defineComponent({
     const router = useRouter();
     const toastMessage = useToast();
 
+    const loading = ref(false);
+
     const login = async () => {
+      // loading.value = true;
       let registerRequest = ref(false);
 
       if (validation.username !== "" && validation.password.length >= 8) {
@@ -114,6 +120,8 @@ export default defineComponent({
         console.log(registerRequest.value);
       } else
         toastMessage.error("Something went wrong. Wrong username or password");
+
+      // loading.value = false;
     };
 
     const valid = ref(null);
@@ -121,7 +129,7 @@ export default defineComponent({
       const obj = valid.value as any;
       if (obj !== undefined) obj.reset();
     };
-    return { rules, validation, valid, login, reset };
+    return { rules, validation, valid, loading, login, reset };
   },
 });
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <base-layout v-if="$route.name == 'Curriculum'">
+  <base-layout v-if="$route.name === 'Curriculum'">
     <v-main style="display: flex; margin: auto">
       <v-select
         :items="who"
@@ -29,7 +29,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "@vue/runtime-core";
+import { dataService } from "@/handler/dataHandler";
+import { loginService } from "@/handler/loginHandler";
+import { defineComponent, ref, onMounted } from "@vue/runtime-core";
 import BaseLayout from "../../boilerplate/layouts/Base.vue";
 
 export default defineComponent({
@@ -37,7 +39,13 @@ export default defineComponent({
   components: { BaseLayout },
   setup() {
     const selected = ref("");
-    const who = ["Lukas", "Linus"];
+    const who = ref<string[]>([]);
+
+    onMounted(async () => {
+      const instructor = await loginService.getUser();
+      const users = await dataService.GetAllUserForInstructor(instructor);
+      who.value = users.map((v: { Name: string }) => v.Name);
+    });
 
     const items = [
       {

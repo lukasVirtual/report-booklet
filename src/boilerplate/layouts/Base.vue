@@ -90,6 +90,9 @@
         <v-overlay v-model="overlay"></v-overlay>
       </template>
     </Suspense>
+    <!-- <v-overlay :model-value="loading" class="align-center justify-center">
+      <v-progress-circular indeterminate size="64"></v-progress-circular>
+    </v-overlay> -->
   </v-app>
 </template>
 <script lang="ts">
@@ -102,6 +105,7 @@ export default defineComponent({
 
   setup() {
     let isAuthenticated = ref(false);
+    const loading = ref<undefined | boolean>(undefined);
     let theme = ref("dark");
     const router = useRouter();
     const overlay = ref(true);
@@ -121,9 +125,11 @@ export default defineComponent({
         : ref("mdi-weather-sunny");
 
     const logout = async () => {
+      // loading.value = true;
       const logoutHandling = await loginService.logout();
       console.log(logoutHandling);
 
+      // loading.value = false;
       router.push({ path: "/Login" });
     };
 
@@ -155,6 +161,7 @@ export default defineComponent({
       overlay,
       iconValue,
       role,
+      loading,
       togglelistState,
       logout,
       switchTheme,

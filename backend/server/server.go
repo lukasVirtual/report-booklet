@@ -51,6 +51,8 @@ func Init() {
 		return fiber.ErrUpgradeRequired
 	})
 
+	//TODO: Make a better REST API.
+
 	router.Post("/api/register", Register)
 	router.Post("/api/login", Login)
 	router.Post("/api/logout", Logout)
@@ -523,7 +525,3 @@ var ReadMessages = websocket.New(func(c *websocket.Conn) {
 		}
 	}
 })
-
-// var EmitToSpecificUser = websocket.New(func(c *websocket.Conn) {
-// 	SendToInstructor()
-// })

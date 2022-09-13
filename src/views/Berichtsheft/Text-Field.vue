@@ -57,6 +57,13 @@
               :statusTextField="selected"
             ></qualifications-default>
           </div>
+          <!-- <v-overlay
+            :model-value="overlay"
+            contained
+            class="align-center justify-center"
+          >
+            <v-progress-circular indeterminate size="64"></v-progress-circular>
+          </v-overlay> -->
         </v-card>
         <v-card
           id="scrollbar-colored"
@@ -96,25 +103,16 @@
               <v-spacer></v-spacer>
             </v-row>
           </v-row>
+          <v-overlay
+            :model-value="overlay"
+            contained
+            class="align-center justify-center"
+          >
+            <v-progress-circular indeterminate size="64"></v-progress-circular>
+          </v-overlay>
         </v-card>
       </div>
     </v-container>
-    <!-- <v-overlay
-      style="opacity: unset"
-      :model-value="overlay"
-      class="justify-center align-center"
-    >
-      <v-card dark width="300">
-        <v-card-text>
-          Loading... Please wait.
-          <v-progress-linear
-            indeterminate
-            color="white"
-            class="mb-0"
-          ></v-progress-linear>
-        </v-card-text>
-      </v-card>
-    </v-overlay> -->
   </div>
 </template>
 
@@ -178,7 +176,7 @@ export default defineComponent({
     const remove = ref(false);
     const selected = ref("");
     const status = ref<any | null>(null);
-    const overlay = ref(false);
+    const overlay = ref<boolean | undefined>(undefined);
 
     const add = async (propsDate: string | undefined) => {
       console.log(index.value);

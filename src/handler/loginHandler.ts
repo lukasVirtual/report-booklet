@@ -77,6 +77,12 @@ export class loginService /* implements loginServiceInterface */ {
     });
     return res.data.Role;
   }
+  static async getUser(): Promise<any> {
+    const res = await axios.get("http://127.0.0.1:5000/api/user", {
+      withCredentials: true,
+    });
+    return res.data.Name;
+  }
 
   // static async getAllData(): Promise<any> {
   //   const res = await axios.get("http://127.0.0.1:5000/api/dataware");
