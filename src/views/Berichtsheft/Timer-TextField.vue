@@ -54,6 +54,7 @@ export default defineComponent({
     const times = [
       { title: "00:00" },
       { title: "00:30" },
+      { title: "01:00" },
       { title: "01:30" },
       { title: "02:00" },
       { title: "02:30" },
