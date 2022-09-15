@@ -57,13 +57,6 @@
               :statusTextField="selected"
             ></qualifications-default>
           </div>
-          <!-- <v-overlay
-            :model-value="overlay"
-            contained
-            class="align-center justify-center"
-          >
-            <v-progress-circular indeterminate size="64"></v-progress-circular>
-          </v-overlay> -->
         </v-card>
         <v-card
           id="scrollbar-colored"
@@ -198,7 +191,7 @@ export default defineComponent({
     };
 
     onMounted(async () => {
-      overlay.value = true;
+      // overlay.value = true;
       await Promise.all([
         dataService.ReadStatus(date.value as string),
         dataService.readJson(date.value as string),
@@ -219,12 +212,10 @@ export default defineComponent({
       if (status.value !== null) {
         selected.value = status.value.Status;
       }
-      overlay.value = false;
+      // overlay.value = false;
     });
 
     const returnIndex = async (idx: number, date: string | undefined) => {
-      // console.log(store.id);
-      console.log(store.input, store.rows);
       console.warn("Creating...");
       dataService.writeJson(
         store.id as number,
@@ -233,9 +224,6 @@ export default defineComponent({
         store.time,
         store.rows
       );
-
-      // store.input = "";
-      // store.time = "";
     };
 
     const removeItem = async (date: string | undefined, idx: number) => {
@@ -252,11 +240,6 @@ export default defineComponent({
       await dataService.WriteStatus(date as string, selected.value);
       status.value = await dataService.ReadStatus(date as string);
       console.log(status.value.Status);
-      // if (status !== undefined) {
-      //   console.log("status: ", status.Status);
-      //   selected.value = status.Status;
-      // }
-      // console.log(selected.value);
     };
 
     return {

@@ -9,18 +9,20 @@
         tile
         ref="valid"
         style="
-          border: 1px solid black;
-          height: 500px;
-          width: 800px;
+          border: 2px solid black;
+          height: 400px;
+          width: 700px;
           display: flex;
           justify-content: center;
           align-items: center;
+          border-radius: 20px;
         "
       >
         <v-row justify="center">
           <v-card-title>Login</v-card-title>
           <v-col cols="12">
             <v-text-field
+              prepend-icon="mdi-account"
               label="Username"
               type="text"
               color="cyan"
@@ -32,6 +34,7 @@
           </v-col>
           <v-col cols="12">
             <v-text-field
+              prepend-icon="mdi-lock"
               label="Password"
               type="password"
               style="padding-left: 25%; padding-right: 25%"
@@ -43,11 +46,11 @@
             ></v-text-field>
           </v-col>
 
-          <v-divider length="800px"></v-divider>
+          <v-divider length="700px"></v-divider>
           <v-col>
             <div class="text-right">
               <v-card-actions>
-                <v-btn rounded @click="login">Login</v-btn>
+                <v-btn @click="login">Login</v-btn>
 
                 <v-btn color="red" rounded @click="reset">reset</v-btn>
               </v-card-actions>
@@ -55,9 +58,9 @@
           </v-col>
         </v-row>
       </v-form>
-      <!-- <v-overlay :model-value="loading" class="align-center justify-center">
+      <v-overlay :model-value="loading" class="align-center justify-center">
         <v-progress-circular indeterminate size="64"></v-progress-circular>
-      </v-overlay> -->
+      </v-overlay>
     </v-main>
   </v-app>
 </template>
@@ -88,7 +91,7 @@ export default defineComponent({
     const loading = ref(false);
 
     const login = async () => {
-      // loading.value = true;
+      loading.value = true;
       let registerRequest = ref(false);
 
       if (validation.username !== "" && validation.password.length >= 8) {
@@ -97,7 +100,8 @@ export default defineComponent({
             validation.username,
             validation.password
           );
-          if (registerRequest.value)
+          if (registerRequest.value) {
+            loading.value = false;
             for (const route of router.getRoutes()) {
               if (route.meta.requiresAuth) {
                 let err = await router.push({
@@ -108,20 +112,24 @@ export default defineComponent({
               }
               router.push({ path: "/Login" });
             }
-          else
+          } else {
             toastMessage.error(
               "something went wrong. Check your password and username."
             );
+            loading.value = false;
+          }
         } catch (e) {
           toastMessage.error(
             "something went wrong. Check your password and username."
           );
+          loading.value = false;
         }
         console.log(registerRequest.value);
-      } else
+      } else {
         toastMessage.error("Something went wrong. Wrong username or password");
-
-      // loading.value = false;
+        loading.value = false;
+      }
+      loading.value = false;
     };
 
     const valid = ref(null);

@@ -26,16 +26,14 @@
         ref="container"
         id="test"
       >
-        <text-field :propsDate="`${i}.${currMonth}.${currYear}`"></text-field>
+        <Suspense>
+          <text-field :propsDate="`${i}.${currMonth}.${currYear}`"></text-field>
+          <template #fallback>Loading....</template>
+        </Suspense>
       </v-container>
     </v-main>
 
     <template v-slot:navIcons>
-      <v-btn icon @click="saving"
-        ><v-icon style="width: 35px" size="22"
-          >mdi-content-save-outline</v-icon
-        ></v-btn
-      >
       <v-btn icon
         ><v-icon style="width: 35px" size="22"
           >mdi-file-export-outline</v-icon
@@ -53,7 +51,7 @@
 import { defineComponent, inject, ref } from "@vue/runtime-core";
 import { useToast } from "vue-toastification";
 import BaseLayout from "../../boilerplate/layouts/Base.vue";
-import TextField, { save, date } from "./Text-Field.vue";
+import TextField from "./Text-Field.vue";
 
 export default defineComponent({
   components: { BaseLayout, TextField },
@@ -70,18 +68,6 @@ export default defineComponent({
     let currMonth = ref(calendarDate.getMonth() + 1);
     const currYear = ref(calendarDate.getFullYear());
     let time = ref<string | null>(null);
-    const saving = () => {
-      save(date.value);
-    };
-
-    // onMounted(() => {
-    //   window.addEventListener("keydown", (e) => {
-    //     if (e.key == "s" && e.altKey) {
-    //       saving();
-    //       e.preventDefault();
-    //     }
-    //   });
-    // });
 
     const computeDays = () => {
       if (
@@ -151,7 +137,6 @@ export default defineComponent({
       time,
       role,
       overlay,
-      saving,
       submit,
       switchPageRight,
       switchPageLeft,

@@ -151,6 +151,7 @@
             <td>{{ elem.role }}</td>
             <td class="text-right">
               <v-btn
+                style="margin: 5px"
                 v-if="elem.role === 'instructor'"
                 @click="
                   showRelations(elem.name);
@@ -159,6 +160,7 @@
                 "
                 ><v-icon size="20">mdi-cogs</v-icon></v-btn
               >
+
               <v-btn
                 v-if="elem.role !== 'admin'"
                 @click="deleteElemAt(elem, idx)"
