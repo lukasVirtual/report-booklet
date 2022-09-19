@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"strings"
 	"text/template"
 
 	"github.com/SebastiaanKlippert/go-wkhtmltopdf"
@@ -269,11 +270,20 @@ func ExportAsPdf() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	page := wkhtmltopdf.NewPageReader(bytes.NewReader(body.Bytes()))
-	page.EnableLocalFileAccess.Set(true)
-
-	pdf.AddPage(page)
+	months, _ := ioutil.ReadDir("/home/lukas/Documents/TextFieldOutput")
+	htmlStr := `<html><body>`
+	var resString string
+	for _, month := range months {
+		fmt.Println(month.Name())
+		output, _ := ReadFromJson(month.Name())
+		resString += htmlStr
+		for _, _ = range output {
+			resString += fmt.Sprintf(`<div style=" margin: auto;width: 800px;height: 100px;border: 1px solid black;border-radius: 20px;"><h1>%s</h1></div><div style="margin:auto; height: 400px; width: 800px; border: 1px solid black; border-radius: 20px"></div>`)
+		}
+		page := wkhtmltopdf.NewPageReader(strings.NewReader(resString))
+		// page.EnableLocalFileAccess.Set(true)
+		pdf.AddPage(page)
+	}
 
 	pdf.MarginLeft.Set(0)
 	pdf.MarginRight.Set(0)
