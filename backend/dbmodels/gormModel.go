@@ -1,11 +1,15 @@
 package dbmodels
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
+	"text/template"
+
+	"github.com/SebastiaanKlippert/go-wkhtmltopdf"
 )
 
 type JsonData struct {
@@ -246,4 +250,47 @@ func DeleteUserFromInstructor(instructor string) {
 
 func DelteSingleUserFromInstructor(client string) {
 	db.Debug().Table("users").Where("name = ?", client).Update("parent_id", 0)
+}
+
+func ExportAsPdf() ([]byte, error) {
+	var templ *template.Template
+	var err error
+
+	if templ, err = template.ParseFiles("/home/lukas/Documents/berichtsheft-project/backend/dbmodels/template.html"); err != nil {
+		return nil, err
+	}
+
+	var body bytes.Buffer
+	if err = templ.Execute(&body, ""); err != nil {
+		return nil, err
+	}
+
+	pdf, err := wkhtmltopdf.NewPDFGenerator()
+	if err != nil {
+		return nil, err
+	}
+
+	page := wkhtmltopdf.NewPageReader(bytes.NewReader(body.Bytes()))
+	page.EnableLocalFileAccess.Set(true)
+
+	pdf.AddPage(page)
+
+	pdf.MarginLeft.Set(0)
+	pdf.MarginRight.Set(0)
+	pdf.Dpi.Set(300)
+	pdf.PageSize.Set(wkhtmltopdf.PageSizeA4)
+	pdf.Orientation.Set(wkhtmltopdf.OrientationLandscape)
+
+	err = pdf.Create()
+	if err != nil {
+		return nil, err
+	}
+
+	ioutil.WriteFile("/home/lukas/Documents/test.pdf", []byte{}, 0755)
+	err = pdf.WriteFile("/home/lukas/Documents/test.pdf")
+	if err != nil {
+		return nil, err
+	}
+
+	return pdf.Bytes(), nil
 }
