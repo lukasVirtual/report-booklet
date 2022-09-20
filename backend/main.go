@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	// mongodb.InitMongoDb()
+	dbmodels.ExportAsPdf()
 	dbmodels.InitDB()
 	server.Init()
 }
