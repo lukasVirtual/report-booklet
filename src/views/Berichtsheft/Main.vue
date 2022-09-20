@@ -26,10 +26,7 @@
         ref="container"
         id="test"
       >
-        <Suspense>
-          <text-field :propsDate="`${i}.${currMonth}.${currYear}`"></text-field>
-          <template #fallback>Loading....</template>
-        </Suspense>
+        <text-field :propsDate="`${i}.${currMonth}.${currYear}`"></text-field>
       </v-container>
     </v-main>
 
@@ -48,7 +45,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, inject, ref } from "@vue/runtime-core";
+import { loginService } from "@/handler/loginHandler";
+import { defineComponent, onMounted, ref } from "@vue/runtime-core";
 import { useToast } from "vue-toastification";
 import BaseLayout from "../../boilerplate/layouts/Base.vue";
 import TextField from "./Text-Field.vue";
@@ -59,7 +57,7 @@ export default defineComponent({
 
   setup() {
     const calendarDate = new Date();
-    const role = ref(inject("role"));
+    const role = ref("");
     const toast = useToast();
     const overlay = ref(false);
 
@@ -68,6 +66,10 @@ export default defineComponent({
     let currMonth = ref(calendarDate.getMonth() + 1);
     const currYear = ref(calendarDate.getFullYear());
     let time = ref<string | null>(null);
+
+    onMounted(async () => {
+      role.value = (await loginService.getUserRole()) as unknown as string;
+    });
 
     const computeDays = () => {
       if (

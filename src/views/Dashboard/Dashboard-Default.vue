@@ -1,5 +1,5 @@
 <template>
-  <base-layout v-if="$route.name == 'Dashboard'">
+  <base-layout v-if="$route.path == '/Dashboard'">
     <v-main style="margin: 1.5rem">
       <v-card height="100%" width="100%">
         <div

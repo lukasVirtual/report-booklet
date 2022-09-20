@@ -199,13 +199,7 @@
 <script lang="ts">
 import { loginService } from "@/handler/loginHandler";
 import { dataService } from "@/handler/dataHandler";
-import {
-  defineComponent,
-  onMounted,
-  reactive,
-  inject,
-  ref,
-} from "@vue/runtime-core";
+import { defineComponent, onMounted, reactive, ref } from "@vue/runtime-core";
 import BaseLayout from "../../boilerplate/layouts/Base.vue";
 import { useToast } from "vue-toastification";
 
@@ -214,7 +208,7 @@ export default defineComponent({
   components: { BaseLayout },
 
   setup() {
-    const role = ref(inject("role"));
+    const role = ref("");
     const toast = useToast();
     let instructors = ref<string[]>([]);
     const instructor = ref("");
@@ -266,6 +260,7 @@ export default defineComponent({
     };
 
     onMounted(async () => {
+      role.value = (await loginService.getUserRole()) as unknown as string;
       data.value = await dataService.getAllData();
       for (const elem of data.value) {
         resultArr.value.push({

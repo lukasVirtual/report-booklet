@@ -40,7 +40,7 @@ func CheckUser(name string, user *User) bool {
 		return false
 	}
 
-	db.Debug().Raw("select name, password, role from users where name = ?", name).Scan(&user)
+	db.Raw("select name, password, role from users where name = ?", name).Scan(&user)
 
 	return true
 }

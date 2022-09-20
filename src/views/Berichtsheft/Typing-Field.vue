@@ -1,5 +1,6 @@
-<template v-if="$route.path === '/Berichtsheft'">
+<template>
   <v-textarea
+    v-if="$route.path === '/Berichtsheft'"
     @vnode-mounted="
       inputText = input;
       indexField = id;

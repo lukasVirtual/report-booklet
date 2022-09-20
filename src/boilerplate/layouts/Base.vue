@@ -97,7 +97,7 @@
 </template>
 <script lang="ts">
 import { loginService } from "@/handler/loginHandler";
-import { defineComponent, inject, onMounted, ref } from "vue";
+import { defineComponent, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 
 export default defineComponent({
@@ -116,8 +116,8 @@ export default defineComponent({
 
     console.log("value: ", toggleList.value);
     let role = ref("");
-    onMounted(() => {
-      role.value = inject("role") as string;
+    onMounted(async () => {
+      role.value = (await loginService.getUserRole()) as unknown as string;
     });
     let iconValue =
       theme.value == "dark"

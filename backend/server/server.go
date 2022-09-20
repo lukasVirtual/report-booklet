@@ -225,7 +225,6 @@ func StatusCheck(c *fiber.Ctx) error {
 	}
 
 	auth := sess.Get(AUTH_KEY)
-	fmt.Println(auth)
 	if auth != nil {
 		return c.Status(fiber.StatusOK).JSON(fiber.Map{
 			"message": "authenticated",

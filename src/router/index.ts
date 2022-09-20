@@ -6,7 +6,6 @@ import DashboardDefault from "../views/Dashboard/Dashboard-Default.vue";
 import AdminDefault from "../views/Admin/Admin-Default.vue";
 import InstructorDefault from "../views/Instructor/Instructor-Default.vue";
 import { loginService } from "@/handler/loginHandler";
-import { boot } from "../main";
 import CurriculumDefault from "@/views/Instructor/Curriculum-Default.vue";
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -88,7 +87,6 @@ router.beforeEach(async (to, from, next) => {
       const statusCheck = await loginService.checkStatus();
       console.log(statusCheck);
       if (statusCheck) {
-        await boot();
         next();
       } else next({ path: "/Login" });
     } catch (e) {

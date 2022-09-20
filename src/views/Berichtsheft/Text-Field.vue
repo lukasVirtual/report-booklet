@@ -191,7 +191,7 @@ export default defineComponent({
     };
 
     onMounted(async () => {
-      // overlay.value = true;
+      overlay.value = true;
       await Promise.all([
         dataService.ReadStatus(date.value as string),
         dataService.readJson(date.value as string),
@@ -212,7 +212,7 @@ export default defineComponent({
       if (status.value !== null) {
         selected.value = status.value.Status;
       }
-      // overlay.value = false;
+      overlay.value = false;
     });
 
     const returnIndex = async (idx: number, date: string | undefined) => {
