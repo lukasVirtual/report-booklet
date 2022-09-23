@@ -1,14 +1,12 @@
 package dbmodels
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
 	"strings"
-	"text/template"
 
 	"github.com/SebastiaanKlippert/go-wkhtmltopdf"
 )
@@ -143,9 +141,6 @@ func ReadFromJson(date string) ([]JsonData, error) {
 
 	_ = json.Unmarshal([]byte(file), &output)
 
-	// for _, v := range output {
-	// 	fmt.Println(v)
-	// }
 	return output, nil
 }
 
@@ -254,34 +249,26 @@ func DelteSingleUserFromInstructor(client string) {
 }
 
 func ExportAsPdf() ([]byte, error) {
-	var templ *template.Template
 	var err error
-
-	if templ, err = template.ParseFiles("/home/lukas/Documents/berichtsheft-project/backend/dbmodels/template.html"); err != nil {
-		return nil, err
-	}
-
-	var body bytes.Buffer
-	if err = templ.Execute(&body, ""); err != nil {
-		return nil, err
-	}
 
 	pdf, err := wkhtmltopdf.NewPDFGenerator()
 	if err != nil {
 		return nil, err
 	}
-	months, _ := ioutil.ReadDir("/home/lukas/Documents/TextFieldOutput")
+
+	months, _ := ioutil.ReadDir(destinationPath + "/Documents/TextFieldOutput")
 	htmlStr := `<html><body>`
 	var resString string
 	for _, month := range months {
 		fmt.Println(month.Name())
 		output, _ := ReadFromJson(month.Name())
 		resString += htmlStr
-		for _, _ = range output {
-			resString += fmt.Sprintf(`<div style=" margin: auto;width: 800px;height: 100px;border: 1px solid black;border-radius: 20px;"><h1>%s</h1></div><div style="margin:auto; height: 400px; width: 800px; border: 1px solid black; border-radius: 20px"></div>`)
+		for _, out := range output {
+			resString += fmt.Sprintf(`<div style=" margin: auto;width: 800px;height: 100px;border: 1px solid black;border-radius: 20px;"><h1>%s</h1></div><div style="margin:auto; height: 400px; width: 800px; border: 1px solid black; border-radius: 20px"></div>`, out.Date)
 		}
+		resString += "</html></body>"
 		page := wkhtmltopdf.NewPageReader(strings.NewReader(resString))
-		// page.EnableLocalFileAccess.Set(true)
+		page.EnableLocalFileAccess.Set(true)
 		pdf.AddPage(page)
 	}
 
@@ -296,8 +283,9 @@ func ExportAsPdf() ([]byte, error) {
 		return nil, err
 	}
 
-	ioutil.WriteFile("/home/lukas/Documents/test.pdf", []byte{}, 0755)
-	err = pdf.WriteFile("/home/lukas/Documents/test.pdf")
+	fmt.Println("Writing pdf")
+	ioutil.WriteFile(destinationPath+"/Documents/test.pdf", []byte{}, 0755)
+	err = pdf.WriteFile(destinationPath + "/Documents/test.pdf")
 	if err != nil {
 		return nil, err
 	}

@@ -44,6 +44,29 @@
   </base-layout>
 </template>
 
+<style>
+#scrollbar-colored {
+  scrollbar-base-color: #000;
+  scrollbar-color: grey;
+}
+
+::-webkit-scrollbar {
+  height: 12px;
+  width: 12px;
+  background: #191919;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #4c4c4c;
+  -webkit-border-radius: 1ex;
+  -webkit-box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.75);
+}
+
+::-webkit-scrollbar-corner {
+  background: #000;
+}
+</style>
+
 <script lang="ts">
 import { loginService } from "@/handler/loginHandler";
 import { defineComponent, onMounted, ref } from "@vue/runtime-core";

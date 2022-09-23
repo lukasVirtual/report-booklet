@@ -4,16 +4,13 @@
     @vnode-mounted="
       inputText = input;
       indexField = id;
-      rowCounter = Number(rows);
       fields = rowCounter;
     "
+    rows="1"
     auto-grow
-    spellcheck="true"
-    :rows="rowCounter"
-    @keyup.enter="rowCounter++"
-    @keydown.delete="rowCounter > 1 ? rowCounter-- : (rowCounter = 1)"
-    style="min-height: 60px"
+    spellcheck
     color="cyan"
+    filled
     v-model="inputText"
     @blur="update"
   ></v-textarea>
@@ -30,7 +27,6 @@
 import TimerTextField from "./Timer-TextField.vue";
 import { defineComponent, ref, watchEffect } from "@vue/runtime-core";
 import { store } from "@/handler/store";
-// import { timeStmp } from "./Text-Field.vue";
 
 export default defineComponent({
   name: "TypingField",
@@ -56,18 +52,20 @@ export default defineComponent({
       store.time = "00:00";
       console.log(fields.value, rowCounter.value);
     });
-    // if (store.input !== "") {
-    //   console.log(store.input);
-    //   emit("update");
-    // }
 
     const update = () => {
       if (
         store.input !== "" ||
-        inputText.value == "" ||
+        inputText.value === "" ||
         rowCounter.value !== fields.value
       ) {
-        console.log(store.input);
+        console.debug(
+          "testing typing field: ",
+          store.input,
+          inputText.value,
+          rowCounter.value,
+          fields.value
+        );
         emit("update");
       }
     };
@@ -76,7 +74,14 @@ export default defineComponent({
       emit("update");
     };
 
-    return { inputText, rowCounter, indexField, fields, update, callback };
+    return {
+      inputText,
+      rowCounter,
+      indexField,
+      fields,
+      update,
+      callback,
+    };
   },
 });
 </script>
