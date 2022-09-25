@@ -257,20 +257,31 @@ func ExportAsPdf() ([]byte, error) {
 	}
 
 	months, _ := ioutil.ReadDir(destinationPath + "/Documents/TextFieldOutput")
-	htmlStr := `<html><body>`
+
+	/*
+		Probably need to do some sort of Quick Sort because
+		currently it is sorting after the first digit [x].x.xxxx
+		needs to be sorted after x.[x].xxxx
+	*/
 	var resString string
+	resString = `<hmtl><header><h1 style="background: -webkit-linear-gradient(yellow, red); text-align:center">Report Booklet</h1></header><body>`
 	for _, month := range months {
 		fmt.Println(month.Name())
-		output, _ := ReadFromJson(month.Name())
-		resString += htmlStr
+
+		opt := strings.ReplaceAll(month.Name(), ".json", "")
+		output, _ := ReadFromJson(opt)
+		resString += `<div style="margin-top:180px; border:none">`
+		resString += fmt.Sprintf(`<div style="margin:auto;width: 800px;height: 80px;border: 1px solid black"><h1 style="text-align:center; justify-content: center">%s</h1></div>`, opt)
+		resString += `<div style="margin:auto;min-height: 100px; width: 800px; border: 1px black">`
 		for _, out := range output {
-			resString += fmt.Sprintf(`<div style=" margin: auto;width: 800px;height: 100px;border: 1px solid black;border-radius: 20px;"><h1>%s</h1></div><div style="margin:auto; height: 400px; width: 800px; border: 1px solid black; border-radius: 20px"></div>`, out.Date)
+			resString += fmt.Sprintf(`<li>%s</li>`, out.Input)
 		}
-		resString += "</html></body>"
-		page := wkhtmltopdf.NewPageReader(strings.NewReader(resString))
-		page.EnableLocalFileAccess.Set(true)
-		pdf.AddPage(page)
 	}
+	resString += "</div>"
+	resString += "</div>"
+	resString += "</body></html>"
+	page := wkhtmltopdf.NewPageReader(strings.NewReader(resString))
+	pdf.AddPage(page)
 
 	pdf.MarginLeft.Set(0)
 	pdf.MarginRight.Set(0)

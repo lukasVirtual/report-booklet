@@ -278,4 +278,29 @@ export class dataService {
 
     console.log(res.status);
   }
+
+  static async ExportAsPDF(): Promise<void> {
+    const res = await axios.get("http://127.0.0.1:5000/api/createdpdf");
+    if (res.status !== 200) {
+      throw new Error("Error while Creating Pdf");
+    }
+    const binaryString = window.atob(res.data);
+    const binaryLen = binaryString.length;
+    const bytes = new Uint8Array(binaryLen);
+    for (let i = 0; i < binaryLen; i++) {
+      const ascii = binaryString.charCodeAt(i);
+      bytes[i] = ascii;
+    }
+    const blob = new Blob([bytes], { type: "application/pdf" });
+    const href = URL.createObjectURL(blob);
+    const a = Object.assign(document.createElement("a"), {
+      href,
+      style: "display:none",
+      download: "bbbb.pdf",
+    });
+    document.body.appendChild(a);
+    a.click();
+    URL.revokeObjectURL(href);
+    a.remove();
+  }
 }

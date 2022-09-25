@@ -31,7 +31,7 @@
     </v-main>
 
     <template v-slot:navIcons>
-      <v-btn icon
+      <v-btn icon @click="exportAsPdf"
         ><v-icon style="width: 35px" size="22"
           >mdi-file-export-outline</v-icon
         ></v-btn
@@ -68,6 +68,7 @@
 </style>
 
 <script lang="ts">
+import { dataService } from "@/handler/dataHandler";
 import { loginService } from "@/handler/loginHandler";
 import { defineComponent, onMounted, ref } from "@vue/runtime-core";
 import { useToast } from "vue-toastification";
@@ -154,6 +155,11 @@ export default defineComponent({
       }, 3000);
     };
 
+    const exportAsPdf = async () => {
+      await dataService.ExportAsPDF();
+      toast.success("Succesfully Created PDF");
+    };
+
     return {
       daysOfMonth,
       currMonth,
@@ -161,6 +167,7 @@ export default defineComponent({
       toggleStage,
       time,
       role,
+      exportAsPdf,
       overlay,
       submit,
       switchPageRight,

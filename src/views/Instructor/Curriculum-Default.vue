@@ -1,6 +1,6 @@
 <template>
   <base-layout v-if="$route.name === 'Curriculum'">
-    <v-main style="display: flex; margin: auto">
+    <v-main style="margin: 1.5rem">
       <v-select
         :items="who"
         variant="underlined"
@@ -8,22 +8,28 @@
         v-model="selected"
       >
       </v-select>
-      <v-table
-        style="width: 1100px; max-width: 1400px; border-radius: 10px"
-        class="mt-5"
+      <v-container
+        style="width: auto; height: auto"
+        class="d-flex justify-center"
+        fluid
       >
-        <tbody>
-          <tr v-for="elem in items" :key="elem.title">
-            <td>{{ elem.title }}</td>
-            <td class="d-flex">
-              <v-checkbox
-                color="primary"
-                class="align-center justify-center"
-              ></v-checkbox>
-            </td>
-          </tr>
-        </tbody>
-      </v-table>
+        <v-table
+          style="width: 1100px; max-width: 1400px; border-radius: 10px"
+          class="mt-5"
+        >
+          <tbody>
+            <tr v-for="elem in items" :key="elem.title">
+              <td>{{ elem.title }}</td>
+              <td class="d-flex">
+                <v-checkbox
+                  color="primary"
+                  class="align-center justify-center"
+                ></v-checkbox>
+              </td>
+            </tr>
+          </tbody>
+        </v-table>
+      </v-container>
     </v-main>
   </base-layout>
 </template>

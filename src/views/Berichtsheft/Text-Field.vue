@@ -26,10 +26,6 @@
             variant="underlined"
             style="max-width: 120px; max-height: 60px"
             v-model="selected"
-            :menu-props="{
-              closeOnClick: true,
-              closeOnContentClick: true,
-            }"
           ></v-select>
         </v-card-actions>
       </v-card>

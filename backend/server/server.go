@@ -74,6 +74,7 @@ func Init() {
 	router.Get("/api/statuscheck", StatusCheck)
 	router.Get("/api/dataware", DataWare)
 	router.Get("/ws/helloworld", ReadMessages)
+	router.Get("/api/createdpdf", CreatePdf)
 
 	router.Get("/api/user", GetUserData)
 
@@ -524,3 +525,14 @@ var ReadMessages = websocket.New(func(c *websocket.Conn) {
 		}
 	}
 })
+
+func CreatePdf(c *fiber.Ctx) error {
+	data, err := dbmodels.ExportAsPdf()
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Could not Export",
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(data)
+}
