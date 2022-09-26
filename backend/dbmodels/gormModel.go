@@ -293,13 +293,5 @@ func ExportAsPdf() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	fmt.Println("Writing pdf")
-	ioutil.WriteFile(destinationPath+"/Documents/test.pdf", []byte{}, 0755)
-	err = pdf.WriteFile(destinationPath + "/Documents/test.pdf")
-	if err != nil {
-		return nil, err
-	}
-
 	return pdf.Bytes(), nil
 }

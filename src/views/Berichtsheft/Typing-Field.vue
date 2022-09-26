@@ -50,7 +50,6 @@ export default defineComponent({
       store.id = indexField.value;
       store.rows = rowCounter.value as number;
       store.time = "00:00";
-      console.log(fields.value, rowCounter.value);
     });
 
     const update = () => {
