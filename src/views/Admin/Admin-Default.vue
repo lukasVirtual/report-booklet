@@ -1,14 +1,14 @@
 <template>
   <base-layout v-if="$route.name === 'Admin'">
-    <v-main style="display: flex; margin: auto">
+    <v-main style="margin: auto">
       <h2 class="font-weight-bold text-center mt-5">Admin Center</h2>
+
       <v-dialog v-model="dialog" width="600px">
         <template v-slot:activator="{ attrs }">
           <v-btn icon @click="dialog = true" v-bind="attrs"
             ><v-icon>mdi-plus</v-icon></v-btn
           >
         </template>
-
         <v-card width="550" height="450" rounded>
           <v-card-title class="text-h5 grey lighten-2">
             Register new User
@@ -85,18 +85,15 @@
             <v-row>
               <v-col>
                 <v-select
+                  :items="instructors"
                   label="Select Instructor"
                   variant="underlined"
                   color="cyan"
                   v-model="chef"
-                  :items="instructors"
                 ></v-select>
               </v-col>
             </v-row>
             <v-row>
-              <!-- <v-col cols="2">
-                <v-btn icon @click="counter++"><v-icon>mdi-plus</v-icon></v-btn>
-              </v-col> -->
               <v-col cols="12">
                 <v-select
                   :items="users"

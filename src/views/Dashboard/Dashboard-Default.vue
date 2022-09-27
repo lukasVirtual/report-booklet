@@ -1,7 +1,7 @@
 <template>
   <base-layout v-if="$route.path == '/Dashboard'">
     <v-main style="margin: 1.5rem">
-      <v-card height="100%" width="100%">
+      <v-card height="100%" width="100%" style="position: relative">
         <div
           class="text-center d-flex align-center justify-center mb-6"
           style="height: 75%"
@@ -34,7 +34,7 @@
             v-model="knowledge"
             height="25"
             color="red"
-            style="width: 90%"
+            style="width: 85%"
           >
             <v-card-title>Progress Curriculum:</v-card-title>
             <strong style="color: red">{{ Math.ceil(knowledge) }}%</strong>

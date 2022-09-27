@@ -24,18 +24,16 @@
       </template>
       <v-list width="400px" height="500">
         <v-list-item v-for="(quali, idx) in qualis" :key="idx">
-          <v-list-item-title>
+          <template v-slot:prepend>
             <v-list-item-title>{{ quali.Text }}</v-list-item-title>
-          </v-list-item-title>
-          <v-spacer></v-spacer>
-          <v-list-item>
+          </template>
+          <template v-slot:append>
             <v-checkbox
-              class=""
               v-model="quali.State"
               @click="changeState(idx)"
               color="deep-purple accent-4"
             ></v-checkbox>
-          </v-list-item>
+          </template>
         </v-list-item>
       </v-list>
     </v-menu>

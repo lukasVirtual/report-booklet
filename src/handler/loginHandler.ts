@@ -60,7 +60,7 @@ export class loginService /* implements loginServiceInterface */ {
       },
       body: inputData,
     });
-    console.log(res.body);
+    console.log(res.status);
     return res.status === 200 ? true : false;
   }
 
