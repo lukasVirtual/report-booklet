@@ -50,7 +50,7 @@ export default defineComponent({
   },
   emits: ["updateTime"],
 
-  setup(props, { emit }) {
+  setup() {
     const times = [
       { title: "00:00" },
       { title: "00:30" },

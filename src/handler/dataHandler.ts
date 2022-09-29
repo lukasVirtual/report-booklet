@@ -296,11 +296,43 @@ export class dataService {
     const a = Object.assign(document.createElement("a"), {
       href,
       style: "display:none",
-      download: "bbbb.pdf",
+      download: "report.pdf",
     });
     document.body.appendChild(a);
     a.click();
     URL.revokeObjectURL(href);
     a.remove();
+  }
+
+  static async insertCurriculum(person: string, qualis: any[]): Promise<void> {
+    const values = JSON.stringify({
+      date: person,
+      qualifications: qualis,
+    });
+    const res = await fetch("http://127.0.0.1:5000/api/insertcurriculum", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
+      },
+      body: values,
+    });
+    console.log(res.status);
+  }
+
+  static async readCurriculum(person: string): Promise<any> {
+    const values = JSON.stringify({
+      date: person,
+    });
+
+    const res = await fetch("http://127.0.0.1:5000/api/readcurriculum", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
+      },
+      body: values,
+    });
+    return res.json();
   }
 }

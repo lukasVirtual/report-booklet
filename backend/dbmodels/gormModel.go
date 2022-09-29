@@ -193,23 +193,23 @@ func ReadStatusJson(date string) (StatusJson, error) {
 	return output, nil
 }
 
-func WriteQualificationsJson(qualis []interface{}, date string) {
-	if _, err := ioutil.ReadDir(destinationPath + "/Documents/Qualifications/"); err != nil {
+func WriteQualificationsJson(qualis []interface{}, date, endpoint string) {
+	if _, err := ioutil.ReadDir(destinationPath + endpoint); err != nil {
 		fmt.Println("Creating Directory...")
-		os.Mkdir(destinationPath+"/Documents/Qualifications/", 0755)
+		os.Mkdir(destinationPath+endpoint, 0755)
 	}
 
 	data, _ := json.MarshalIndent(qualis, " ", " ")
-	ioutil.WriteFile(destinationPath+"/Documents/Qualifications/"+date+".json", data, 0755)
+	ioutil.WriteFile(destinationPath+endpoint+date+".json", data, 0755)
 }
 
 type QualificationFormReturn struct {
-	Text  string
+	Title string
 	State bool
 }
 
-func ReadQualificationsJson(date string) []QualificationFormReturn {
-	data, _ := ioutil.ReadFile(destinationPath + "/Documents/Qualifications/" + date + ".json")
+func ReadQualificationsJson(date, endpoint string) []QualificationFormReturn {
+	data, _ := ioutil.ReadFile(destinationPath + endpoint + date + ".json")
 
 	var qualis []QualificationFormReturn
 	_ = json.Unmarshal(data, &qualis)
@@ -258,11 +258,12 @@ func ExportAsPdf() ([]byte, error) {
 
 	months, _ := ioutil.ReadDir(destinationPath + "/Documents/TextFieldOutput")
 
-	/*
-		Probably need to do some sort of Quick Sort because
-		currently it is sorting after the first digit [x].x.xxxx
-		needs to be sorted after x.[x].xxxx
+	/* TODO
+	Probably need to do some sort of Quick Sort because
+	currently it is sorting after the first digit [x].x.xxxx
+	needs to be sorted after x.[x].xxxx
 	*/
+
 	var resString string
 	resString = `<hmtl><header><h1 style="background: -webkit-linear-gradient(yellow, red); text-align:center">Report Booklet</h1></header><body>`
 	for _, month := range months {

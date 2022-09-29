@@ -25,7 +25,7 @@
       <v-list width="400px" height="500">
         <v-list-item v-for="(quali, idx) in qualis" :key="idx">
           <template v-slot:prepend>
-            <v-list-item-title>{{ quali.Text }}</v-list-item-title>
+            <v-list-item-title>{{ quali.Title }}</v-list-item-title>
           </template>
           <template v-slot:append>
             <v-checkbox
@@ -46,7 +46,6 @@ import { defineComponent, onMounted, ref } from "@vue/runtime-core";
 
 export default defineComponent({
   name: "QualificationsDefault",
-
   props: {
     dateTextField: String,
     statusTextField: String,
@@ -56,70 +55,69 @@ export default defineComponent({
     const qualis = ref();
     const status = ref<string | undefined>("");
     const stateTrue = ref();
-
-    const qualifications = [
+    const qualifications: any = [
       {
-        text: "the first qualification",
+        title: "the first qualification",
         state: false,
       },
       {
-        text: "the first qualification",
+        title: "the first qualification",
         state: false,
       },
       {
-        text: "the first qualification",
+        title: "the first qualification",
         state: false,
       },
       {
-        text: "the first qualification",
+        title: "the first qualification",
         state: false,
       },
       {
-        text: "the first qualification",
+        title: "the first qualification",
         state: false,
       },
       {
-        text: "the first qualification",
+        title: "the first qualification",
         state: false,
       },
       {
-        text: "the first qualification",
+        title: "the first qualification",
         state: false,
       },
       {
-        text: "the first qualification",
+        title: "the first qualification",
         state: false,
       },
       {
-        text: "the first qualification",
+        title: "the first qualification",
         state: false,
       },
       {
-        text: "the first qualification",
+        title: "the first qualification",
         state: false,
       },
       {
-        text: "the first qualification",
+        title: "the first qualification",
         state: false,
       },
       {
-        text: "the first qualification",
+        title: "the first qualification",
         state: false,
       },
       {
-        text: "the first qualification",
+        title: "the first qualification",
         state: false,
       },
       {
-        text: "the first qualification",
+        title: "the first qualification",
         state: false,
       },
       {
-        text: "the first qualification",
+        title: "the first qualification",
         state: false,
       },
       {
-        text: "the first qualification",
+        title: "the first qualification",
         state: false,
       },
     ];
@@ -132,7 +130,6 @@ export default defineComponent({
     const test = async () => {
       console.log(date.value);
       console.log(status.value);
-      // console.error(qualis.value);
       if (qualis.value?.length < 16 || qualis.value == undefined) {
         await dataService.insertQualifications(
           qualifications,
@@ -141,11 +138,9 @@ export default defineComponent({
         console.log("empty");
       }
       qualis.value = await dataService.getQualifications(date.value as string);
-      // console.warn(qualis.value);
     };
 
     const changeState = async (idx: number) => {
-      // qualifications[idx].state = !qualifications[idx].state;
       qualis.value[idx].State = !qualis.value[idx].State;
       await dataService.insertQualifications(
         qualis.value,

@@ -122,10 +122,7 @@ export default defineComponent({
         currMonth.value = 1;
         currYear.value++;
       }
-
       computeDays();
-
-      // localStorage.getItem(props.propsDate);
     };
 
     const switchPageLeft = async () => {
@@ -156,8 +153,12 @@ export default defineComponent({
     };
 
     const exportAsPdf = async () => {
-      await dataService.ExportAsPDF();
-      toast.success("Succesfully Created PDF");
+      try {
+        await dataService.ExportAsPDF();
+        toast.success("Succesfully Created PDF");
+      } catch (e) {
+        toast.error("Error while Exporting");
+      }
     };
 
     return {
