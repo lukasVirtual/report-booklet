@@ -279,6 +279,7 @@ export default defineComponent({
       ) {
         loginService.register(input.name, input.password, input.role);
         resultArr.value.push({ name: input.name, role: input.role });
+        toast.success("successfully registered new user");
         input.name = "";
         input.password = "";
         input.role = "";
