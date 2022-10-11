@@ -155,12 +155,12 @@ export default defineComponent({
       );
 
       out.value = await dataService.readJson(propsDate as string);
-      console.error(out.value.length);
+      // console.error(out.value.length);
     };
 
     const showDate = (propsDate: string | undefined) => {
       date.value = propsDate;
-      console.log("propsDate = ", date.value);
+      // console.log("propsDate = ", date.value);
     };
 
     onMounted(async () => {
@@ -174,7 +174,7 @@ export default defineComponent({
       });
       if (out.value !== null) {
         if (out.value?.length > 0) {
-          console.log(out.value);
+          // console.log(out.value);
           // console.warn(out.value[index.value]);
           if (out.value[index.value]) {
             inputField.value = out.value[index.value].Input;

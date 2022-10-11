@@ -28,7 +28,7 @@ export class loginService /* implements loginServiceInterface */ {
       credentials: "include",
       body: inputData,
     });
-    console.log(res.body);
+    console.log(await res.json());
     return res.status === 200 ? true : false;
   }
 
@@ -71,6 +71,10 @@ export class loginService /* implements loginServiceInterface */ {
     return res.status === 200 ? true : false;
   }
 
+  /* TODO 
+    remove duplication
+  */
+
   static async getUserRole(): Promise<any> {
     const res = await axios.get("http://127.0.0.1:5000/api/user", {
       withCredentials: true,
@@ -82,6 +86,12 @@ export class loginService /* implements loginServiceInterface */ {
       withCredentials: true,
     });
     return res.data.Name;
+  }
+  static async getUserID(): Promise<any> {
+    const res = await axios.get("http://127.0.0.1:5000/api/user", {
+      withCredentials: true,
+    });
+    return res.data.ID;
   }
 
   // static async getAllData(): Promise<any> {

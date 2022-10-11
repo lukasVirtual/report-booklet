@@ -97,6 +97,7 @@
 </template>
 <script lang="ts">
 import { loginService } from "@/handler/loginHandler";
+import { io } from "socket.io-client";
 import { defineComponent, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 
@@ -110,9 +111,9 @@ export default defineComponent({
     const router = useRouter();
     const overlay = ref(true);
     const showHearbeat = ref(false);
-    console.log(localStorage.getItem("list-state"));
     const toggleList =
       localStorage.getItem("list-state") == "true" ? ref(true) : ref(false);
+    const socket = io("http://localhost:7000");
 
     console.log("value: ", toggleList.value);
     let role = ref("");
@@ -126,6 +127,10 @@ export default defineComponent({
 
     const logout = async () => {
       // loading.value = true;
+      socket.emit("logout", {
+        user_name: await loginService.getUser(),
+        user_id: await loginService.getUserID(),
+      });
       const logoutHandling = await loginService.logout();
       console.log(logoutHandling);
 

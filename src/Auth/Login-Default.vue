@@ -68,6 +68,7 @@
 <script lang="ts">
 import { loginService } from "@/handler/loginHandler";
 import { defineComponent, reactive, ref } from "@vue/runtime-core";
+import { io } from "socket.io-client";
 import { useRouter } from "vue-router";
 import { useToast } from "vue-toastification";
 
@@ -79,12 +80,11 @@ export default defineComponent({
       required: (value: string) => !!value || "Required",
       minLen: (v: string) => v.length >= 8 || "Min. 8 Characters",
     };
-
     const validation = reactive({
       username: "",
       password: "",
     });
-
+    const socket = io("http://localhost:7000");
     const router = useRouter();
     const toastMessage = useToast();
 
@@ -102,6 +102,10 @@ export default defineComponent({
           );
           if (registerRequest.value) {
             loading.value = false;
+            socket.emit("login", {
+              user_name: await loginService.getUser(),
+              user_id: await loginService.getUserID(),
+            });
             for (const route of router.getRoutes()) {
               if (route.meta.requiresAuth) {
                 let err = await router.push({

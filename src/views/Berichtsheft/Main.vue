@@ -74,6 +74,7 @@ import { defineComponent, onMounted, ref } from "@vue/runtime-core";
 import { useToast } from "vue-toastification";
 import BaseLayout from "../../boilerplate/layouts/Base.vue";
 import TextField from "./Text-Field.vue";
+import { io } from "socket.io-client";
 
 export default defineComponent({
   components: { BaseLayout, TextField },
@@ -84,6 +85,7 @@ export default defineComponent({
     const role = ref("");
     const toast = useToast();
     const overlay = ref(false);
+    const socket = io("http://localhost:7000");
 
     let daysOfMonth = ref(31);
     let toggleStage = ref(false);
@@ -146,6 +148,7 @@ export default defineComponent({
       overlay.value = true;
       toggleStage.value = !toggleStage.value;
       time.value = `${calendarDate.getHours()}:${calendarDate.getMinutes()}:${calendarDate.getSeconds()}`;
+      socket.emit("submit", "hello from user", "felix");
       setTimeout(() => {
         toast.success("successfully submitted");
         overlay.value = false;

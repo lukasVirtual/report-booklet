@@ -8,6 +8,7 @@
         v-model="selected"
       >
       </v-select>
+      <h1 id="test"></h1>
       <v-container
         style="width: auto; height: auto"
         class="d-flex justify-center"
@@ -23,6 +24,7 @@
 import { dataService } from "@/handler/dataHandler";
 import { loginService } from "@/handler/loginHandler";
 import { defineComponent, onMounted, ref } from "@vue/runtime-core";
+import { io } from "socket.io-client";
 import BaseLayout from "../../boilerplate/layouts/Base.vue";
 
 export default defineComponent({
@@ -31,11 +33,18 @@ export default defineComponent({
   setup() {
     const who = ref<string[]>([]);
     const selected = ref("");
+    const socket = io("http://localhost:7000");
 
     onMounted(async () => {
       const instructor = await loginService.getUser();
       const users = await dataService.GetAllUserForInstructor(instructor);
       who.value = users.map((v: { Name: string }) => v.Name);
+      const elem = document.getElementById("test");
+      socket.on("test", (message) => {
+        console.log("recieved");
+        if (elem) elem.innerHTML = message;
+        console.log(message);
+      });
     });
 
     return { who, selected };
