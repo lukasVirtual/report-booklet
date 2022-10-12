@@ -40,20 +40,16 @@ func InitDB() {
 	switch runtime.GOOS {
 	case "windows":
 		dsn = "root:1234@tcp(127.0.0.1:3306)/test"
-		break
 	case "linux":
 		dsn = "sqluser:password@tcp(localhost:3306)/test"
-		break
 	default:
 		dsn = "sqluser:password@tcp(localhost:3306)/test"
-		break
 	}
-	// dsnWindows := "root:1234@tcp(127.0.0.1:3306)/test"
-	// dsnLinux := "sqluser:password@tcp(localhost:3306)/test"
+
 	db, err = gorm.Open("mysql", dsn+"?charset=utf8&parseTime=True&loc=Local")
 
 	if err != nil {
-		panic("Error Occured when tried to open DB")
+		log.Fatalf("Error Occured when tried to open DB: %s", err)
 	} else {
 		log.Println("successfully connected")
 	}

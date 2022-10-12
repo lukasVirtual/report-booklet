@@ -73,7 +73,7 @@ import { loginService } from "@/handler/loginHandler";
 import { defineComponent, onMounted, ref } from "@vue/runtime-core";
 import { useToast } from "vue-toastification";
 import BaseLayout from "../../boilerplate/layouts/Base.vue";
-import TextField from "./Text-Field.vue";
+import TextField, { date } from "./Text-Field.vue";
 import { io } from "socket.io-client";
 
 export default defineComponent({
@@ -144,11 +144,21 @@ export default defineComponent({
       computeDays();
     };
 
-    const submit = () => {
+    const submit = async () => {
       overlay.value = true;
       toggleStage.value = !toggleStage.value;
       time.value = `${calendarDate.getHours()}:${calendarDate.getMinutes()}:${calendarDate.getSeconds()}`;
-      socket.emit("submit", "hello from user", "felix");
+      console.log(date.value?.split("."));
+      // const data = dataService.readJson(date.value as string);
+      const instructor = await dataService.GetInstructorForUser(
+        await loginService.getUser()
+      );
+      console.log(instructor);
+      socket.emit(
+        "submit",
+        JSON.stringify({ id: 0, date: "1.10.2022", text: "hello world" }),
+        instructor
+      );
       setTimeout(() => {
         toast.success("successfully submitted");
         overlay.value = false;

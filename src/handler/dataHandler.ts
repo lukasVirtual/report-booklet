@@ -335,4 +335,21 @@ export class dataService {
     });
     return res.json();
   }
+
+  static async GetInstructorForUser(username: string): Promise<string> {
+    const values = JSON.stringify({
+      name: username,
+    });
+
+    const res = await fetch("http://127.0.0.1:5000/api/findInstructor", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
+      },
+      body: values,
+    });
+
+    return res.json();
+  }
 }

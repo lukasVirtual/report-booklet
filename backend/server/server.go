@@ -73,6 +73,7 @@ func Init() {
 	router.Post("/api/returnUsers", GetUserBelongInstructor)
 	router.Post("/api/insertcurriculum", InsertCurriculum)
 	router.Post("/api/readcurriculum", GetCurriculum)
+	router.Post("/api/findInstructor", GetInstructor)
 	router.Get("/api/statuscheck", StatusCheck)
 	router.Get("/api/dataware", DataWare)
 	router.Get("/ws/helloworld", ReadMessages)
@@ -403,7 +404,7 @@ func InsertQualifications(c *fiber.Ctx) error {
 	if err != nil {
 		log.Fatalf("something went wrong parsing json: %v", err)
 	}
-	dbmodels.WriteQualificationsJson(qualis.Qualifications, qualis.Date, "/Documents/Qualifications/")
+	dbmodels.WriteQualificationsJson(qualis.Qualifications, qualis.Date, "/Dokumente/Qualifications/")
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"message": "successfully inserted data into mongodb",
@@ -416,7 +417,7 @@ func GetQualifications(c *fiber.Ctx) error {
 	if err != nil {
 		log.Fatalf("something went wrong parsing json: %v", err)
 	}
-	output := dbmodels.ReadQualificationsJson(qualis.Date, "/Documents/Qualifications/")
+	output := dbmodels.ReadQualificationsJson(qualis.Date, "/Dokumente/Qualifications/")
 	return c.Status(fiber.StatusOK).JSON(output)
 }
 
@@ -543,7 +544,7 @@ func InsertCurriculum(c *fiber.Ctx) error {
 		log.Fatalf("Could not parse data from json: %v", err)
 	}
 
-	dbmodels.WriteQualificationsJson(data.Qualifications, data.Date, "/Documents/Curriculum/")
+	dbmodels.WriteQualificationsJson(data.Qualifications, data.Date, "/Dokumente/Curriculum/")
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"message": "Successfully saved Curriculum",
@@ -557,7 +558,19 @@ func GetCurriculum(c *fiber.Ctx) error {
 		log.Fatalf("Could not parse data from json: %v", err)
 	}
 
-	out := dbmodels.ReadQualificationsJson(data.Date, "/Documents/Curriculum/")
+	out := dbmodels.ReadQualificationsJson(data.Date, "/Dokumente/Curriculum/")
 
 	return c.Status(fiber.StatusOK).JSON(out)
+}
+
+func GetInstructor(c *fiber.Ctx) error {
+	var data User
+	err := c.BodyParser(&data)
+	if err != nil {
+		log.Fatalf("Could not parse data from json: %v", err)
+	}
+
+	instructor := dbmodels.FindInstructor(data.Name)
+
+	return c.Status(fiber.StatusOK).JSON(instructor)
 }

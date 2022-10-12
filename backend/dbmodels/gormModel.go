@@ -3,7 +3,6 @@ package dbmodels
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"strings"
@@ -91,14 +90,14 @@ func SaveAsJson(id int, date, input, time string, rows int) {
 		fmt.Println("Something went wrong saving json")
 	}
 
-	if _, err := ioutil.ReadDir(destinationPath + "/Documents/TextFieldOutput/"); err != nil {
+	if _, err := os.ReadDir(destinationPath + "/Dokumente/TextFieldOutput/"); err != nil {
 		fmt.Println("Creating Directory...")
-		os.Mkdir(destinationPath+"/Documents/TextFieldOutput/", 0755)
+		os.Mkdir(destinationPath+"/Dokumente/TextFieldOutput/", 0755)
 	}
 
-	if _, err := ioutil.ReadFile(destinationPath + "/Documents/TextFieldOutput/" + date + ".json"); err != nil {
+	if _, err := os.ReadFile(destinationPath + "/Dokumente/TextFieldOutput/" + date + ".json"); err != nil {
 		fmt.Println("Creating File...")
-		ioutil.WriteFile(destinationPath+"/Documents/TextFieldOutput/"+date+".json", data, 0645)
+		os.WriteFile(destinationPath+"/Dokumente/TextFieldOutput/"+date+".json", data, 0645)
 
 	} else {
 		local := []JsonData{}
@@ -126,13 +125,13 @@ func SaveAsJson(id int, date, input, time string, rows int) {
 		// fmt.Println(local)
 		appendData, _ := json.MarshalIndent(local, " ", " ")
 
-		ioutil.WriteFile(destinationPath+"/Documents/TextFieldOutput/"+date+".json", appendData, 0755)
+		os.WriteFile(destinationPath+"/Dokumente/TextFieldOutput/"+date+".json", appendData, 0755)
 	}
 
 }
 
 func ReadFromJson(date string) ([]JsonData, error) {
-	file, err := ioutil.ReadFile(destinationPath + "/Documents/TextFieldOutput/" + date + ".json")
+	file, err := os.ReadFile(destinationPath + "/Dokumente/TextFieldOutput/" + date + ".json")
 	if err != nil {
 		return nil, err
 	}
@@ -160,7 +159,7 @@ func RemoveFromJson(date string, index int) {
 	}
 	rawData, _ := json.MarshalIndent(local, " ", " ")
 
-	ioutil.WriteFile(destinationPath+"/Documents/TextFieldOutput/"+date+".json", rawData, 0755)
+	os.WriteFile(destinationPath+"/Dokumente/TextFieldOutput/"+date+".json", rawData, 0755)
 
 }
 
@@ -169,18 +168,18 @@ type Form struct {
 }
 
 func WriteStatusJson(date, status string) {
-	if _, err := ioutil.ReadDir(destinationPath + "/Documents/AbsenceStatus/"); err != nil {
+	if _, err := os.ReadDir(destinationPath + "/Dokumente/AbsenceStatus/"); err != nil {
 		fmt.Println("Creating Directory...")
-		os.Mkdir(destinationPath+"/Documents/AbsenceStatus/", 0755)
+		os.Mkdir(destinationPath+"/Dokumente/AbsenceStatus/", 0755)
 	}
 	rec := Form{Status: status}
 	data, _ := json.MarshalIndent(rec, " ", " ")
 
-	ioutil.WriteFile(destinationPath+"/Documents/AbsenceStatus/"+date+".json", data, 0755)
+	os.WriteFile(destinationPath+"/Dokumente/AbsenceStatus/"+date+".json", data, 0755)
 }
 
 func ReadStatusJson(date string) (StatusJson, error) {
-	data, err := ioutil.ReadFile(destinationPath + "/Documents/AbsenceStatus/" + date + ".json")
+	data, err := os.ReadFile(destinationPath + "/Dokumente/AbsenceStatus/" + date + ".json")
 	if err != nil {
 		return StatusJson{}, err
 	}
@@ -194,13 +193,13 @@ func ReadStatusJson(date string) (StatusJson, error) {
 }
 
 func WriteQualificationsJson(qualis []interface{}, date, endpoint string) {
-	if _, err := ioutil.ReadDir(destinationPath + endpoint); err != nil {
+	if _, err := os.ReadDir(destinationPath + endpoint); err != nil {
 		fmt.Println("Creating Directory...")
 		os.Mkdir(destinationPath+endpoint, 0755)
 	}
 
 	data, _ := json.MarshalIndent(qualis, " ", " ")
-	ioutil.WriteFile(destinationPath+endpoint+date+".json", data, 0755)
+	os.WriteFile(destinationPath+endpoint+date+".json", data, 0755)
 }
 
 type QualificationFormReturn struct {
@@ -209,7 +208,7 @@ type QualificationFormReturn struct {
 }
 
 func ReadQualificationsJson(date, endpoint string) []QualificationFormReturn {
-	data, _ := ioutil.ReadFile(destinationPath + endpoint + date + ".json")
+	data, _ := os.ReadFile(destinationPath + endpoint + date + ".json")
 
 	var qualis []QualificationFormReturn
 	_ = json.Unmarshal(data, &qualis)
@@ -220,7 +219,7 @@ func ReadQualificationsJson(date, endpoint string) []QualificationFormReturn {
 func UpdateId(nameInstructor, nameUser string) {
 	var user User
 
-	db.Debug().Find(&user, "name = ?", nameInstructor)
+	db.Debug().Find(&user, "name = ?", nameInstructor).Update("parent_id", user.Model.ID)
 	fmt.Println(user.Model.ID)
 	db.Debug().Table("users").Where("name = ?", nameUser).Update("parent_id", user.Model.ID)
 }
@@ -256,7 +255,7 @@ func ExportAsPdf() ([]byte, error) {
 		return nil, err
 	}
 
-	months, _ := ioutil.ReadDir(destinationPath + "/Documents/TextFieldOutput")
+	months, _ := os.ReadDir(destinationPath + "/Dokumente/TextFieldOutput")
 
 	/* TODO
 	Probably need to do some sort of Quick Sort because
@@ -295,4 +294,12 @@ func ExportAsPdf() ([]byte, error) {
 		return nil, err
 	}
 	return pdf.Bytes(), nil
+}
+
+func FindInstructor(username string) string {
+	var user User
+	db.Debug().Find(&user, "name=?", username)
+	var instructor User
+	db.Debug().Where("parent_id=? AND role='instructor'", user.Parent_id).Find(&instructor)
+	return instructor.Name
 }

@@ -42,7 +42,7 @@ export default defineComponent({
       const elem = document.getElementById("test");
       socket.on("test", (message) => {
         console.log("recieved");
-        if (elem) elem.innerHTML = message;
+        if (elem) elem.innerHTML = message.date;
         console.log(message);
       });
     });
