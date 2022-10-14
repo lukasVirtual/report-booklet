@@ -78,7 +78,7 @@ func GetRelations(instructor string) []User {
 
 	db.Debug().Find(&user, "name = ?", instructor)
 	// db.Debug().Find(&users, "parent_id = ?", user.Model.ID)
-	db.Raw("select id, parent_id, name from users where parent_id = ?", user.Model.ID).Scan(&users)
+	db.Raw("select id, parent_id, name from users where parent_id = ? AND NOT name=?", user.Model.ID, instructor).Scan(&users)
 
 	fmt.Println(users)
 	return users
