@@ -90,15 +90,14 @@ func SaveAsJson(id int, date, input, time string, rows int) {
 		fmt.Println("Something went wrong saving json")
 	}
 
-	if _, err := os.ReadDir(destinationPath + "/Dokumente/TextFieldOutput/"); err != nil {
+	if _, err := os.ReadDir(destinationPath + "/Documents/TextFieldOutput/"); err != nil {
 		fmt.Println("Creating Directory...")
-		os.Mkdir(destinationPath+"/Dokumente/TextFieldOutput/", 0755)
+		os.Mkdir(destinationPath+"/Documents/TextFieldOutput/", 0755)
 	}
 
-	if _, err := os.ReadFile(destinationPath + "/Dokumente/TextFieldOutput/" + date + ".json"); err != nil {
+	if _, err := os.ReadFile(destinationPath + "/Documents/TextFieldOutput/" + date + ".json"); err != nil {
 		fmt.Println("Creating File...")
-		os.WriteFile(destinationPath+"/Dokumente/TextFieldOutput/"+date+".json", data, 0645)
-
+		os.WriteFile(destinationPath+"/Documents/TextFieldOutput/"+date+".json", data, 0645)
 	} else {
 		local := []JsonData{}
 		output, _ := ReadFromJson(date)
@@ -125,13 +124,13 @@ func SaveAsJson(id int, date, input, time string, rows int) {
 		// fmt.Println(local)
 		appendData, _ := json.MarshalIndent(local, " ", " ")
 
-		os.WriteFile(destinationPath+"/Dokumente/TextFieldOutput/"+date+".json", appendData, 0755)
+		os.WriteFile(destinationPath+"/Documents/TextFieldOutput/"+date+".json", appendData, 0755)
 	}
 
 }
 
 func ReadFromJson(date string) ([]JsonData, error) {
-	file, err := os.ReadFile(destinationPath + "/Dokumente/TextFieldOutput/" + date + ".json")
+	file, err := os.ReadFile(destinationPath + "/Documents/TextFieldOutput/" + date + ".json")
 	if err != nil {
 		return nil, err
 	}
@@ -159,7 +158,7 @@ func RemoveFromJson(date string, index int) {
 	}
 	rawData, _ := json.MarshalIndent(local, " ", " ")
 
-	os.WriteFile(destinationPath+"/Dokumente/TextFieldOutput/"+date+".json", rawData, 0755)
+	os.WriteFile(destinationPath+"/Documents/TextFieldOutput/"+date+".json", rawData, 0755)
 
 }
 
@@ -168,18 +167,18 @@ type Form struct {
 }
 
 func WriteStatusJson(date, status string) {
-	if _, err := os.ReadDir(destinationPath + "/Dokumente/AbsenceStatus/"); err != nil {
+	if _, err := os.ReadDir(destinationPath + "/Documents/AbsenceStatus/"); err != nil {
 		fmt.Println("Creating Directory...")
-		os.Mkdir(destinationPath+"/Dokumente/AbsenceStatus/", 0755)
+		os.Mkdir(destinationPath+"/Documents/AbsenceStatus/", 0755)
 	}
 	rec := Form{Status: status}
 	data, _ := json.MarshalIndent(rec, " ", " ")
 
-	os.WriteFile(destinationPath+"/Dokumente/AbsenceStatus/"+date+".json", data, 0755)
+	os.WriteFile(destinationPath+"/Documents/AbsenceStatus/"+date+".json", data, 0755)
 }
 
 func ReadStatusJson(date string) (StatusJson, error) {
-	data, err := os.ReadFile(destinationPath + "/Dokumente/AbsenceStatus/" + date + ".json")
+	data, err := os.ReadFile(destinationPath + "/Documents/AbsenceStatus/" + date + ".json")
 	if err != nil {
 		return StatusJson{}, err
 	}
@@ -249,21 +248,24 @@ func DelteSingleUserFromInstructor(client string) {
 
 func ExportAsPdf() ([]byte, error) {
 	var err error
-
+	/*
+	 *only needed for Windows
+	 */
+	wkhtmltopdf.SetPath(`C:/Program Files/wkhtmltopdf/bin/wkhtmltopdf`)
 	pdf, err := wkhtmltopdf.NewPDFGenerator()
 	if err != nil {
 		return nil, err
 	}
 
-	months, _ := os.ReadDir(destinationPath + "/Dokumente/TextFieldOutput")
+	months, _ := os.ReadDir(destinationPath + "/Documents/TextFieldOutput")
 
-	/* TODO
-	Probably need to do some sort of Quick Sort because
+	/* TODO Probably need to do some sort of Quick Sort because
 	currently it is sorting after the first digit [x].x.xxxx
 	needs to be sorted after x.[x].xxxx
 	*/
 
 	var resString string
+
 	resString = `<hmtl><header><h1 style="background: -webkit-linear-gradient(yellow, red); text-align:center">Report Booklet</h1></header><body>`
 	for _, month := range months {
 		fmt.Println(month.Name())
@@ -302,4 +304,21 @@ func FindInstructor(username string) string {
 	var instructor User
 	db.Debug().Where("parent_id=? AND role='instructor'", user.Parent_id).Find(&instructor)
 	return instructor.Name
+}
+
+func ReadJsonMonth(month string) ([]JsonData, error) {
+	var dataStore []JsonData
+	files, _ := os.ReadDir(destinationPath + "/Documents/TextFieldOutput/")
+	for _, val := range files {
+		character := strings.Split(val.Name(), ".")
+		if month == character[1] {
+			data, err := ReadFromJson(strings.ReplaceAll(val.Name(), ".json", ""))
+			if err != nil {
+				return nil, err
+			}
+			dataStore = append(dataStore, data...)
+		}
+	}
+
+	return dataStore, nil
 }

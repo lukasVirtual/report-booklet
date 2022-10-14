@@ -21,7 +21,7 @@ io.on('connection', (socket) => {
 
     socket.on('logout', (user) => {
         console.log(`User: ${user.user_name} with id ${user.user_id} disconnected`)
-        if (socketUsers.get(user.user_name) !== undefined) socketUsers.delete(user.user_name)
+        if (socketUsers.get(user.user_name)) socketUsers.delete(user.user_name)
     })
     
     socket.on('submit', (data, sendTo) => {
@@ -34,8 +34,14 @@ io.on('connection', (socket) => {
              * sending to specific user is currently not
              * working need to fix that
             */   
-            //socket.broadcast.to(reciever).emit("test", data) 
-            io.emit("test", JSON.parse(data))
+            //socket.broadcast.to(reciever).emit("test", data)
+            // io.to(reciever).emit("test", data)
+            // reciever.emit("test", data)
+            // console.log(io.sockets)
+            
+            //io.to(reciever).emit("test", data)
+ 
+            io.emit("test", data)
             console.debug("message sent")
         } else {
             console.error("error: ", reciever)

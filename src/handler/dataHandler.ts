@@ -1,355 +1,384 @@
 import axios from "axios";
 
 export class dataService {
-  static async getAllData(): Promise<any> {
-    const res = await axios.get("http://127.0.0.1:5000/api/dataware");
-    return res.data;
-  }
-
-  static async deleteItem(name: string): Promise<void> {
-    const input = JSON.stringify({
-      name: name,
-    });
-
-    const res = await fetch("http://127.0.0.1:5000/api/delete", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: input,
-    });
-    console.log(res.status);
-  }
-
-  static async saveForm(text: string, time: string): Promise<void> {
-    const input = JSON.stringify({
-      input: text,
-      timeStamp: time,
-    });
-
-    const res = await fetch("http://127.0.0.1:5000/api/insertinput", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
-      },
-      body: input,
-    });
-
-    console.log(res);
-    console.log("status from saving form: ", res.status);
-  }
-
-  static async saveTextField(date: string): Promise<void> {
-    const input = JSON.stringify({
-      calendarDate: date,
-    });
-
-    const res = await fetch("http://127.0.0.1:5000/api/inserttext", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
-      },
-      body: input,
-    });
-
-    console.log(res);
-    console.log("status from saving TextField: ", res.status);
-  }
-
-  static async getTextFieldData(date: string): Promise<any> {
-    const input = JSON.stringify({
-      calendarDate: date,
-    });
-
-    const res = await fetch("http://127.0.0.1:5000/api/getTextFieldData", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
-      },
-      body: input,
-    });
-
-    console.log("status getting TextField data", res.status);
-    return res.json();
-  }
-
-  static async writeJson(
-    Id: number,
-    Date: string,
-    Input: string,
-    Time: string,
-    Rows: number
-  ): Promise<void> {
-    const values = JSON.stringify({
-      id: Id,
-      date: Date,
-      input: Input,
-      time: Time,
-      rows: Rows,
-    });
-    const res = await fetch("http://127.0.0.1:5000/api/writeJson", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
-      },
-      body: values,
-    });
-
-    console.log(res.status);
-  }
-
-  static async readJson(date: string): Promise<[]> {
-    const values = JSON.stringify({
-      date: date,
-    });
-    const res = await fetch("http://127.0.0.1:5000/api/readJson", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
-      },
-      body: values,
-    });
-    return res.json();
-  }
-
-  static async removeJson(date: string, index: number): Promise<void> {
-    const values = JSON.stringify({
-      index: index,
-      date: date,
-    });
-
-    const res = await fetch("http://127.0.0.1:5000/api/removeJson", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
-      },
-      body: values,
-    });
-
-    console.log(res.status);
-  }
-
-  static async insertQualifications(
-    qualis: {
-      text: string;
-      state: boolean;
-    }[],
-    date: string
-  ): Promise<void> {
-    const values = JSON.stringify({
-      date: date,
-      qualifications: qualis,
-    });
-
-    const res = await fetch("http://127.0.0.1:5000/api/insertQualifications", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
-      },
-      body: values,
-    });
-
-    console.log(res.status);
-  }
-
-  static async getQualifications(date: string): Promise<any> {
-    const values = JSON.stringify({
-      date: date,
-    });
-
-    const res = await fetch("http://127.0.0.1:5000/api/getQualifications", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
-      },
-      body: values,
-    });
-
-    return res.json();
-  }
-
-  static async WriteStatus(date: string, status: string): Promise<void> {
-    const values = JSON.stringify({
-      date: date,
-      status: status,
-    });
-
-    const res = await fetch("http://127.0.0.1:5000/api/writeStatusJson", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
-      },
-      body: values,
-    });
-
-    console.log(res.status);
-  }
-
-  static async ReadStatus(date: string): Promise<[]> {
-    const values = JSON.stringify({
-      date: date,
-    });
-
-    const res = await fetch("http://127.0.0.1:5000/api/readStatusJson", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
-      },
-      body: values,
-    });
-
-    return res.json();
-  }
-
-  static async AssignUserToInstructor(
-    instructorsName: string,
-    usersName: string
-  ): Promise<void> {
-    const values = JSON.stringify({
-      instructorsName: instructorsName,
-      usersName: usersName,
-    });
-    const res = await fetch("http://127.0.0.1:5000/api/assigne", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
-      },
-      body: values,
-    });
-
-    console.log(res.status);
-  }
-
-  static async GetAllUserForInstructor(instructor: string): Promise<[]> {
-    const values = JSON.stringify({
-      instructorsName: instructor,
-    });
-    const res = await fetch("http://127.0.0.1:5000/api/returnUsers", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
-      },
-      body: values,
-    });
-
-    return res.json();
-  }
-
-  static async DelteUsersFromInstructor(instructor: string): Promise<void> {
-    const values = JSON.stringify({
-      instructorsName: instructor,
-    });
-
-    const res = await fetch("http://127.0.0.1:5000/api/delteUserInstructor", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
-      },
-      body: values,
-    });
-
-    console.log(`delted all users from instructor with status: ${res.status}`);
-  }
-
-  static async DelteSingleUserFromInstructor(user: string): Promise<void> {
-    const values = JSON.stringify({
-      usersName: user,
-    });
-
-    const res = await fetch("http://127.0.0.1:5000/api/removeUserInstructor", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
-      },
-      body: values,
-    });
-
-    console.log(res.status);
-  }
-
-  static async ExportAsPDF(): Promise<void> {
-    const res = await axios.get("http://127.0.0.1:5000/api/createdpdf");
-    if (res.status !== 200) {
-      throw new Error("Error while Creating Pdf");
+    static async getAllData(): Promise<any> {
+        const res = await axios.get("http://127.0.0.1:5000/api/dataware");
+        return res.data;
     }
-    const binaryString = window.atob(res.data);
-    const binaryLen = binaryString.length;
-    const bytes = new Uint8Array(binaryLen);
-    for (let i = 0; i < binaryLen; i++) {
-      const ascii = binaryString.charCodeAt(i);
-      bytes[i] = ascii;
+
+    static async deleteItem(name: string): Promise<void> {
+        const input = JSON.stringify({
+            name: name,
+        });
+
+        const res = await fetch("http://127.0.0.1:5000/api/delete", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: input,
+        });
+        console.log(res.status);
     }
-    const blob = new Blob([bytes], { type: "application/pdf" });
-    const href = URL.createObjectURL(blob);
-    const a = Object.assign(document.createElement("a"), {
-      href,
-      style: "display:none",
-      download: "report.pdf",
-    });
-    document.body.appendChild(a);
-    a.click();
-    URL.revokeObjectURL(href);
-    a.remove();
-  }
 
-  static async insertCurriculum(person: string, qualis: any[]): Promise<void> {
-    const values = JSON.stringify({
-      date: person,
-      qualifications: qualis,
-    });
-    const res = await fetch("http://127.0.0.1:5000/api/insertcurriculum", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
-      },
-      body: values,
-    });
-    console.log(res.status);
-  }
+    static async saveForm(text: string, time: string): Promise<void> {
+        const input = JSON.stringify({
+            input: text,
+            timeStamp: time,
+        });
 
-  static async readCurriculum(person: string): Promise<any> {
-    const values = JSON.stringify({
-      date: person,
-    });
+        const res = await fetch("http://127.0.0.1:5000/api/insertinput", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
+            },
+            body: input,
+        });
 
-    const res = await fetch("http://127.0.0.1:5000/api/readcurriculum", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
-      },
-      body: values,
-    });
-    return res.json();
-  }
+        console.log(res);
+        console.log("status from saving form: ", res.status);
+    }
 
-  static async GetInstructorForUser(username: string): Promise<string> {
-    const values = JSON.stringify({
-      name: username,
-    });
+    static async saveTextField(date: string): Promise<void> {
+        const input = JSON.stringify({
+            calendarDate: date,
+        });
 
-    const res = await fetch("http://127.0.0.1:5000/api/findInstructor", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
-      },
-      body: values,
-    });
+        const res = await fetch("http://127.0.0.1:5000/api/inserttext", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
+            },
+            body: input,
+        });
 
-    return res.json();
-  }
+        console.log(res);
+        console.log("status from saving TextField: ", res.status);
+    }
+
+    static async getTextFieldData(date: string): Promise<any> {
+        const input = JSON.stringify({
+            calendarDate: date,
+        });
+
+        const res = await fetch("http://127.0.0.1:5000/api/getTextFieldData", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
+            },
+            body: input,
+        });
+
+        console.log("status getting TextField data", res.status);
+        return res.json();
+    }
+
+    static async writeJson(
+        Id: number,
+        Date: string,
+        Input: string,
+        Time: string,
+        Rows: number
+    ): Promise<void> {
+        const values = JSON.stringify({
+            id: Id,
+            date: Date,
+            input: Input,
+            time: Time,
+            rows: Rows,
+        });
+        const res = await fetch("http://127.0.0.1:5000/api/writeJson", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
+            },
+            body: values,
+        });
+
+        console.log(res.status);
+    }
+
+    static async readJson(date: string): Promise<[]> {
+        const values = JSON.stringify({
+            date: date,
+        });
+        const res = await fetch("http://127.0.0.1:5000/api/readJson", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
+            },
+            body: values,
+        });
+        return res.json();
+    }
+
+    static async removeJson(date: string, index: number): Promise<void> {
+        const values = JSON.stringify({
+            index: index,
+            date: date,
+        });
+
+        const res = await fetch("http://127.0.0.1:5000/api/removeJson", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
+            },
+            body: values,
+        });
+
+        console.log(res.status);
+    }
+
+    static async insertQualifications(
+        qualis: {
+            text: string;
+            state: boolean;
+        }[],
+        date: string
+    ): Promise<void> {
+        const values = JSON.stringify({
+            date: date,
+            qualifications: qualis,
+        });
+
+        const res = await fetch(
+            "http://127.0.0.1:5000/api/insertQualifications",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
+                },
+                body: values,
+            }
+        );
+
+        console.log(res.status);
+    }
+
+    static async getQualifications(date: string): Promise<any> {
+        const values = JSON.stringify({
+            date: date,
+        });
+
+        const res = await fetch("http://127.0.0.1:5000/api/getQualifications", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
+            },
+            body: values,
+        });
+
+        return res.json();
+    }
+
+    static async WriteStatus(date: string, status: string): Promise<void> {
+        const values = JSON.stringify({
+            date: date,
+            status: status,
+        });
+
+        const res = await fetch("http://127.0.0.1:5000/api/writeStatusJson", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
+            },
+            body: values,
+        });
+
+        console.log(res.status);
+    }
+
+    static async ReadStatus(date: string): Promise<[]> {
+        const values = JSON.stringify({
+            date: date,
+        });
+
+        const res = await fetch("http://127.0.0.1:5000/api/readStatusJson", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
+            },
+            body: values,
+        });
+
+        return res.json();
+    }
+
+    static async AssignUserToInstructor(
+        instructorsName: string,
+        usersName: string
+    ): Promise<void> {
+        const values = JSON.stringify({
+            instructorsName: instructorsName,
+            usersName: usersName,
+        });
+        const res = await fetch("http://127.0.0.1:5000/api/assigne", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
+            },
+            body: values,
+        });
+
+        console.log(res.status);
+    }
+
+    static async GetAllUserForInstructor(instructor: string): Promise<[]> {
+        const values = JSON.stringify({
+            instructorsName: instructor,
+        });
+        const res = await fetch("http://127.0.0.1:5000/api/returnUsers", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
+            },
+            body: values,
+        });
+
+        return res.json();
+    }
+
+    static async DelteUsersFromInstructor(instructor: string): Promise<void> {
+        const values = JSON.stringify({
+            instructorsName: instructor,
+        });
+
+        const res = await fetch(
+            "http://127.0.0.1:5000/api/delteUserInstructor",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
+                },
+                body: values,
+            }
+        );
+
+        console.log(
+            `delted all users from instructor with status: ${res.status}`
+        );
+    }
+
+    static async DelteSingleUserFromInstructor(user: string): Promise<void> {
+        const values = JSON.stringify({
+            usersName: user,
+        });
+
+        const res = await fetch(
+            "http://127.0.0.1:5000/api/removeUserInstructor",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
+                },
+                body: values,
+            }
+        );
+
+        console.log(res.status);
+    }
+
+    static async ExportAsPDF(): Promise<void> {
+        const res = await axios.get("http://127.0.0.1:5000/api/createdpdf");
+        if (res.status !== 200) {
+            throw new Error("Error while Creating Pdf");
+        }
+        const binaryString = window.atob(res.data);
+        const binaryLen = binaryString.length;
+        const bytes = new Uint8Array(binaryLen);
+        for (let i = 0; i < binaryLen; i++) {
+            const ascii = binaryString.charCodeAt(i);
+            bytes[i] = ascii;
+        }
+        const blob = new Blob([bytes], { type: "application/pdf" });
+        const href = URL.createObjectURL(blob);
+        const a = Object.assign(document.createElement("a"), {
+            href,
+            style: "display:none",
+            download: "report.pdf",
+        });
+        document.body.appendChild(a);
+        a.click();
+        URL.revokeObjectURL(href);
+        a.remove();
+    }
+
+    static async insertCurriculum(
+        person: string,
+        qualis: any[]
+    ): Promise<void> {
+        const values = JSON.stringify({
+            date: person,
+            qualifications: qualis,
+        });
+        const res = await fetch("http://127.0.0.1:5000/api/insertcurriculum", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
+            },
+            body: values,
+        });
+        console.log(res.status);
+    }
+
+    static async readCurriculum(person: string): Promise<any> {
+        const values = JSON.stringify({
+            date: person,
+        });
+
+        const res = await fetch("http://127.0.0.1:5000/api/readcurriculum", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
+            },
+            body: values,
+        });
+        return res.json();
+    }
+
+    static async GetInstructorForUser(username: string): Promise<string> {
+        const values = JSON.stringify({
+            name: username,
+        });
+
+        const res = await fetch("http://127.0.0.1:5000/api/findInstructor", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
+            },
+            body: values,
+        });
+
+        return res.json();
+    }
+
+    static async GetJsonMonth(month: string): Promise<[]> {
+        const values = JSON.stringify({
+            date: month,
+        });
+        const res = await fetch("http://127.0.0.1:5000/api/readJsonMonth", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
+            },
+            body: values,
+        });
+        return res.json();
+    }
 }
