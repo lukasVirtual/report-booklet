@@ -12,6 +12,7 @@ import (
 	"github.com/gofiber/websocket/v2"
 	_ "github.com/gofiber/websocket/v2"
 	"golang.org/x/crypto/bcrypt"
+	jsonhandler "www.github.com/backend/Jsonhandler"
 	"www.github.com/backend/dbmodels"
 	"www.github.com/backend/mongodb"
 )
@@ -262,9 +263,7 @@ func GetUserData(c *fiber.Ctx) error {
 		})
 	}
 
-	var user dbmodels.User
-
-	user = dbmodels.GetUser(fmt.Sprint(userId))
+	var user dbmodels.User = dbmodels.GetUser(fmt.Sprint(userId))
 	// if err != nil {
 	// 	return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 	// 		"message": "Not Authorized",
@@ -345,21 +344,21 @@ func GetTextFieldData(c *fiber.Ctx) error {
 }
 
 func WriteJson(c *fiber.Ctx) error {
-	var jdata dbmodels.JsonData
+	var jdata jsonhandler.JsonData
 	err := c.BodyParser(&jdata)
 
 	if err != nil {
 		fmt.Println("Could not read data")
 	}
 	//fmt.Println(jdata.Date)
-	dbmodels.SaveAsJson(jdata.Id, jdata.Date, jdata.Input, jdata.Time, jdata.Rows)
+	jsonhandler.SaveAsJson(jdata.Id, jdata.Date, jdata.Input, jdata.Time, jdata.Rows)
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"message": "Successfully created Json",
 	})
 }
 
 func ReadJson(c *fiber.Ctx) error {
-	var jsonOutput dbmodels.JsonData
+	var jsonOutput jsonhandler.JsonData
 	err := c.BodyParser(&jsonOutput)
 
 	if err != nil {
@@ -368,7 +367,7 @@ func ReadJson(c *fiber.Ctx) error {
 
 	// fmt.Println(jsonOutput.Date)
 
-	output, _ := dbmodels.ReadFromJson(jsonOutput.Date)
+	output, _ := jsonhandler.ReadFromJson(jsonOutput.Date)
 	// fmt.Println(output)
 	// if err != nil {
 	// 	return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
@@ -391,7 +390,7 @@ func RemoveJson(c *fiber.Ctx) error {
 		log.Fatalf("something went wrong parsing json: %v", err)
 	}
 
-	dbmodels.RemoveFromJson(jsonOutput.Date, jsonOutput.Index)
+	jsonhandler.RemoveFromJson(jsonOutput.Date, jsonOutput.Index)
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"message": "successfully removed from Json",
@@ -405,7 +404,7 @@ func InsertQualifications(c *fiber.Ctx) error {
 	if err != nil {
 		log.Fatalf("something went wrong parsing json: %v", err)
 	}
-	dbmodels.WriteQualificationsJson(qualis.Qualifications, qualis.Date, "/Documents/Qualifications/")
+	jsonhandler.WriteQualificationsJson(qualis.Qualifications, qualis.Date, "/Dokumente/Qualifications/")
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"message": "successfully inserted data into mongodb",
@@ -418,18 +417,18 @@ func GetQualifications(c *fiber.Ctx) error {
 	if err != nil {
 		log.Fatalf("something went wrong parsing json: %v", err)
 	}
-	output := dbmodels.ReadQualificationsJson(qualis.Date, "/Documents/Qualifications/")
+	output := jsonhandler.ReadQualificationsJson(qualis.Date, "/Dokumente/Qualifications/")
 	return c.Status(fiber.StatusOK).JSON(output)
 }
 
 func WriteStatus(c *fiber.Ctx) error {
-	var inputData dbmodels.StatusJson
+	var inputData jsonhandler.StatusJson
 	err := c.BodyParser(&inputData)
 	if err != nil {
 		log.Fatalf("Could not read data: %v", err)
 	}
 
-	dbmodels.WriteStatusJson(inputData.Date, inputData.Status)
+	jsonhandler.WriteStatusJson(inputData.Date, inputData.Status)
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"message": "successfully inserted status",
@@ -437,13 +436,13 @@ func WriteStatus(c *fiber.Ctx) error {
 }
 
 func ReadStatus(c *fiber.Ctx) error {
-	var inputData dbmodels.StatusJson
+	var inputData jsonhandler.StatusJson
 	err := c.BodyParser(&inputData)
 	if err != nil {
 		log.Fatalf("Could not read data: %v", err)
 	}
 
-	out, _ := dbmodels.ReadStatusJson(inputData.Date)
+	out, _ := jsonhandler.ReadStatusJson(inputData.Date)
 
 	return c.Status(fiber.StatusOK).JSON(out)
 }
@@ -545,7 +544,7 @@ func InsertCurriculum(c *fiber.Ctx) error {
 		log.Fatalf("Could not parse data from json: %v", err)
 	}
 
-	dbmodels.WriteQualificationsJson(data.Qualifications, data.Date, "/Documents/Curriculum/")
+	jsonhandler.WriteQualificationsJson(data.Qualifications, data.Date, "/Dokumente/Curriculum/")
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"message": "Successfully saved Curriculum",
@@ -559,7 +558,7 @@ func GetCurriculum(c *fiber.Ctx) error {
 		log.Fatalf("Could not parse data from json: %v", err)
 	}
 
-	out := dbmodels.ReadQualificationsJson(data.Date, "/Documents/Curriculum/")
+	out := jsonhandler.ReadQualificationsJson(data.Date, "/Dokumente/Curriculum/")
 
 	return c.Status(fiber.StatusOK).JSON(out)
 }
@@ -577,13 +576,13 @@ func GetInstructor(c *fiber.Ctx) error {
 }
 
 func ReadJsonForMonth(c *fiber.Ctx) error {
-	var data dbmodels.JsonData
+	var data jsonhandler.JsonData
 	err := c.BodyParser(&data)
 	if err != nil {
 		log.Fatalf("Could not parse data from json: %v", err)
 	}
 
-	output, err := dbmodels.ReadJsonMonth(data.Date)
+	output, err := jsonhandler.ReadJsonMonth(data.Date)
 	if err != nil {
 		log.Fatalf("Error while reading Json for the Month %s, error: %v", data.Date, err)
 	}

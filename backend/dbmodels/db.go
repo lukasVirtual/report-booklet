@@ -3,6 +3,7 @@ package dbmodels
 import (
 	"fmt"
 	"log"
+	"os"
 	"runtime"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -10,8 +11,9 @@ import (
 )
 
 var (
-	db  *gorm.DB
-	err error
+	db                 *gorm.DB
+	err                error
+	destinationPath, _ = os.UserHomeDir()
 )
 
 type User struct {
