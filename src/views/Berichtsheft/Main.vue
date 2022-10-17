@@ -168,12 +168,14 @@ export default defineComponent({
         };
 
         const exportAsPdf = async () => {
+            overlay.value = true
             try {
                 await dataService.ExportAsPDF();
                 toast.success("Succesfully Created PDF");
             } catch (e) {
                 toast.error("Error while Exporting");
             }
+            overlay.value = false
         };
 
         return {
