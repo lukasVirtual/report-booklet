@@ -14,7 +14,8 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	jsonhandler "www.github.com/backend/Jsonhandler"
 	"www.github.com/backend/dbmodels"
-	"www.github.com/backend/mongodb"
+	serverfiles "www.github.com/backend/server_files"
+	// "www.github.com/backend/mongodb"
 )
 
 var (
@@ -28,6 +29,11 @@ type User struct {
 	Name     string `json: "name"`
 	Password string `json: "password"`
 	Role     string `json: "role"`
+}
+
+type SubmittedData struct {
+	Name string                 `json: "name"`
+	Data []serverfiles.JsonData `json: "jsonData"`
 }
 
 func Init() {
@@ -64,16 +70,16 @@ func Init() {
 	router.Post("/api/readJson", ReadJson)
 	router.Post("/api/removeJson", RemoveJson)
 	router.Post("/api/getTextFieldData", GetTextFieldData)
-	router.Post("/api/insertQualifications", InsertQualifications)
-	router.Post("/api/getQualifications", GetQualifications)
+	router.Post("/api/saveSubmittedData", SaveSubmittedData)
+	router.Post("/api/retrieveSubmittedData", RetrieveSubmittedData)
 	router.Post("/api/writeStatusJson", WriteStatus)
 	router.Post("/api/readStatusJson", ReadStatus)
 	router.Post("/api/assigne", AssignUsertoInstructor)
 	router.Post("/api/delteUserInstructor", DelteUserInstructor)
 	router.Post("/api/removeUserInstructor", RemoveSingleUserFromInstructor)
 	router.Post("/api/returnUsers", GetUserBelongInstructor)
-	router.Post("/api/insertcurriculum", InsertCurriculum)
-	router.Post("/api/readcurriculum", GetCurriculum)
+	// router.Post("/api/insertcurriculum", InsertCurriculum)
+	// router.Post("/api/readcurriculum", GetCurriculum)
 	router.Post("/api/findInstructor", GetInstructor)
 	router.Post("/api/readJsonMonth", ReadJsonForMonth)
 	router.Get("/api/statuscheck", StatusCheck)
@@ -398,28 +404,28 @@ func RemoveJson(c *fiber.Ctx) error {
 
 }
 
-func InsertQualifications(c *fiber.Ctx) error {
-	var qualis mongodb.QualificationForm
-	err := c.BodyParser(&qualis)
-	if err != nil {
-		log.Fatalf("something went wrong parsing json: %v", err)
-	}
-	jsonhandler.WriteQualificationsJson(qualis.Qualifications, qualis.Date, "/Dokumente/Qualifications/")
+// func InsertQualifications(c *fiber.Ctx) error {
+// 	var qualis mongodb.QualificationForm
+// 	err := c.BodyParser(&qualis)
+// 	if err != nil {
+// 		log.Fatalf("something went wrong parsing json: %v", err)
+// 	}
+// 	jsonhandler.WriteQualificationsJson(qualis.Qualifications, qualis.Date, "/Dokumente/Qualifications/")
 
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"message": "successfully inserted data into mongodb",
-	})
-}
+// 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+// 		"message": "successfully inserted data into mongodb",
+// 	})
+// }
 
-func GetQualifications(c *fiber.Ctx) error {
-	var qualis mongodb.QualificationForm
-	err := c.BodyParser(&qualis)
-	if err != nil {
-		log.Fatalf("something went wrong parsing json: %v", err)
-	}
-	output := jsonhandler.ReadQualificationsJson(qualis.Date, "/Dokumente/Qualifications/")
-	return c.Status(fiber.StatusOK).JSON(output)
-}
+// func GetQualifications(c *fiber.Ctx) error {
+// 	var qualis mongodb.QualificationForm
+// 	err := c.BodyParser(&qualis)
+// 	if err != nil {
+// 		log.Fatalf("something went wrong parsing json: %v", err)
+// 	}
+// 	output := jsonhandler.ReadQualificationsJson(qualis.Date, "/Dokumente/Qualifications/")
+// 	return c.Status(fiber.StatusOK).JSON(output)
+// }
 
 func WriteStatus(c *fiber.Ctx) error {
 	var inputData jsonhandler.StatusJson
@@ -537,31 +543,31 @@ func CreatePdf(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(data)
 }
 
-func InsertCurriculum(c *fiber.Ctx) error {
-	var data mongodb.QualificationForm
-	err := c.BodyParser(&data)
-	if err != nil {
-		log.Fatalf("Could not parse data from json: %v", err)
-	}
+// func InsertCurriculum(c *fiber.Ctx) error {
+// 	var data mongodb.QualificationForm
+// 	err := c.BodyParser(&data)
+// 	if err != nil {
+// 		log.Fatalf("Could not parse data from json: %v", err)
+// 	}
 
-	jsonhandler.WriteQualificationsJson(data.Qualifications, data.Date, "/Dokumente/Curriculum/")
+// 	jsonhandler.WriteQualificationsJson(data.Qualifications, data.Date, "/Dokumente/Curriculum/")
 
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"message": "Successfully saved Curriculum",
-	})
-}
+// 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+// 		"message": "Successfully saved Curriculum",
+// 	})
+// }
 
-func GetCurriculum(c *fiber.Ctx) error {
-	var data mongodb.QualificationForm
-	err := c.BodyParser(&data)
-	if err != nil {
-		log.Fatalf("Could not parse data from json: %v", err)
-	}
+// func GetCurriculum(c *fiber.Ctx) error {
+// 	var data mongodb.QualificationForm
+// 	err := c.BodyParser(&data)
+// 	if err != nil {
+// 		log.Fatalf("Could not parse data from json: %v", err)
+// 	}
 
-	out := jsonhandler.ReadQualificationsJson(data.Date, "/Dokumente/Curriculum/")
+// 	out := jsonhandler.ReadQualificationsJson(data.Date, "/Dokumente/Curriculum/")
 
-	return c.Status(fiber.StatusOK).JSON(out)
-}
+// 	return c.Status(fiber.StatusOK).JSON(out)
+// }
 
 func GetInstructor(c *fiber.Ctx) error {
 	var data User
@@ -588,4 +594,32 @@ func ReadJsonForMonth(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusOK).JSON(output)
+}
+
+func SaveSubmittedData(c *fiber.Ctx) error {
+	var data SubmittedData
+	err := c.BodyParser(&data)
+	if err != nil {
+		log.Fatalf("Could not parse data from json: %v", err)
+	}
+
+	serverfiles.SaveSubmittedData(data.Name, data.Data)
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message": "successfully inserted data",
+	})
+}
+
+func RetrieveSubmittedData(c *fiber.Ctx) error {
+	var data SubmittedData
+	err := c.BodyParser(&data)
+	if err != nil {
+		log.Fatalf("Could not parse data from json: %v", err)
+	}
+
+	serverfiles.RetrieveSubmittedData(data.Name)
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message": "successfully retrieved data",
+	})
 }
