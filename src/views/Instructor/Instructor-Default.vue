@@ -1,67 +1,76 @@
 <template>
-    <base-layout v-if="$route.name === 'Instructor'">
-        <v-main style="margin: 1.5rem">
-            <v-select
-                :items="who"
-                variant="underlined"
-                style="max-width: 200px; max-height: 60px"
-                v-model="selected"
-            >
-            </v-select>
-            <!-- <h1 id="test"></h1> -->
-            <v-container
-                style="width: auto; height: auto"
-                class="d-flex justify-center"
-                fluid
-            >
-                <h1>Instructor</h1>
-            </v-container>
-        </v-main>
-    </base-layout>
+  <base-layout v-if="$route.name === 'Instructor'">
+    <v-main style="margin: 1.5rem">
+      <v-select
+        :items="who"
+        variant="underlined"
+        style="max-width: 200px; max-height: 60px"
+        v-model="selected"
+      >
+      </v-select>
+      <!-- <h1 id="test"></h1> -->
+      <v-container
+        style="width: auto; height: auto"
+        class="d-flex justify-center"
+        fluid
+      >
+        <h1>Instructor</h1>
+      </v-container>
+    </v-main>
+  </base-layout>
 </template>
 
 <script lang="ts">
 import { dataService } from "@/handler/dataHandler";
 import { loginService } from "@/handler/loginHandler";
-import { defineComponent, onMounted, ref } from "@vue/runtime-core";
+import { defineComponent, onMounted, ref, watch } from "@vue/runtime-core";
 import { io } from "socket.io-client";
 import BaseLayout from "../../boilerplate/layouts/Base.vue";
 
 export default defineComponent({
-    name: "InstructorDefault",
-    components: { BaseLayout },
-    setup() {
-        const who = ref<string[]>([]);
-        const selected = ref("");
-        const socket = io("http://localhost:7000");
-        const reports = ref<any>([]);
+  name: "InstructorDefault",
+  components: { BaseLayout },
+  setup() {
+    const who = ref<string[]>([]);
+    const selected = ref("");
+    const socket = io("http://localhost:7000");
+    const reports = ref<any>([]);
 
-        onMounted(async () => {
-            const instructor = await loginService.getUser();
-            const users = await dataService.GetAllUserForInstructor(instructor);
-            who.value = users.map((v: { Name: string }) => v.Name);
-            if (selected.value !== "") {
-                try {
-                    reports.value = await dataService.RetrieveSubmittedData(
-                        selected.value
-                    );
-                } catch (e) {
-                    console.warn(e);
-                }
-            }
-            // const elem = document.getElementById("test");
-            socket.on("test", (user) => {
-                console.debug(`Data Uploaded from ${user}`);
-                // if (elem) elem.innerHTML = object[0].Date;
-                // console.log(object);
+    onMounted(async () => {
+      const instructor = await loginService.getUser();
+      const users = await dataService.GetAllUserForInstructor(instructor);
+      who.value = users.map((v: { Name: string }) => v.Name);
+      if (selected.value !== "") {
+        try {
+          reports.value = await dataService.RetrieveSubmittedData(
+            selected.value
+          );
+        } catch (e) {
+          console.warn(e);
+        }
+      }
+      // const elem = document.getElementById("test");
+      socket.on("test", (user) => {
+        console.debug(`Data Uploaded from ${user}`);
+        // if (elem) elem.innerHTML = object[0].Date;
+        // console.log(object);
 
-                // TODO Write Status/Notification in Backlog
+        // TODO Write Status/Notification in Backlog
 
-                // await dataService.RetrieveSubmittedData(name);
-            });
-        });
+        // await dataService.RetrieveSubmittedData(name);
+      });
+    });
 
-        return { who, selected };
-    },
+    watch(selected, async (newSelection: string) => {
+      try {
+        reports.value = await dataService.RetrieveSubmittedData(newSelection);
+        console.log(reports.value);
+      } catch (e) {
+        console.error(e);
+      }
+    });
+
+    return { who, selected };
+  },
 });
 </script>

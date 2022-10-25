@@ -16,22 +16,22 @@ type JsonData struct {
 }
 
 func SaveSubmittedData(name string, data interface{}) {
-	fmt.Println(name, data)
-	if _, err := rh.JSONSet(name+"_"+"json", ".", data); err != nil {
+	// fmt.Println(name, data)
+	if _, err := rh.JSONSet("name", ".", data); err != nil {
 		log.Printf("error occured saving submitted data: %v", err)
 	}
 }
 
 func RetrieveSubmittedData(name string) interface{} {
 	var result interface{}
-
-	res, err := redis.Bytes(rh.JSONGet(name+"_"+"json", "."))
+	fmt.Println(name)
+	res, err := redis.Bytes(rh.JSONGet("name", "."))
 	if err != nil {
 		log.Printf("Error retrieving data: %v", err)
 	}
 	err = json.Unmarshal(res, &result)
 	if err != nil {
-		log.Fatalf("%v", err)
+		log.Printf("%v", err)
 	}
 
 	return result
