@@ -173,7 +173,7 @@ export class dataService {
             },
             body: values,
         });
-
+        console.log(res.status);
         return res.json();
     }
 
@@ -379,6 +379,44 @@ export class dataService {
             },
             body: values,
         });
+        return res.json();
+    }
+
+    static async SaveSubmittedData(person: string, data: []): Promise<void> {
+        const values = JSON.stringify({
+            name: person,
+            data: data,
+        });
+
+        const res = await fetch("http://127.0.0.1:5000/api/saveSubmittedData", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
+            },
+            body: values,
+        });
+
+        console.log(res.status);
+    }
+    static async RetrieveSubmittedData(person: string): Promise<[]> {
+        const values = JSON.stringify({
+            name: person,
+        });
+
+        const res = await fetch(
+            "http://127.0.0.1:5000/api/retrieveSubmittedData",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
+                },
+                body: values,
+            }
+        );
+
+        console.log(res.status);
         return res.json();
     }
 }

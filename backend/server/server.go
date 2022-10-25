@@ -32,9 +32,28 @@ type User struct {
 }
 
 type SubmittedData struct {
-	Name string                 `json: "name"`
-	Data []serverfiles.JsonData `json: "jsonData"`
+	Name string      `json: "name"`
+	Data interface{} `json: "data"`
 }
+
+// type Qualification struct {
+// 	Text  string `json: "text"`
+// 	State bool   `json: state`
+// }
+// type QualificationForm struct {
+// 	Date           string          `json: "date`
+// 	Qualifications []Qualification `json: "qualifications`
+// }
+
+type QualificationForm struct {
+	Date           string        `json: "date"`
+	Qualifications []interface{} `json: "qualifications"`
+}
+
+// type QualificationFormReturn struct {
+// 	Text  string `json:"text"`
+// 	State bool   `json:"state"`
+// }
 
 func Init() {
 	router := fiber.New()
@@ -78,8 +97,10 @@ func Init() {
 	router.Post("/api/delteUserInstructor", DelteUserInstructor)
 	router.Post("/api/removeUserInstructor", RemoveSingleUserFromInstructor)
 	router.Post("/api/returnUsers", GetUserBelongInstructor)
-	// router.Post("/api/insertcurriculum", InsertCurriculum)
-	// router.Post("/api/readcurriculum", GetCurriculum)
+	router.Post("/api/insertQualifications", InsertQualifications)
+	router.Post("/api/getQualifications", GetQualifications)
+	router.Post("/api/insertcurriculum", InsertCurriculum)
+	router.Post("/api/readcurriculum", GetCurriculum)
 	router.Post("/api/findInstructor", GetInstructor)
 	router.Post("/api/readJsonMonth", ReadJsonForMonth)
 	router.Get("/api/statuscheck", StatusCheck)
@@ -404,28 +425,28 @@ func RemoveJson(c *fiber.Ctx) error {
 
 }
 
-// func InsertQualifications(c *fiber.Ctx) error {
-// 	var qualis mongodb.QualificationForm
-// 	err := c.BodyParser(&qualis)
-// 	if err != nil {
-// 		log.Fatalf("something went wrong parsing json: %v", err)
-// 	}
-// 	jsonhandler.WriteQualificationsJson(qualis.Qualifications, qualis.Date, "/Dokumente/Qualifications/")
+func InsertQualifications(c *fiber.Ctx) error {
+	var qualis QualificationForm
+	err := c.BodyParser(&qualis)
+	if err != nil {
+		log.Fatalf("something went wrong parsing json: %v", err)
+	}
+	jsonhandler.WriteQualificationsJson(qualis.Qualifications, qualis.Date, "/Documents/Qualifications/")
 
-// 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-// 		"message": "successfully inserted data into mongodb",
-// 	})
-// }
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message": "successfully inserted data into mongodb",
+	})
+}
 
-// func GetQualifications(c *fiber.Ctx) error {
-// 	var qualis mongodb.QualificationForm
-// 	err := c.BodyParser(&qualis)
-// 	if err != nil {
-// 		log.Fatalf("something went wrong parsing json: %v", err)
-// 	}
-// 	output := jsonhandler.ReadQualificationsJson(qualis.Date, "/Dokumente/Qualifications/")
-// 	return c.Status(fiber.StatusOK).JSON(output)
-// }
+func GetQualifications(c *fiber.Ctx) error {
+	var qualis QualificationForm
+	err := c.BodyParser(&qualis)
+	if err != nil {
+		log.Fatalf("something went wrong parsing json: %v", err)
+	}
+	output := jsonhandler.ReadQualificationsJson(qualis.Date, "/Documents/Qualifications/")
+	return c.Status(fiber.StatusOK).JSON(output)
+}
 
 func WriteStatus(c *fiber.Ctx) error {
 	var inputData jsonhandler.StatusJson
@@ -543,31 +564,31 @@ func CreatePdf(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(data)
 }
 
-// func InsertCurriculum(c *fiber.Ctx) error {
-// 	var data mongodb.QualificationForm
-// 	err := c.BodyParser(&data)
-// 	if err != nil {
-// 		log.Fatalf("Could not parse data from json: %v", err)
-// 	}
+func InsertCurriculum(c *fiber.Ctx) error {
+	var data QualificationForm
+	err := c.BodyParser(&data)
+	if err != nil {
+		log.Fatalf("Could not parse data from json: %v", err)
+	}
 
-// 	jsonhandler.WriteQualificationsJson(data.Qualifications, data.Date, "/Dokumente/Curriculum/")
+	jsonhandler.WriteQualificationsJson(data.Qualifications, data.Date, "/Documents/Curriculum/")
 
-// 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-// 		"message": "Successfully saved Curriculum",
-// 	})
-// }
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message": "Successfully saved Curriculum",
+	})
+}
 
-// func GetCurriculum(c *fiber.Ctx) error {
-// 	var data mongodb.QualificationForm
-// 	err := c.BodyParser(&data)
-// 	if err != nil {
-// 		log.Fatalf("Could not parse data from json: %v", err)
-// 	}
+func GetCurriculum(c *fiber.Ctx) error {
+	var data QualificationForm
+	err := c.BodyParser(&data)
+	if err != nil {
+		log.Fatalf("Could not parse data from json: %v", err)
+	}
 
-// 	out := jsonhandler.ReadQualificationsJson(data.Date, "/Dokumente/Curriculum/")
+	out := jsonhandler.ReadQualificationsJson(data.Date, "/Documents/Curriculum/")
 
-// 	return c.Status(fiber.StatusOK).JSON(out)
-// }
+	return c.Status(fiber.StatusOK).JSON(out)
+}
 
 func GetInstructor(c *fiber.Ctx) error {
 	var data User
@@ -602,7 +623,8 @@ func SaveSubmittedData(c *fiber.Ctx) error {
 	if err != nil {
 		log.Fatalf("Could not parse data from json: %v", err)
 	}
-
+	// data.Data = "{ 'hello': 'world'}"
+	fmt.Println(data.Data)
 	serverfiles.SaveSubmittedData(data.Name, data.Data)
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
@@ -617,9 +639,7 @@ func RetrieveSubmittedData(c *fiber.Ctx) error {
 		log.Fatalf("Could not parse data from json: %v", err)
 	}
 
-	serverfiles.RetrieveSubmittedData(data.Name)
+	output := serverfiles.RetrieveSubmittedData(data.Name)
 
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"message": "successfully retrieved data",
-	})
+	return c.Status(fiber.StatusOK).JSON(output)
 }

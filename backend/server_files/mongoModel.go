@@ -15,17 +15,15 @@ type JsonData struct {
 	time  string
 }
 
-func SaveSubmittedData(name string, data []JsonData) {
+func SaveSubmittedData(name string, data interface{}) {
 	fmt.Println(name, data)
 	if _, err := rh.JSONSet(name+"_"+"json", ".", data); err != nil {
 		log.Printf("error occured saving submitted data: %v", err)
 	}
 }
 
-func RetrieveSubmittedData(name string) {
-	var result []JsonData
-
-	// TODO Unmarshaling into result does not work as expected right now
+func RetrieveSubmittedData(name string) interface{} {
+	var result interface{}
 
 	res, err := redis.Bytes(rh.JSONGet(name+"_"+"json", "."))
 	if err != nil {
@@ -35,7 +33,8 @@ func RetrieveSubmittedData(name string) {
 	if err != nil {
 		log.Fatalf("%v", err)
 	}
-	fmt.Println(res)
+
+	return result
 }
 
 func AcceptSubmittedData(name string) {

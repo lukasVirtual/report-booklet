@@ -1,6 +1,8 @@
 import express from "express"
 import http from "http"
 import { Server } from "socket.io"
+import fetch from "node-fetch"
+
 // import { createAdapter } from "@socket.io/redis-adapter";
 import redis from "redis"
 const app = express()
@@ -53,8 +55,24 @@ io.on('connection', (socket) => {
             // console.log(io.sockets)
             
             //io.to(reciever).emit("test", data)
- 
-            io.emit("test", data)
+            // await dataService.SaveSubmittedData(sendTo, data)
+            const values = JSON.stringify({
+                name: sendTo,
+                data: data,
+            });
+    
+            const res = await fetch("http://127.0.0.1:5000/api/saveSubmittedData", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
+                },
+                body: values,
+            });
+
+            console.log(res.status)
+    
+            io.emit("test", sendTo)
             // io.to(reciever).emit("test", data)
             console.debug("message sent")
         } else {

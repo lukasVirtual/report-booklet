@@ -8,7 +8,7 @@
                 v-model="selected"
             >
             </v-select>
-            <h1 id="test"></h1>
+            <!-- <h1 id="test"></h1> -->
             <v-container
                 style="width: auto; height: auto"
                 class="d-flex justify-center"
@@ -34,16 +34,30 @@ export default defineComponent({
         const who = ref<string[]>([]);
         const selected = ref("");
         const socket = io("http://localhost:7000");
+        const reports = ref<any>([]);
 
         onMounted(async () => {
             const instructor = await loginService.getUser();
             const users = await dataService.GetAllUserForInstructor(instructor);
             who.value = users.map((v: { Name: string }) => v.Name);
-            const elem = document.getElementById("test");
-            socket.on("test", (object) => {
-                console.log("recieved");
-                if (elem) elem.innerHTML = object[0].Date;
-                console.log(object);
+            if (selected.value !== "") {
+                try {
+                    reports.value = await dataService.RetrieveSubmittedData(
+                        selected.value
+                    );
+                } catch (e) {
+                    console.warn(e);
+                }
+            }
+            // const elem = document.getElementById("test");
+            socket.on("test", (user) => {
+                console.debug(`Data Uploaded from ${user}`);
+                // if (elem) elem.innerHTML = object[0].Date;
+                // console.log(object);
+
+                // TODO Write Status/Notification in Backlog
+
+                // await dataService.RetrieveSubmittedData(name);
             });
         });
 
