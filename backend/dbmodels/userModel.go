@@ -37,7 +37,7 @@ func GetAllData() []User {
 }
 
 func DeleteItemAt(name string) {
-	db.Debug().Unscoped().Where("name=?", name).Delete(&User{})
+	db.Unscoped().Where("name=?", name).Delete(&User{})
 }
 
 func InsertInputField(text, time string) InputField {
@@ -55,28 +55,28 @@ func InsertTextField(date string, inputField *InputField) {
 		InputField:   inputField,
 	}
 
-	db.Debug().Create(&textField)
+	db.Create(&textField)
 }
 
 func GetTextFieldData(date string) []TextField {
 	var textField []TextField
-	db.Debug().Unscoped().Raw("select calendar_date, input, time_stamp from text_fields where calendar_date=?", date).Scan(&textField)
+	db.Unscoped().Raw("select calendar_date, input, time_stamp from text_fields where calendar_date=?", date).Scan(&textField)
 	return textField
 }
 
 func UpdateId(nameInstructor, nameUser string) {
 	var user User
 
-	db.Debug().Find(&user, "name = ?", nameInstructor).Update("parent_id", user.Model.ID)
+	db.Find(&user, "name = ?", nameInstructor).Update("parent_id", user.Model.ID)
 	fmt.Println(user.Model.ID)
-	db.Debug().Table("users").Where("name = ?", nameUser).Update("parent_id", user.Model.ID)
+	db.Table("users").Where("name = ?", nameUser).Update("parent_id", user.Model.ID)
 }
 
 func GetRelations(instructor string) []User {
 	var user User
 	var users []User
 
-	db.Debug().Find(&user, "name = ?", instructor)
+	db.Find(&user, "name = ?", instructor)
 	// db.Debug().Find(&users, "parent_id = ?", user.Model.ID)
 	db.Raw("select id, parent_id, name from users where parent_id = ? AND NOT name=?", user.Model.ID, instructor).Scan(&users)
 
@@ -86,20 +86,20 @@ func GetRelations(instructor string) []User {
 
 func DeleteUserFromInstructor(instructor string) {
 	var user User
-	db.Debug().Find(&user, "name = ?", instructor)
+	db.Find(&user, "name = ?", instructor)
 
-	db.Debug().Table("users").Where("parent_id = ?", user.Model.ID).Update("parent_id", 0)
+	db.Table("users").Where("parent_id = ?", user.Model.ID).Update("parent_id", 0)
 }
 
 func DelteSingleUserFromInstructor(client string) {
-	db.Debug().Table("users").Where("name = ?", client).Update("parent_id", 0)
+	db.Table("users").Where("name = ?", client).Update("parent_id", 0)
 }
 
 func FindInstructor(username string) string {
 	var user User
-	db.Debug().Find(&user, "name=?", username)
+	db.Find(&user, "name=?", username)
 	var instructor User
-	db.Debug().Where("parent_id=? AND role='instructor'", user.Parent_id).Find(&instructor)
+	db.Where("parent_id=? AND role='instructor'", user.Parent_id).Find(&instructor)
 	return instructor.Name
 }
 

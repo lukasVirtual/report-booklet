@@ -16,8 +16,8 @@ type JsonData struct {
 }
 
 func SaveSubmittedData(name string, data interface{}) {
-	// fmt.Println(name, data)
-	if _, err := rh.JSONSet("name", ".", data); err != nil {
+	fmt.Println(name)
+	if _, err := rh.JSONSet(name+"_json", ".", data); err != nil {
 		log.Printf("error occured saving submitted data: %v", err)
 	}
 }
@@ -25,7 +25,7 @@ func SaveSubmittedData(name string, data interface{}) {
 func RetrieveSubmittedData(name string) interface{} {
 	var result interface{}
 	fmt.Println(name)
-	res, err := redis.Bytes(rh.JSONGet("name", "."))
+	res, err := redis.Bytes(rh.JSONGet(name+"_json", "."))
 	if err != nil {
 		log.Printf("Error retrieving data: %v", err)
 	}
