@@ -84,7 +84,7 @@ func Init() {
 	router.Post("/api/readJsonMonth", ReadJsonForMonth)
 	router.Get("/api/statuscheck", StatusCheck)
 	router.Get("/api/dataware", DataWare)
-	router.Get("/ws/helloworld", ReadMessages)
+	// router.Get("/ws/helloworld", ReadMessages)
 	router.Get("/api/createdpdf", CreatePdf)
 	router.Get("/api/user", GetUserData)
 

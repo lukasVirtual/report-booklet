@@ -68,7 +68,7 @@ func UpdateId(nameInstructor, nameUser string) {
 	var user User
 
 	db.Find(&user, "name = ?", nameInstructor).Update("parent_id", user.Model.ID)
-	fmt.Println(user.Model.ID)
+	// fmt.Println(user.Model.ID)
 	db.Table("users").Where("name = ?", nameUser).Update("parent_id", user.Model.ID)
 }
 
@@ -80,7 +80,7 @@ func GetRelations(instructor string) []User {
 	// db.Debug().Find(&users, "parent_id = ?", user.Model.ID)
 	db.Raw("select id, parent_id, name from users where parent_id = ? AND NOT name=?", user.Model.ID, instructor).Scan(&users)
 
-	fmt.Println(users)
+	// fmt.Println(users)
 	return users
 }
 

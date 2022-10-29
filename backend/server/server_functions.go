@@ -5,7 +5,6 @@ import (
 	"log"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/websocket/v2"
 	"golang.org/x/crypto/bcrypt"
 	jsonhandler "www.github.com/backend/Jsonhandler"
 	"www.github.com/backend/dbmodels"
@@ -16,10 +15,10 @@ func Register(c *fiber.Ctx) error {
 	c.Accepts("application/json")
 
 	var data User
-	fmt.Println("data", data.Name)
+	// fmt.Println("data", data.Name)
 	err := c.BodyParser(&data)
 
-	fmt.Println("data", data)
+	// fmt.Println("data", data)
 
 	if err != nil {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
@@ -399,27 +398,27 @@ func RemoveSingleUserFromInstructor(c *fiber.Ctx) error {
 	})
 }
 
-var ReadMessages = websocket.New(func(c *websocket.Conn) {
-	var (
-		mt  int
-		msg []byte
-		err error
-	)
+// var ReadMessages = websocket.New(func(c *websocket.Conn) {
+// 	var (
+// 		mt  int
+// 		msg []byte
+// 		err error
+// 	)
 
-	for {
-		if mt, msg, err = c.ReadMessage(); err != nil {
-			log.Println("read: ", err)
-			break
-		}
+// 	for {
+// 		if mt, msg, err = c.ReadMessage(); err != nil {
+// 			log.Println("read: ", err)
+// 			break
+// 		}
 
-		log.Printf("message recieved: %s", msg)
+// 		log.Printf("message recieved: %s", msg)
 
-		if err = c.WriteMessage(mt, msg); err != nil {
-			log.Println("write:", err)
-			break
-		}
-	}
-})
+// 		if err = c.WriteMessage(mt, msg); err != nil {
+// 			log.Println("write:", err)
+// 			break
+// 		}
+// 	}
+// })
 
 func CreatePdf(c *fiber.Ctx) error {
 	data, err := dbmodels.ExportAsPdf()
