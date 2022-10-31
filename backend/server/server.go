@@ -26,6 +26,7 @@ type User struct {
 
 type SubmittedData struct {
 	Name string      `json: "name"`
+	Date string      `json: "date"`
 	Data interface{} `json: "data"`
 }
 

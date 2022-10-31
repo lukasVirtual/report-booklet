@@ -298,7 +298,7 @@ func InsertQualifications(c *fiber.Ctx) error {
 	if err != nil {
 		log.Fatalf("something went wrong parsing json: %v", err)
 	}
-	jsonhandler.WriteQualificationsJson(qualis.Qualifications, qualis.Date, "/Documents/Qualifications/")
+	jsonhandler.WriteQualificationsJson(qualis.Qualifications, qualis.Date, "/Dokumente/Qualifications/")
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"message": "successfully inserted data into mongodb",
@@ -311,7 +311,7 @@ func GetQualifications(c *fiber.Ctx) error {
 	if err != nil {
 		log.Fatalf("something went wrong parsing json: %v", err)
 	}
-	output := jsonhandler.ReadQualificationsJson(qualis.Date, "/Documents/Qualifications/")
+	output := jsonhandler.ReadQualificationsJson(qualis.Date, "/Dokumente/Qualifications/")
 	return c.Status(fiber.StatusOK).JSON(output)
 }
 
@@ -438,7 +438,7 @@ func InsertCurriculum(c *fiber.Ctx) error {
 		log.Fatalf("Could not parse data from json: %v", err)
 	}
 
-	jsonhandler.WriteQualificationsJson(data.Qualifications, data.Date, "/Documents/Curriculum/")
+	jsonhandler.WriteQualificationsJson(data.Qualifications, data.Date, "/Dokumente/Curriculum/")
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"message": "Successfully saved Curriculum",
@@ -452,7 +452,7 @@ func GetCurriculum(c *fiber.Ctx) error {
 		log.Fatalf("Could not parse data from json: %v", err)
 	}
 
-	out := jsonhandler.ReadQualificationsJson(data.Date, "/Documents/Curriculum/")
+	out := jsonhandler.ReadQualificationsJson(data.Date, "/Dokumente/Curriculum/")
 
 	return c.Status(fiber.StatusOK).JSON(out)
 }
@@ -492,7 +492,7 @@ func SaveSubmittedData(c *fiber.Ctx) error {
 	}
 	// data.Data = "{ 'hello': 'world'}"
 	// fmt.Println(data.Data)
-	serverfiles.SaveSubmittedData(data.Name, data.Data)
+	serverfiles.SaveSubmittedData(data.Name, data.Date, data.Data)
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"message": "successfully inserted data",
@@ -506,7 +506,7 @@ func RetrieveSubmittedData(c *fiber.Ctx) error {
 		log.Fatalf("Could not parse data from json: %v", err)
 	}
 
-	output := serverfiles.RetrieveSubmittedData(data.Name)
+	output := serverfiles.RetrieveSubmittedData(data.Name, data.Date)
 
 	return c.Status(fiber.StatusOK).JSON(output)
 }

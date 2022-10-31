@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"runtime"
+	"sort"
 	"strings"
 
 	"github.com/SebastiaanKlippert/go-wkhtmltopdf"
@@ -68,7 +69,6 @@ func UpdateId(nameInstructor, nameUser string) {
 	var user User
 
 	db.Find(&user, "name = ?", nameInstructor).Update("parent_id", user.Model.ID)
-	// fmt.Println(user.Model.ID)
 	db.Table("users").Where("name = ?", nameUser).Update("parent_id", user.Model.ID)
 }
 
@@ -118,6 +118,8 @@ func ExportAsPdf() ([]byte, error) {
 	}
 
 	months, _ := os.ReadDir(destinationPath + "/Dokumente/TextFieldOutput")
+	sort.Slice(months, func(i, j int) bool { return i < j })
+
 	/* TODO Probably need to do some sort of Quick Sort because
 	currently it is sorting after the first digit [x].x.xxxx
 	needs to be sorted after x.[x].xxxx

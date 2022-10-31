@@ -19,40 +19,18 @@
           >
         </v-card-actions>
       </v-card>
-      <h1>Instructor</h1>
-      <v-container fluid>
-        <!-- <div v-for="(report, idx) in reports" :key="idx">
-          <text-field :propsDate="report.Date"></text-field>
-        </div> -->
-        <v-card
-          style="
-            width: 1100px;
-            height: 500px;
-            border: 1px solid black;
-            overflow-x: hidden;
-            border-radius: 10px;
-          "
-          max-height="500"
-          class="mt-4 overflow-y-auto"
-        >
-          <v-row dense>
-            <div style="width: 5px"></div>
-            <v-row style="max-height: 30px">
-              <v-col cols="12" md="12">
-                <div v-for="(report, idx) in reports" :key="idx">
-                  <p>{{ report.Date }}</p>
-                  <v-card-actions>
-                    <typing-field
-                      :input="report.Input"
-                      :time="report.Time"
-                    ></typing-field>
-                  </v-card-actions>
-                </div>
-              </v-col>
-              <v-spacer></v-spacer>
-            </v-row>
-          </v-row>
-        </v-card>
+
+      <h1 class="d-flex justify-center">Instructor</h1>
+      <v-container
+        class="d-flex justify-center mb-6"
+        v-for="date in uniqueDates"
+        :key="date"
+      >
+        <viewing-field
+          v-if="selected !== ''"
+          :data="reports"
+          :date="date"
+        ></viewing-field>
       </v-container>
     </v-main>
   </base-layout>
@@ -64,36 +42,29 @@ import { loginService } from "@/handler/loginHandler";
 import { defineComponent, onMounted, ref, watch } from "@vue/runtime-core";
 import { io } from "socket.io-client";
 import BaseLayout from "../../boilerplate/layouts/Base.vue";
-import TextField from "../Berichtsheft/Text-Field.vue";
 import TypingField from "../Berichtsheft/Typing-Field.vue";
+import TextField from "../Berichtsheft/Text-Field.vue";
+import ViewingField from "./Viewing-Field.vue";
 
 export default defineComponent({
   name: "InstructorDefault",
-  components: { BaseLayout, TypingField },
+  components: { BaseLayout, ViewingField },
   setup() {
     const who = ref<string[]>([]);
     const selected = ref("");
     const socket = io("http://localhost:7000");
     const reports = ref<any[]>([]);
     const uniqueDates = ref<string[]>([]);
-    const currentDate = ref("");
+    const date = new Date();
+    const month = ref(date.getMonth() + 1);
+    const year = ref(date.getFullYear());
 
     onMounted(async () => {
       const instructor = await loginService.getUser();
       const users = await dataService.GetAllUserForInstructor(instructor);
       who.value = users.map((v: { Name: string }) => v.Name);
-      // if (selected.value !== "") {
-      //   try {
-      //     reports.value = await dataService.RetrieveSubmittedData(
-      //       selected.value
-      //     );
-      //   } catch (e) {
-      //     console.warn(e);
-      //   }
-      // }
-      currentDate.value = reports.value?.[0] ?? "";
-      console.log(currentDate.value);
-      // const elem = document.getElementById("test");
+
+      // console.log(currentDate.value);
       socket.on("test", (user) => {
         console.debug(`Data Uploaded from ${user}`);
         // if (elem) elem.innerHTML = object[0].Date;
@@ -106,38 +77,27 @@ export default defineComponent({
     });
 
     const switchPageLeft = () => {
-      const idx =
-        uniqueDates.value.indexOf(currentDate.value) === -1
-          ? 0
-          : uniqueDates.value.indexOf(currentDate.value);
-      currentDate.value =
-        uniqueDates.value?.[idx - 1] ?? uniqueDates.value?.[0] ?? "";
-      console.log(currentDate.value);
+      if (month.value > 1) month.value--;
     };
 
     const switchPageRight = () => {
-      const idx =
-        uniqueDates.value.indexOf(currentDate.value) === -1
-          ? 0
-          : uniqueDates.value.indexOf(currentDate.value);
-
-      currentDate.value =
-        uniqueDates.value?.[idx + 1] ?? uniqueDates.value?.[idx] ?? "";
-      console.log(currentDate.value);
+      if (month.value < 12) month.value++;
     };
 
-    watch(selected, async (newSelection: string) => {
+    watch([selected, month], async ([newSelection, newMonth]) => {
       try {
-        reports.value = await dataService.RetrieveSubmittedData(newSelection);
-        const catchDates = [];
+        reports.value = await dataService.RetrieveSubmittedData(
+          newSelection,
+          newMonth.toString()
+        );
+        const cacheDates = [];
         for (const date of reports.value) {
-          catchDates.push(date.Date);
+          cacheDates.unshift(date.Date);
         }
-        uniqueDates.value = [...new Set(catchDates)];
-
-        // console.log(reports.value);
+        uniqueDates.value = [...new Set(cacheDates)].sort();
       } catch (e) {
-        console.error(e);
+        reports.value = [];
+        uniqueDates.value = [`1.${month.value}.${year.value}`];
       }
     });
 
@@ -145,7 +105,8 @@ export default defineComponent({
       who,
       selected,
       reports,
-      currentDate,
+      month,
+      uniqueDates,
       switchPageLeft,
       switchPageRight,
     };

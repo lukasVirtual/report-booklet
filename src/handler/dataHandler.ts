@@ -385,9 +385,13 @@ export class dataService {
 
     console.log(res.status);
   }
-  static async RetrieveSubmittedData(person: string): Promise<[]> {
+  static async RetrieveSubmittedData(
+    person: string,
+    month: string
+  ): Promise<[]> {
     const values = JSON.stringify({
       name: person,
+      date: month,
     });
 
     const res = await fetch("http://127.0.0.1:5000/api/retrieveSubmittedData", {

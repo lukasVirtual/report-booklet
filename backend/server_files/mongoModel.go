@@ -2,7 +2,6 @@ package serverfiles
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 
 	"github.com/gomodule/redigo/redis"
@@ -15,24 +14,17 @@ type JsonData struct {
 	time  string
 }
 
-func SaveSubmittedData(name string, data interface{}) {
-	fmt.Println(name)
-	// if status := client.Exists(ctx, name+"_json"); status.Val() == 1 {
-	// 	if _, err := rh.JSONArrAppend(name+"_json", ".", data); err != nil {
-	// 		log.Printf("error appending data: %v", err)
-	// 	}
+func SaveSubmittedData(name, date string, data interface{}) {
 
-	// } else {
-	// }
-	if _, err := rh.JSONSet(name+"_json", ".", data); err != nil {
+	if _, err := rh.JSONSet(name+date+"_json", ".", data); err != nil {
 		log.Printf("error occured saving submitted data: %v", err)
 	}
 }
 
-func RetrieveSubmittedData(name string) interface{} {
-	var result interface{}
-	fmt.Println(name)
-	res, err := redis.Bytes(rh.JSONGet(name+"_json", "."))
+func RetrieveSubmittedData(name, date string) interface{} {
+	var result []interface{}
+
+	res, err := redis.Bytes(rh.JSONGet(name+date+"_json", "."))
 	if err != nil {
 		log.Printf("Error retrieving data: %v", err)
 	}

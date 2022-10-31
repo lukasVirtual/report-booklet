@@ -38,8 +38,8 @@ io.on('connection', (socket) => {
         // if (socketUsers.get(user.user_name)) socketUsers.delete(user.user_name)
     })
     
-    socket.on('submit', async (data, sendTo) => {
-        console.log("data", data)
+    socket.on('submit', async (data, sendTo, month) => {
+        console.log("data", data, month)
         //Need to be done
         // const reciever = socketUsers.get(sendTo)
         const reciever = await client.get(sendTo)
@@ -49,15 +49,10 @@ io.on('connection', (socket) => {
              * sending to specific user is currently not
              * working need to fix that
             */   
-            //socket.broadcast.to(reciever).emit("test", data)
-            // io.to(reciever).emit("test", data)
-            // reciever.emit("test", data)
-            // console.log(io.sockets)
-            
-            //io.to(reciever).emit("test", data)
-            // await dataService.SaveSubmittedData(sendTo, data)
+           
             const values = JSON.stringify({
                 name: sendTo,
+                date: month,
                 data: data,
             });
     
@@ -73,7 +68,6 @@ io.on('connection', (socket) => {
             console.log(res.status)
     
             io.emit("test", sendTo)
-            // io.to(reciever).emit("test", data)
             console.debug("message sent")
         } else {
             console.error("error: ", reciever)

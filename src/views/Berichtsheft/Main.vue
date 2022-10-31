@@ -153,7 +153,12 @@ export default defineComponent({
         date.value?.split(".")?.[1] as string
       );
       try {
-        socket.emit("submit", jsonOuput, await loginService.getUser());
+        socket.emit(
+          "submit",
+          jsonOuput,
+          await loginService.getUser(),
+          currMonth.value.toString()
+        );
         toast.success("successfully submitted");
       } catch (e) {
         toast.error("something went wrong submitting data");
