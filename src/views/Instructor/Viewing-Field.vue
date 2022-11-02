@@ -4,6 +4,7 @@
       cacheData = data;
       propsDate = date;
     "
+    v-if="$route.path === '/Instructor'"
   >
     <v-card
       style="
@@ -37,6 +38,7 @@
                 <typing-field
                   :input="report.Input"
                   :time="report.Time"
+                  :id="report.ID"
                 ></typing-field>
               </v-card-actions>
             </div>

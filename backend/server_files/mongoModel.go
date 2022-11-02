@@ -24,14 +24,15 @@ func SaveSubmittedData(name, date string, data interface{}) {
 func RetrieveSubmittedData(name, date string) interface{} {
 	var result []interface{}
 
-	res, err := redis.Bytes(rh.JSONGet(name+date+"_json", "."))
-	if err != nil {
-		log.Printf("Error retrieving data: %v", err)
-	}
-	err = json.Unmarshal(res, &result)
-	if err != nil {
-		log.Printf("%v", err)
-	}
+	res, _ := redis.Bytes(rh.JSONGet(name+date+"_json", "."))
+	// if err != nil {
+	// 	log.Printf("Error retrieving data: %v", err)
+	// }
+
+	_ = json.Unmarshal(res, &result)
+	// if err != nil {
+	// 	log.Printf("%v", err)
+	// }
 
 	return result
 }

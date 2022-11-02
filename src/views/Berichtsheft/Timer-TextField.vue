@@ -1,7 +1,7 @@
 <template>
   <div
     class="d-flex justify-space-around"
-    v-if="$route.path === '/Berichtsheft'"
+    v-if="$route.path === '/Berichtsheft' || $route.path === '/Instructor'"
   >
     <v-menu
       justify-center

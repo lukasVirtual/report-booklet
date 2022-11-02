@@ -77,10 +77,8 @@ func GetRelations(instructor string) []User {
 	var users []User
 
 	db.Find(&user, "name = ?", instructor)
-	// db.Debug().Find(&users, "parent_id = ?", user.Model.ID)
 	db.Raw("select id, parent_id, name from users where parent_id = ? AND NOT name=?", user.Model.ID, instructor).Scan(&users)
 
-	// fmt.Println(users)
 	return users
 }
 
@@ -105,9 +103,7 @@ func FindInstructor(username string) string {
 
 func ExportAsPdf() ([]byte, error) {
 	var err error
-	/*
-	 *only needed for Windows
-	 */
+
 	if runtime.GOOS == "windows" {
 		wkhtmltopdf.SetPath(`C:/Program Files/wkhtmltopdf/bin/wkhtmltopdf`)
 	}
@@ -117,26 +113,30 @@ func ExportAsPdf() ([]byte, error) {
 		return nil, err
 	}
 
-	months, _ := os.ReadDir(destinationPath + "/Dokumente/TextFieldOutput")
+	months, _ := os.ReadDir(destinationPath + "/Documents/TextFieldOutput")
 	sort.Slice(months, func(i, j int) bool { return i < j })
 
-	/* TODO Probably need to do some sort of Quick Sort because
-	currently it is sorting after the first digit [x].x.xxxx
-	needs to be sorted after x.[x].xxxx
-	*/
+	absence, _ := os.ReadDir(destinationPath + "/Documents/AbsenceStatus")
+
 	var resString string
 
 	resString = `<hmtl><header><h1 style="background: -webkit-linear-gradient(yellow, red); text-align:center">Report Booklet</h1></header><body>`
-	for _, month := range months {
+	for i, month := range months {
 		fmt.Println(month.Name())
-
+		absenceVal := ""
+		if i < len(absence) {
+			absenceVal = strings.ReplaceAll(absence[i].Name(), ".json", "")
+		} else {
+			absenceVal = ""
+		}
+		status, _ := jsonhandler.ReadStatusJson(absenceVal)
 		opt := strings.ReplaceAll(month.Name(), ".json", "")
 		output, _ := jsonhandler.ReadFromJson(opt)
 		resString += `<div style="margin-top:180px; border:none">`
-		resString += fmt.Sprintf(`<div style="margin:auto;width: 800px;height: 80px;border: 1px solid black"><h1 style="text-align:center; justify-content: center">%s</h1></div>`, opt)
+		resString += fmt.Sprintf(`<div style="margin:auto;width: 800px;height: 80px;border: 1px solid black"><h1 style="text-align:center; justify-content: center">%s <span style="float:right">%s</span></h1></div>`, opt, status.Status)
 		resString += `<div style="margin:auto;min-height: 100px; width: 800px; border: 1px black">`
 		for _, out := range output {
-			resString += fmt.Sprintf(`<li>%s</li>`, out.Input)
+			resString += fmt.Sprintf(`<li>%s <span style="float:right">%s</span></li>`, out.Input, out.Time)
 		}
 	}
 	resString += "</div>"

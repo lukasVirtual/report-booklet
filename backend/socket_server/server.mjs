@@ -8,23 +8,21 @@ import redis from "redis"
 const app = express()
 const server = http.createServer(app)
 const client = redis.createClient({ url: "redis://localhost:6379"})
-await client.connect()
 const io = new Server(server, { cors: {
     origin: "http://127.0.0.1:3000",
     methods: ["GET", "POST"]
 }})
 
+await client.connect()
 // io.adapter(createAdapter(client, client.duplicate()))
 
 app.get('/', (req, res) => {
     res.send("<h1>Working</h1>")
 })
 
-// const socketUsers = new Map()
 io.on('connection', (socket) => {
     socket.on('login', async (user) => {
         console.log(`User: ${user.user_name} with id ${user.user_id} socket id ${socket.id} connected`)
-        // socketUsers.set(user.user_name, socket.id)
         await client.set(user.user_name, socket.id, function(err) { if (err) throw err })
     })
 
@@ -35,13 +33,10 @@ io.on('connection', (socket) => {
             await client.del(user.user_name)
         } else console.log("no one connected")
 
-        // if (socketUsers.get(user.user_name)) socketUsers.delete(user.user_name)
     })
     
     socket.on('submit', async (data, sendTo, month) => {
         console.log("data", data, month)
-        //Need to be done
-        // const reciever = socketUsers.get(sendTo)
         const reciever = await client.get(sendTo)
         if (reciever) {
             console.log(reciever)
