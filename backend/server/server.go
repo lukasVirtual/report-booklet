@@ -25,9 +25,9 @@ type User struct {
 }
 
 type SubmittedData struct {
-	Name string      `json: "name"`
-	Date string      `json: "date"`
-	Data interface{} `json: "data"`
+	Name string        `json: "name"`
+	Date string        `json: "date"`
+	Data []interface{} `json: "data"`
 }
 
 type QualificationForm struct {

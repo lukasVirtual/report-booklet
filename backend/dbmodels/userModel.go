@@ -5,6 +5,7 @@ import (
 	"os"
 	"runtime"
 	"sort"
+	"strconv"
 	"strings"
 
 	"github.com/SebastiaanKlippert/go-wkhtmltopdf"
@@ -113,10 +114,16 @@ func ExportAsPdf() ([]byte, error) {
 		return nil, err
 	}
 
-	months, _ := os.ReadDir(destinationPath + "/Documents/TextFieldOutput")
-	sort.Slice(months, func(i, j int) bool { return i < j })
+	months, _ := os.ReadDir(destinationPath + "/Dokumente/TextFieldOutput")
 
-	absence, _ := os.ReadDir(destinationPath + "/Documents/AbsenceStatus")
+	absence, _ := os.ReadDir(destinationPath + "/Dokumente/AbsenceStatus")
+	sort.Slice(months, func(i, j int) bool {
+		sl1 := strings.Split(months[i].Name(), ".")
+		sl2 := strings.Split(months[j].Name(), ".")
+		sl1Int, _ := strconv.Atoi(sl1[1])
+		sl2Int, _ := strconv.Atoi(sl2[1])
+		return sl1Int < sl2Int
+	})
 
 	var resString string
 
@@ -138,6 +145,7 @@ func ExportAsPdf() ([]byte, error) {
 		for _, out := range output {
 			resString += fmt.Sprintf(`<li>%s <span style="float:right">%s</span></li>`, out.Input, out.Time)
 		}
+
 	}
 	resString += "</div>"
 	resString += "</div>"

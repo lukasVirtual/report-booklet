@@ -492,6 +492,7 @@ func SaveSubmittedData(c *fiber.Ctx) error {
 	}
 	// data.Data = "{ 'hello': 'world'}"
 	// fmt.Println(data.Data)
+	// servercom.SaveSubmittedData(data.Name, data.Date, data.Data)
 	serverfiles.SaveSubmittedData(data.Name, data.Date, data.Data)
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
@@ -506,6 +507,7 @@ func RetrieveSubmittedData(c *fiber.Ctx) error {
 		log.Fatalf("Could not parse data from json: %v", err)
 	}
 
+	// output := servercom.RetrieveSubmittedData(data.Name, data.Date)
 	output := serverfiles.RetrieveSubmittedData(data.Name, data.Date)
 
 	return c.Status(fiber.StatusOK).JSON(output)

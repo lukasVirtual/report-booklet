@@ -4,30 +4,47 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"time"
 
-	"github.com/go-redis/redis/v8"
-	"github.com/nitishm/go-rejson/v4"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
-var (
-	client *redis.Client
-	rh     *rejson.Handler
-	ctx    = context.Background()
-)
+var client *mongo.Client
+var ctx, _ = context.WithTimeout(context.Background(), 24*time.Hour)
 
-func InitRedis() {
-	fmt.Println(":: Init Redis Database")
+type ReturnData struct {
+	Id    int    `bson: "id, omitempty"`
+	Date  string `bson: "date, omitempty"`
+	Input string `bson: "input, omitempty"`
+	Time  string `bson: "time, omitempty"`
+	Rows  int    `bson: "rows, omitempty"`
+}
 
-	client = redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
-		Password: "",
-		DB:       0,
-	})
-	rh = rejson.NewReJSONHandler()
-	rh.SetGoRedisClient(client)
-	status, err := client.Ping(ctx).Result()
+func InitMongoDb() {
+	fmt.Println("Connecting to MongoDb...")
+	var err error
+	client, err = mongo.NewClient(options.Client().ApplyURI("mongodb://127.0.0.1:27017"))
 	if err != nil {
-		log.Fatalf("Error Connecting to DB")
+		log.Fatalf("error occured when trying to connect to mongodb err = %v", err)
 	}
-	fmt.Println(status)
+
+	err = client.Connect(ctx)
+	if err != nil {
+		log.Fatalf("error occured when trying to connect to mongodb err = %v", err)
+	}
+
+	if err := client.Ping(context.TODO(), readpref.Primary()); err != nil {
+		log.Fatalf("Database error: %v", err)
+	}
+	// defer client.Disconnect(ctx)
+
+	_, err = client.ListDatabaseNames(ctx, bson.M{})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("Successfully connected to mongoDB Server")
 }

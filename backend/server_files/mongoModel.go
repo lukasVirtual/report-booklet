@@ -1,45 +1,31 @@
 package serverfiles
 
 import (
-	"encoding/json"
 	"log"
 
-	"github.com/gomodule/redigo/redis"
+	"go.mongodb.org/mongo-driver/bson"
 )
 
-type JsonData struct {
-	id    int
-	date  string
-	input string
-	time  string
-}
-
-func SaveSubmittedData(name, date string, data interface{}) {
-
-	if _, err := rh.JSONSet(name+date+"_json", ".", data); err != nil {
-		log.Printf("error occured saving submitted data: %v", err)
+func SaveSubmittedData(name, date string, data []interface{}) {
+	coll := client.Database("serverfiles").Collection(name + date + "_json")
+	coll.Drop(ctx)
+	_, err := coll.InsertMany(ctx, data)
+	if err != nil {
+		log.Println(err)
 	}
 }
 
 func RetrieveSubmittedData(name, date string) interface{} {
-	var result []interface{}
+	var result []ReturnData
+	coll := client.Database("serverfiles").Collection(name + date + "_json")
 
-	res, _ := redis.Bytes(rh.JSONGet(name+date+"_json", "."))
-	// if err != nil {
-	// 	log.Printf("Error retrieving data: %v", err)
-	// }
-
-	_ = json.Unmarshal(res, &result)
-	// if err != nil {
-	// 	log.Printf("%v", err)
-	// }
-
-	return result
-}
-
-func AcceptSubmittedData(name string) {
-	_, err := client.Del(ctx, name+"_"+"json").Result()
+	curr, err := coll.Find(ctx, bson.M{})
 	if err != nil {
-		log.Fatalf("something went wrong deleting key: %v", err)
+		log.Println(err)
 	}
+
+	if err := curr.All(ctx, &result); err != nil {
+		log.Fatalf("Something went wrong retrieving data: %v", err)
+	}
+	return result
 }
