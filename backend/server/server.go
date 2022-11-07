@@ -35,6 +35,11 @@ type QualificationForm struct {
 	Qualifications []interface{} `json: "qualifications"`
 }
 
+type Log struct {
+	Name    string `json: "name"`
+	Message string `json: "message"`
+}
+
 func Init() {
 	router := fiber.New()
 
@@ -83,9 +88,11 @@ func Init() {
 	router.Post("/api/readcurriculum", GetCurriculum)
 	router.Post("/api/findInstructor", GetInstructor)
 	router.Post("/api/readJsonMonth", ReadJsonForMonth)
+	router.Post("/api/writeLog", WriteLog)
+	router.Post("/api/retrieveLog", RetrieveLog)
+
 	router.Get("/api/statuscheck", StatusCheck)
 	router.Get("/api/dataware", DataWare)
-	// router.Get("/ws/helloworld", ReadMessages)
 	router.Get("/api/createdpdf", CreatePdf)
 	router.Get("/api/user", GetUserData)
 

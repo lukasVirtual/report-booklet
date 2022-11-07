@@ -8,6 +8,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	jsonhandler "www.github.com/backend/Jsonhandler"
 	"www.github.com/backend/dbmodels"
+	servercom "www.github.com/backend/server_communication"
 	serverfiles "www.github.com/backend/server_files"
 )
 
@@ -511,4 +512,30 @@ func RetrieveSubmittedData(c *fiber.Ctx) error {
 	output := serverfiles.RetrieveSubmittedData(data.Name, data.Date)
 
 	return c.Status(fiber.StatusOK).JSON(output)
+}
+
+func WriteLog(c *fiber.Ctx) error {
+	var user Log
+	err := c.BodyParser(&user)
+	if err != nil {
+		log.Fatalf("Could not parse data from json: %v", err)
+	}
+
+	servercom.WriteLog(user.Message, user.Name)
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message": "successfully written message in log",
+	})
+}
+
+func RetrieveLog(c *fiber.Ctx) error {
+	var user Log
+	err := c.BodyParser(&user)
+	if err != nil {
+		log.Fatalf("Could not parse data from json: %v", err)
+	}
+
+	logs := servercom.RetrieveLatestLogs(user.Name)
+
+	return c.Status(fiber.StatusOK).JSON(logs)
 }

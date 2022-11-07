@@ -406,4 +406,40 @@ export class dataService {
     console.log(res.status);
     return res.json();
   }
+
+  static async WriteLog(message: string, instructor: string): Promise<void> {
+    const values = JSON.stringify({
+      name: instructor,
+      message: message,
+    });
+
+    const res = await fetch("http://127.0.0.1:5000/api/writeLog", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
+      },
+      body: values,
+    });
+
+    console.log(res.status);
+  }
+
+  static async RetrieveLog(instructor: string): Promise<[]> {
+    const values = JSON.stringify({
+      name: instructor,
+    });
+
+    const res = await fetch("http://127.0.0.1:5000/api/retrieveLog", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
+      },
+      body: values,
+    });
+
+    console.log(res.status);
+    return res.json();
+  }
 }
