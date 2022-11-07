@@ -190,7 +190,7 @@ export default defineComponent({
 
     const returnIndex = async (idx: number, date: string | undefined) => {
       console.warn("Creating...");
-      dataService.writeJson(
+      await dataService.writeJson(
         store.id as number,
         date as string,
         store.input,

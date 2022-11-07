@@ -2,6 +2,7 @@ package dbmodels
 
 import (
 	"fmt"
+	"io/fs"
 	"os"
 	"runtime"
 	"sort"
@@ -105,6 +106,8 @@ func FindInstructor(username string) string {
 func ExportAsPdf() ([]byte, error) {
 	var err error
 
+	c1 := make(chan []fs.DirEntry)
+	c2 := make(chan []fs.DirEntry)
 	if runtime.GOOS == "windows" {
 		wkhtmltopdf.SetPath(`C:/Program Files/wkhtmltopdf/bin/wkhtmltopdf`)
 	}
@@ -113,10 +116,21 @@ func ExportAsPdf() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+	go func() {
+		months, _ := os.ReadDir(destinationPath + "/Documents/TextFieldOutput")
+		c1 <- months
+	}()
 
-	months, _ := os.ReadDir(destinationPath + "/Dokumente/TextFieldOutput")
+	go func() {
+		absence, _ := os.ReadDir(destinationPath + "/Documents/AbsenceStatus")
+		c2 <- absence
+	}()
 
-	absence, _ := os.ReadDir(destinationPath + "/Dokumente/AbsenceStatus")
+	months := <-c1
+	absence := <-c2
+	close(c1)
+	close(c2)
+
 	sort.Slice(months, func(i, j int) bool {
 		sl1 := strings.Split(months[i].Name(), ".")
 		sl2 := strings.Split(months[j].Name(), ".")

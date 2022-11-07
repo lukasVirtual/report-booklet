@@ -10,8 +10,11 @@ require (
 
 require (
 	github.com/SebastiaanKlippert/go-wkhtmltopdf v1.7.2
+	github.com/go-redis/redis/v8 v8.4.4
 	github.com/gofiber/websocket/v2 v2.0.25
+	github.com/gomodule/redigo v1.8.9
 	github.com/jinzhu/gorm v1.9.16
+	github.com/nitishm/go-rejson/v4 v4.1.0
 	go.mongodb.org/mongo-driver v1.10.1
 )
 
@@ -20,14 +23,10 @@ require (
 	github.com/cespare/xxhash/v2 v2.1.1 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/fasthttp/websocket v1.5.0 // indirect
-	github.com/go-redis/redis v6.15.9+incompatible // indirect
-	github.com/go-redis/redis/v8 v8.4.4 // indirect
 	github.com/golang/snappy v0.0.1 // indirect
-	github.com/gomodule/redigo v1.8.9 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/klauspost/compress v1.15.0 // indirect
 	github.com/montanaflynn/stats v0.0.0-20171201202039-1bf9dbcd8cbe // indirect
-	github.com/nitishm/go-rejson/v4 v4.1.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/savsgio/gotils v0.0.0-20211223103454-d0aaa54c5899 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
