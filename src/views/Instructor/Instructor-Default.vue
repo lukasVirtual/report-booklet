@@ -33,6 +33,11 @@
         ></viewing-field>
       </v-container>
     </v-main>
+    <template v-slot:navIcons>
+      <v-btn icon
+        ><v-icon style="width: 35px" size="22">mdi-email</v-icon></v-btn
+      >
+    </template>
   </base-layout>
 </template>
 
@@ -62,6 +67,8 @@ export default defineComponent({
     onMounted(async () => {
       const instructor = await loginService.getUser();
       const users = await dataService.GetAllUserForInstructor(instructor);
+      const logs = await dataService.RetrieveLog(instructor);
+      console.warn(logs);
       who.value = users.map((v: { Name: string }) => v.Name);
 
       // console.log(currentDate.value);

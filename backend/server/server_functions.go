@@ -399,28 +399,6 @@ func RemoveSingleUserFromInstructor(c *fiber.Ctx) error {
 	})
 }
 
-// var ReadMessages = websocket.New(func(c *websocket.Conn) {
-// 	var (
-// 		mt  int
-// 		msg []byte
-// 		err error
-// 	)
-
-// 	for {
-// 		if mt, msg, err = c.ReadMessage(); err != nil {
-// 			log.Println("read: ", err)
-// 			break
-// 		}
-
-// 		log.Printf("message recieved: %s", msg)
-
-// 		if err = c.WriteMessage(mt, msg); err != nil {
-// 			log.Println("write:", err)
-// 			break
-// 		}
-// 	}
-// })
-
 func CreatePdf(c *fiber.Ctx) error {
 	data, err := dbmodels.ExportAsPdf()
 	if err != nil {

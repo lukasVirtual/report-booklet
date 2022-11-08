@@ -152,12 +152,12 @@ export default defineComponent({
       const jsonOuput = await dataService.GetJsonMonth(
         date.value?.split(".")?.[1] as string
       );
+      const user = await loginService.getUser();
       try {
-        socket.emit(
-          "submit",
-          jsonOuput,
-          await loginService.getUser(),
-          currMonth.value.toString()
+        socket.emit("submit", jsonOuput, user, currMonth.value.toString());
+        await dataService.WriteLog(
+          `${user} sumbitted month ${currMonth.value}`,
+          "felix"
         );
         toast.success("successfully submitted");
       } catch (e) {
