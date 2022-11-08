@@ -18,7 +18,7 @@
           border-radius: 20px;
         "
       >
-        <v-row justify="center">
+        <v-row justify="center" @keyup.enter="login">
           <v-card-title>Login</v-card-title>
           <v-col cols="12">
             <v-text-field
@@ -42,7 +42,6 @@
               color="cyan"
               :rules="[rules.required, rules.minLen]"
               v-model="validation.password"
-              @keyup.enter="login"
             ></v-text-field>
           </v-col>
 
