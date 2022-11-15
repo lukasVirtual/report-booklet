@@ -11,7 +11,7 @@
             ><v-icon>mdi-arrow-right</v-icon></v-btn
           >
 
-          <v-btn :disabled="toggleStage" @click="submit" color="blue"
+          <v-btn :disabled="toggleStage" @click.prevent="submit" color="blue"
             >Submit</v-btn
           >
 
@@ -31,7 +31,7 @@
     </v-main>
 
     <template v-slot:navIcons>
-      <v-btn icon @click="exportAsPdf"
+      <v-btn icon @click.prevent="exportAsPdf"
         ><v-icon style="width: 35px" size="22"
           >mdi-file-export-outline</v-icon
         ></v-btn
@@ -156,9 +156,15 @@ export default defineComponent({
       try {
         socket.emit("submit", jsonOuput, user, currMonth.value.toString());
         await dataService.WriteLog(
-          `${user} sumbitted month ${currMonth.value}`,
-          "felix"
+          `${user} sumbitted month ${currMonth.value}.${
+            currYear.value
+          } on ${calendarDate.getDate()}.${
+            calendarDate.getMonth() + 1
+          }.${calendarDate.getFullYear()}
+           at ${time.value.slice(0, 4)}`,
+          await dataService.GetInstructorForUser(user)
         );
+
         toast.success("successfully submitted");
       } catch (e) {
         toast.error("something went wrong submitting data");

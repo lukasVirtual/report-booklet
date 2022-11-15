@@ -30,23 +30,28 @@ io.on('connection', (socket) => {
         const exists = await client.exists(user.user_name)
         if (exists === 1) {
             console.log(`User: ${user.user_name} with id ${user.user_id} disconnected`)
-            await client.del(user.user_name)
+            const res = await client.del(user.user_name)
+            console.log(res)
         } else console.log("no one connected")
 
     })
     
-    socket.on('submit', async (data, sendTo, month) => {
-        console.log("data", data, month)
-        const reciever = await client.get(sendTo)
-        if (reciever) {
-            console.log(reciever)
+    socket.on('submit', async (data, sendFrom, month) => {
+        // console.log("data", data, month)
+        console.log(sendFrom)
+
+        // const reciever = await client.get(sendFrom)
+        // if (reciever) {
+        //     console.log("r: ",reciever)
+
+
             /* TODO
              * sending to specific user is currently not
              * working need to fix that
             */   
            
             const values = JSON.stringify({
-                name: sendTo,
+                name: sendFrom,
                 date: month,
                 data: data,
             });
@@ -62,11 +67,11 @@ io.on('connection', (socket) => {
 
             console.log(res.status)
     
-            io.emit("test", sendTo)
+            io.emit("test", sendFrom)
             console.debug("message sent")
-        } else {
-            console.error("error: ", reciever)
-        }
+        // } else {
+        //     console.error("error: ", reciever)
+        // }
     })
 })
 

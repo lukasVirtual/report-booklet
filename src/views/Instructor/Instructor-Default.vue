@@ -24,7 +24,7 @@
       <v-container
         class="d-flex justify-center mb-6"
         v-for="date in uniqueDates"
-        :key="date"
+        :key="`${who}.${date}.${month}.${year}`"
       >
         <viewing-field
           v-if="selected !== ''"
@@ -34,10 +34,23 @@
       </v-container>
     </v-main>
     <template v-slot:navIcons>
-      <v-btn icon
+      <v-btn icon id="menu-activator"
         ><v-icon style="width: 35px" size="22">mdi-email</v-icon></v-btn
       >
     </template>
+
+    <v-menu activator="#menu-activator">
+      <v-list max-height="300" min-width="300">
+        <v-list-item v-for="(item, index) in logs" :key="index" :value="index">
+          <template v-slot:prepend>
+            <v-icon icon="mdi-bell" size="20" color="error"></v-icon>
+          </template>
+          <v-list-item-title style="font-size: 13px; color: dimgray">{{
+            item.toUpperCase()
+          }}</v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-menu>
   </base-layout>
 </template>
 
@@ -47,8 +60,6 @@ import { loginService } from "@/handler/loginHandler";
 import { defineComponent, onMounted, ref, watch } from "@vue/runtime-core";
 import { io } from "socket.io-client";
 import BaseLayout from "../../boilerplate/layouts/Base.vue";
-import TypingField from "../Berichtsheft/Typing-Field.vue";
-import TextField from "../Berichtsheft/Text-Field.vue";
 import ViewingField from "./Viewing-Field.vue";
 
 export default defineComponent({
@@ -63,22 +74,24 @@ export default defineComponent({
     const date = new Date();
     const month = ref(date.getMonth() + 1);
     const year = ref(date.getFullYear());
+    const logs = ref<string[]>([]);
 
     onMounted(async () => {
       const instructor = await loginService.getUser();
       const users = await dataService.GetAllUserForInstructor(instructor);
-      const logs = await dataService.RetrieveLog(instructor);
+      const retrievedLogs: string[] = await dataService.RetrieveLog(instructor);
+      logs.value = retrievedLogs;
       console.warn(logs);
       who.value = users.map((v: { Name: string }) => v.Name);
 
       // console.log(currentDate.value);
-      socket.on("test", (user) => {
-        console.debug(`Data Uploaded from ${user}`);
+      socket.on("test", async (user) => {
+        const retrievedLogs = await dataService.RetrieveLog(instructor);
+        logs.value = retrievedLogs;
+        //   console.debug(`Data Uploaded from ${user}`);
         // if (elem) elem.innerHTML = object[0].Date;
         // console.log(object);
-
         // TODO Write Status/Notification in Backlog
-
         // await dataService.RetrieveSubmittedData(name);
       });
     });
@@ -93,6 +106,7 @@ export default defineComponent({
 
     watch([selected, month], async ([newSelection, newMonth]) => {
       try {
+        uniqueDates.value = [];
         reports.value = await dataService.RetrieveSubmittedData(
           newSelection,
           newMonth.toString()
@@ -116,6 +130,9 @@ export default defineComponent({
       uniqueDates,
       switchPageLeft,
       switchPageRight,
+      date,
+      logs,
+      year,
     };
   },
 });

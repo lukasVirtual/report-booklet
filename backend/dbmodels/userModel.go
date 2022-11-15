@@ -117,12 +117,12 @@ func ExportAsPdf() ([]byte, error) {
 		return nil, err
 	}
 	go func() {
-		months, _ := os.ReadDir(destinationPath + "/Documents/TextFieldOutput")
+		months, _ := os.ReadDir(destinationPath + "/Dokumente/TextFieldOutput")
 		c1 <- months
 	}()
 
 	go func() {
-		absence, _ := os.ReadDir(destinationPath + "/Documents/AbsenceStatus")
+		absence, _ := os.ReadDir(destinationPath + "/Dokumente/AbsenceStatus")
 		c2 <- absence
 	}()
 

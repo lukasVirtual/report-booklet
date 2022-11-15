@@ -20,6 +20,7 @@ func WriteLog(message, instructor string) {
 
 func RetrieveLatestLogs(instructor string) []string {
 	client.LTrim(ctx, instructor+".log", 0, 40)
+	// TODO client.LMove :not-readed -> :readed
 	res, _ := client.LRange(ctx, instructor+".log", 0, 30).Result()
 
 	return res

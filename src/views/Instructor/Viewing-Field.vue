@@ -1,10 +1,10 @@
 <template>
   <div
+    v-if="$route.path === '/Instructor'"
     @vnode-mounted="
       cacheData = data;
       propsDate = date;
     "
-    v-if="$route.path === '/Instructor'"
   >
     <v-card
       style="
@@ -51,7 +51,6 @@
 </template>
 
 <script lang="ts">
-import { dataService } from "@/handler/dataHandler";
 import { defineComponent, onMounted, ref } from "@vue/runtime-core";
 import TypingField from "../Berichtsheft/Typing-Field.vue";
 
@@ -67,7 +66,8 @@ export default defineComponent({
     const cacheData = ref<any>([]);
     const reports = ref<any>([]);
     const propsDate = ref<string | undefined>("");
-    onMounted(async () => {
+
+    onMounted(() => {
       reports.value = cacheData.value.filter(
         (val: any) => val.Date === propsDate.value
       );
