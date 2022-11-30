@@ -39,8 +39,9 @@
 </template>
 
 <script lang="ts">
-import { store } from "@/handler/store";
+import { useStore } from "@/handler/store";
 import { defineComponent, ref, watchEffect } from "@vue/runtime-core";
+import { storeToRefs } from "pinia";
 
 export default defineComponent({
   name: "TimerTextField",
@@ -51,6 +52,8 @@ export default defineComponent({
   emits: ["updateTime"],
 
   setup() {
+    const initStore = useStore();
+    const { store } = storeToRefs(initStore);
     const times = [
       { title: "00:00" },
       { title: "00:30" },
@@ -79,9 +82,9 @@ export default defineComponent({
     let idx = ref<number | undefined>(undefined);
 
     watchEffect(() => {
-      store.time = input.value as string;
-      store.input = "";
-      store.id = idx.value;
+      store.value.time = input.value as string;
+      store.value.input = "";
+      store.value.id = idx.value;
     });
 
     return {

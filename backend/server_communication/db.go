@@ -23,6 +23,7 @@ func InitRedis() {
 		Password: "",
 		DB:       0,
 	})
+
 	rh = rejson.NewReJSONHandler()
 	rh.SetGoRedisClient(client)
 	status, err := client.Ping(ctx).Result()

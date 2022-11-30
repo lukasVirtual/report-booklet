@@ -1,6 +1,7 @@
 package server
 
 import (
+	"log"
 	"strings"
 	"time"
 
@@ -41,6 +42,7 @@ type Log struct {
 }
 
 func Init() {
+	errMsg := make(chan error)
 	router := fiber.New()
 
 	store = session.New(session.Config{
@@ -96,8 +98,13 @@ func Init() {
 	router.Get("/api/createdpdf", CreatePdf)
 	router.Get("/api/user", GetUserData)
 
-	router.Listen("127.0.0.1:5000")
+	go func() {
+		errMsg <- router.Listen("127.0.0.1:5000")
+	}()
 
+	if res := <-errMsg; res != nil {
+		log.Fatalln(res)
+	}
 }
 
 func NewMiddleware() fiber.Handler {

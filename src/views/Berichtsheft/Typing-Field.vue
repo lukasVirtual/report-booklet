@@ -26,7 +26,8 @@
 <script lang="ts">
 import TimerTextField from "./Timer-TextField.vue";
 import { defineComponent, ref, watchEffect } from "@vue/runtime-core";
-import { store } from "@/handler/store";
+import { useStore } from "@/handler/store";
+import { storeToRefs } from "pinia";
 
 export default defineComponent({
   name: "TypingField",
@@ -44,17 +45,19 @@ export default defineComponent({
     const indexField = ref<number | undefined>(0);
     const rowCounter = ref<number>(1);
     const fields = ref(rowCounter.value);
+    const initStore = useStore();
+    const { store } = storeToRefs(initStore);
 
     watchEffect(() => {
-      store.input = inputText.value as string;
-      store.id = indexField.value;
-      store.rows = rowCounter.value as number;
-      store.time = "00:00";
+      store.value.input = inputText.value as string;
+      store.value.id = indexField.value;
+      store.value.rows = rowCounter.value as number;
+      store.value.time = "00:00";
     });
 
     const update = () => {
       if (
-        store.input !== "" ||
+        store.value.input !== "" ||
         inputText.value === "" ||
         rowCounter.value !== fields.value
       ) {

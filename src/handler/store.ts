@@ -1,4 +1,5 @@
-import { reactive } from "vue";
+import { defineStore } from "pinia";
+import { ref } from "vue";
 
 type Store = {
   id: undefined | number;
@@ -8,12 +9,13 @@ type Store = {
   rows: number;
 };
 
-export const store: Store = {
-  id: undefined,
-  date: "",
-  input: "",
-  time: "",
-  rows: 1,
-};
-
-export const storage: Store[] = [];
+export const useStore = defineStore("text-field", () => {
+  const store = ref<Store>({
+    id: undefined,
+    date: "",
+    input: "",
+    time: "",
+    rows: 1,
+  });
+  return { store };
+});

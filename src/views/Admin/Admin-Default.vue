@@ -5,9 +5,7 @@
 
       <v-dialog v-model="dialog" width="600px">
         <template v-slot:activator="{ attrs }">
-          <v-btn icon @click="dialog = true" v-bind="attrs"
-            ><v-icon>mdi-plus</v-icon></v-btn
-          >
+          <v-btn icon @click="dialog = true" v-bind="attrs"><v-icon>mdi-plus</v-icon></v-btn>
         </template>
         <v-card width="550" height="450" rounded>
           <v-card-title class="text-h5 grey lighten-2">
@@ -17,37 +15,20 @@
           <v-card-text>
             <v-row>
               <v-col>
-                <v-text-field
-                  label="Name"
-                  variant="underlined"
-                  color="cyan"
-                  v-model="input.name"
-                  :rules="[rules.required]"
-                ></v-text-field>
+                <v-text-field label="Name" variant="underlined" color="cyan" v-model="input.name"
+                  :rules="[rules.required]"></v-text-field>
               </v-col>
             </v-row>
             <v-row>
               <v-col>
-                <v-text-field
-                  label="Password"
-                  variant="underlined"
-                  color="cyan"
-                  type="password"
-                  v-model="input.password"
-                  :rules="[rules.required, rules.minLen]"
-                ></v-text-field>
+                <v-text-field label="Password" variant="underlined" color="cyan" type="password"
+                  v-model="input.password" :rules="[rules.required, rules.minLen]"></v-text-field>
               </v-col>
             </v-row>
             <v-row>
               <v-col>
-                <v-select
-                  :items="roleItems"
-                  label="Role"
-                  variant="underlined"
-                  color="cyan"
-                  v-model="input.role"
-                  :rules="[rules.required]"
-                ></v-select>
+                <v-select :items="roleItems" label="Role" variant="underlined" color="cyan" v-model="input.role"
+                  :rules="[rules.required]"></v-select>
               </v-col>
             </v-row>
           </v-card-text>
@@ -64,16 +45,10 @@
 
       <v-dialog v-model="relationDialog" width="600px">
         <template v-slot:activator="{ attrs }">
-          <v-btn
-            style="margin-left: 10px"
-            icon
-            v-bind="attrs"
-            @click="
-              relationDialog = true;
-              loadData();
-            "
-            ><v-icon>mdi-relation-one-or-many-to-only-one</v-icon></v-btn
-          >
+          <v-btn style="margin-left: 10px" icon v-bind="attrs" @click="
+  relationDialog = true;
+loadData();
+          "><v-icon>mdi-relation-one-or-many-to-only-one</v-icon></v-btn>
         </template>
 
         <v-card width="550" height="450" rounded>
@@ -84,28 +59,14 @@
           <v-card-text>
             <v-row>
               <v-col>
-                <v-select
-                  :items="instructors"
-                  label="Select Instructor"
-                  variant="underlined"
-                  color="cyan"
-                  v-model="chef"
-                ></v-select>
+                <v-select :items="instructors" label="Select Instructor" variant="underlined" color="cyan"
+                  v-model="chef"></v-select>
               </v-col>
             </v-row>
             <v-row>
               <v-col cols="12">
-                <v-select
-                  :items="users"
-                  label="Select User"
-                  variant="underlined"
-                  color="cyan"
-                  item-text="role"
-                  item-value="name"
-                  v-model="selected"
-                  multiple
-                  chips
-                >
+                <v-select :items="users" label="Select User" variant="underlined" color="cyan" item-text="role"
+                  item-value="name" v-model="selected" multiple chips>
                 </v-select>
               </v-col>
             </v-row>
@@ -114,15 +75,11 @@
           <v-divider></v-divider>
 
           <v-card-actions>
-            <v-btn
-              color="red"
-              text
-              @click="
-                relationDialog = false;
-                chef = '';
-                selected = [];
-              "
-            >
+            <v-btn color="red" text @click="
+  relationDialog = false;
+chef = '';
+selected = [];
+            ">
               Cancel
             </v-btn>
             <v-spacer></v-spacer>
@@ -131,10 +88,7 @@
         </v-card>
       </v-dialog>
 
-      <v-table
-        style="width: 1100px; max-width: 1400px; border-radius: 10px"
-        class="mt-5"
-      >
+      <v-table style="width: 1100px; max-width: 1400px; border-radius: 10px" class="mt-5">
         <thead>
           <tr>
             <th class="text-left">Name</th>
@@ -147,38 +101,22 @@
             <td>{{ elem.name }}</td>
             <td>{{ elem.role }}</td>
             <td class="text-right">
-              <v-btn
-                style="margin: 5px"
-                v-if="elem.role === 'instructor'"
-                @click="
-                  showRelations(elem.name);
-                  toggled = !toggled;
-                  instructor = elem.name;
-                "
-                ><v-icon size="20">mdi-cogs</v-icon></v-btn
-              >
+              <v-btn style="margin: 5px" v-if="elem.role === 'instructor'" @click="
+  showRelations(elem.name);
+toggled = !toggled;
+instructor = elem.name;
+              "><v-icon size="20">mdi-cogs</v-icon></v-btn>
 
-              <v-btn
-                v-if="elem.role !== 'admin'"
-                @click="deleteElemAt(elem, idx)"
-                ><v-icon size="20" color="red">mdi-trash-can</v-icon></v-btn
-              >
+              <v-btn v-if="elem.role !== 'admin'" @click="deleteElemAt(elem, idx)"><v-icon size="20"
+                  color="red">mdi-trash-can</v-icon></v-btn>
             </td>
           </tr>
         </tbody>
       </v-table>
 
       <div style="height: 50px"></div>
-      <v-select
-        v-if="toggled"
-        style="max-width: 300px"
-        multiple
-        chips
-        density="compact"
-        closable-chips
-        v-model="belongingUsers"
-        :items="belongingUsers"
-      >
+      <v-select v-if="toggled" style="max-width: 300px" multiple chips density="compact" closable-chips
+        v-model="belongingUsers" :items="belongingUsers">
       </v-select>
       <!-- <v-card width="550" height="450" rounded v-if="toggled">
         <v-select
@@ -194,9 +132,17 @@
 </template>
 
 <script lang="ts">
-import { loginService } from "@/handler/loginHandler";
-import { dataService } from "@/handler/dataHandler";
-import { defineComponent, onMounted, reactive, ref } from "@vue/runtime-core";
+import type { DataServiceInterface } from "@/handler/dataHandler";
+import { loginService } from "@/handler/loginHandler"
+// import type { LoginServiceInterface } from "@/handler/loginHandler";
+
+import {
+  defineComponent,
+  onMounted,
+  reactive,
+  ref,
+  inject,
+} from "@vue/runtime-core";
 import BaseLayout from "../../boilerplate/layouts/Base.vue";
 import { useToast } from "vue-toastification";
 
@@ -205,6 +151,11 @@ export default defineComponent({
   components: { BaseLayout },
 
   setup() {
+    // const loginService = inject(
+    //   "provide-login-service"
+    // ) as LoginServiceInterface;
+    const dataService = inject("provide-data-service") as DataServiceInterface;
+
     const role = ref("");
     const toast = useToast();
     let instructors = ref<string[]>([]);

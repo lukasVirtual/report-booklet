@@ -1,42 +1,25 @@
 <template>
   <base-layout v-if="$route.path === '/Instructor'">
     <v-main style="margin: 1.5rem">
-      <v-select
-        :items="who"
-        variant="underlined"
-        style="max-width: 200px; max-height: 60px; min-width: 125px"
-        v-model="selected"
-      >
+      <v-select :items="who" variant="underlined" style="max-width: 200px; max-height: 60px; min-width: 125px"
+        v-model="selected">
       </v-select>
       <v-card color="transparent" class="d-flex justify-center mb-6">
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn icon @click="switchPageLeft"
-            ><v-icon>mdi-arrow-left</v-icon></v-btn
-          >
-          <v-btn icon @click="switchPageRight"
-            ><v-icon>mdi-arrow-right</v-icon></v-btn
-          >
+          <v-btn icon @click="switchPageLeft"><v-icon>mdi-arrow-left</v-icon></v-btn>
+          <v-btn icon @click="switchPageRight"><v-icon>mdi-arrow-right</v-icon></v-btn>
         </v-card-actions>
       </v-card>
 
       <h1 class="d-flex justify-center">Instructor</h1>
-      <v-container
-        class="d-flex justify-center mb-6"
-        v-for="date in uniqueDates"
-        :key="`${who}.${date}.${month}.${year}`"
-      >
-        <viewing-field
-          v-if="selected !== ''"
-          :data="reports"
-          :date="date"
-        ></viewing-field>
+      <v-container class="d-flex justify-center mb-6" v-for="date in uniqueDates"
+        :key="`${who}.${date}.${month}.${year}`">
+        <viewing-field v-if="selected !== ''" :data="reports" :date="date"></viewing-field>
       </v-container>
     </v-main>
     <template v-slot:navIcons>
-      <v-btn icon id="menu-activator"
-        ><v-icon style="width: 35px" size="22">mdi-email</v-icon></v-btn
-      >
+      <v-btn icon id="menu-activator"><v-icon style="width: 35px" size="22">mdi-email</v-icon></v-btn>
     </template>
 
     <v-menu activator="#menu-activator">
@@ -46,7 +29,7 @@
             <v-icon icon="mdi-bell" size="20" color="error"></v-icon>
           </template>
           <v-list-item-title style="font-size: 13px; color: dimgray">{{
-            item.toUpperCase()
+              item.toUpperCase()
           }}</v-list-item-title>
         </v-list-item>
       </v-list>
@@ -55,17 +38,28 @@
 </template>
 
 <script lang="ts">
-import { dataService } from "@/handler/dataHandler";
-import { loginService } from "@/handler/loginHandler";
-import { defineComponent, onMounted, ref, watch } from "@vue/runtime-core";
+import type { DataServiceInterface } from "@/handler/dataHandler";
+import {
+  defineComponent,
+  onMounted,
+  ref,
+  watch,
+  inject,
+} from "@vue/runtime-core";
 import { io } from "socket.io-client";
 import BaseLayout from "../../boilerplate/layouts/Base.vue";
 import ViewingField from "./Viewing-Field.vue";
+// import lsoginService from "../../handler/loginHandler.ts"
+import { loginService } from "@/handler/loginHandler"
 
 export default defineComponent({
   name: "InstructorDefault",
   components: { BaseLayout, ViewingField },
   setup() {
+    // const loginService = inject(
+    //   "provide-login-service"
+    // ) as LoginServiceInterface;
+    const dataService = inject("provide-data-service") as DataServiceInterface;
     const who = ref<string[]>([]);
     const selected = ref("");
     const socket = io("http://localhost:7000");

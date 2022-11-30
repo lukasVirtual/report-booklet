@@ -1,32 +1,16 @@
 <template>
   <base-layout v-if="$route.name === 'Curriculum'">
     <v-main style="margin: 1.5rem">
-      <v-select
-        :items="who"
-        variant="underlined"
-        style="max-width: 200px; max-height: 60px"
-        v-model="selected"
-      >
+      <v-select :items="who" variant="underlined" style="max-width: 200px; max-height: 60px" v-model="selected">
       </v-select>
-      <v-container
-        style="width: auto; height: auto"
-        class="d-flex justify-center"
-        fluid
-      >
-        <v-table
-          style="width: 1100px; max-width: 1400px; border-radius: 10px"
-          class="mt-5"
-        >
+      <v-container style="width: auto; height: auto" class="d-flex justify-center" fluid>
+        <v-table style="width: 1100px; max-width: 1400px; border-radius: 10px" class="mt-5">
           <tbody>
             <tr v-for="(elem, idx) in qualis" :key="elem.Title">
               <td>{{ elem.Title }}</td>
               <td class="d-flex">
-                <v-checkbox
-                  v-model="elem.State"
-                  color="primary"
-                  class="align-center justify-center"
-                  @click="changeState(idx)"
-                ></v-checkbox>
+                <v-checkbox v-model="elem.State" color="primary" class="align-center justify-center"
+                  @click="changeState(idx)"></v-checkbox>
               </td>
             </tr>
           </tbody>
@@ -37,15 +21,25 @@
 </template>
 
 <script lang="ts">
-import { dataService } from "@/handler/dataHandler";
+import type { DataServiceInterface } from "@/handler/dataHandler";
 import { loginService } from "@/handler/loginHandler";
-import { defineComponent, ref, onMounted, watch } from "@vue/runtime-core";
+import {
+  defineComponent,
+  ref,
+  onMounted,
+  watch,
+  inject,
+} from "@vue/runtime-core";
 import BaseLayout from "../../boilerplate/layouts/Base.vue";
 
 export default defineComponent({
   name: "CurriculumDefault",
   components: { BaseLayout },
   setup() {
+    // const loginService = inject(
+    //   "provide-login-service"
+    // ) as LoginServiceInterface;
+    const dataService = inject("provide-data-service") as DataServiceInterface;
     const selected = ref("");
     const who = ref<string[]>([]);
     const items = [

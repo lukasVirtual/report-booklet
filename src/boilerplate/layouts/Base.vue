@@ -1,85 +1,37 @@
 <template>
-  <v-app
-    :theme="theme"
-    style="display: flex; align-items: center; justify-content: center"
-  >
+  <v-app :theme="theme" style="display: flex; align-items: center; justify-content: center">
     <v-app-bar :color="theme" style="position: fixed">
-      <v-btn @click="togglelistState" icon
-        ><v-icon style="width: 35px" size="22"
-          >mdi-format-list-bulleted</v-icon
-        ></v-btn
-      >
+      <v-btn @click="togglelistState" icon><v-icon style="width: 35px"
+          size="22">mdi-format-list-bulleted</v-icon></v-btn>
 
       <slot name="navIcons"></slot>
 
       <v-spacer></v-spacer>
       <div class="text-right" style="margin: 20px">
-        <v-btn rounded v-if="showHearbeat"
-          ><v-icon color="blue" style="width: 35px" size="22"
-            >mdi-access-point</v-icon
-          ></v-btn
-        >
-        <v-btn rounded @click="logout"
-          ><v-icon style="width: 35px">mdi-account-arrow-left</v-icon
-          >Logout</v-btn
-        >
-        <v-btn rounded @click="switchTheme"
-          ><v-icon :icon="iconValue"></v-icon
-        ></v-btn>
+        <v-btn rounded v-if="showHearbeat"><v-icon color="blue" style="width: 35px"
+            size="22">mdi-access-point</v-icon></v-btn>
+        <v-btn rounded @click="logout"><v-icon style="width: 35px">mdi-account-arrow-left</v-icon>Logout</v-btn>
+        <v-btn rounded @click="switchTheme"><v-icon :icon="iconValue"></v-icon></v-btn>
       </div>
-      <v-img
-        class="logo--light"
-        max-width="80"
-        lazy-src="src\assets\vhf-logo.png"
-        src="src\assets\vhf-logo.png"
-      ></v-img>
+      <v-img class="logo--light" max-width="80" lazy-src="src\assets\vhf-logo.png"
+        src="src\assets\vhf-logo.png"></v-img>
     </v-app-bar>
     <v-navigation-drawer :rail="toggleList">
       <v-list nav>
-        <v-list-item
-          v-if="role === 'user'"
-          :to="{ name: 'Berichtsheft' }"
-          height="50"
-          prepend-icon="mdi-file-document-edit-outline"
-          title="Berichtsheft"
-          value="Berichtsheft"
-        ></v-list-item>
+        <v-list-item v-if="role === 'user'" :to="{ name: 'Berichtsheft' }" height="50"
+          prepend-icon="mdi-file-document-edit-outline" title="Berichtsheft" value="Berichtsheft"></v-list-item>
 
-        <v-list-item
-          v-if="role === 'user'"
-          :to="{ name: 'Dashboard' }"
-          height="50"
-          prepend-icon="mdi-monitor-dashboard"
-          title="Dashboard"
-          value="Dashboard"
-        ></v-list-item>
+        <v-list-item v-if="role === 'user'" :to="{ name: 'Dashboard' }" height="50" prepend-icon="mdi-monitor-dashboard"
+          title="Dashboard" value="Dashboard"></v-list-item>
 
-        <v-list-item
-          v-if="role === 'instructor'"
-          :to="{ name: 'Instructor' }"
-          height="50"
-          prepend-icon="mdi-account-search-outline"
-          title="Control Center"
-          value="Control Center"
-        ></v-list-item>
+        <v-list-item v-if="role === 'instructor'" :to="{ name: 'Instructor' }" height="50"
+          prepend-icon="mdi-account-search-outline" title="Control Center" value="Control Center"></v-list-item>
 
-        <v-list-item
-          v-if="role === 'instructor'"
-          :to="{ name: 'Curriculum' }"
-          height="50"
-          prepend-icon="mdi-beaker-check"
-          title="Curriculum"
-          value="Curriculum"
-        ></v-list-item>
+        <v-list-item v-if="role === 'instructor'" :to="{ name: 'Curriculum' }" height="50"
+          prepend-icon="mdi-beaker-check" title="Curriculum" value="Curriculum"></v-list-item>
 
-        <v-list-item
-          v-if="role === 'admin'"
-          :to="{ name: 'Admin' }"
-          height="50"
-          prepend-icon="mdi-account-multiple-plus-outline"
-          title="Admin Center"
-          value="Admin Center"
-        ></v-list-item>
+        <v-list-item v-if="role === 'admin'" :to="{ name: 'Admin' }" height="50"
+          prepend-icon="mdi-account-multiple-plus-outline" title="Admin Center" value="Admin Center"></v-list-item>
       </v-list>
     </v-navigation-drawer>
     <Suspense>
@@ -96,7 +48,8 @@
   </v-app>
 </template>
 <script lang="ts">
-import { loginService } from "@/handler/loginHandler";
+// import type { LoginServiceInterface } from "@/handler/loginHandler";
+import { loginService } from "@/handler/loginHandler"
 import { io } from "socket.io-client";
 import { defineComponent, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
@@ -105,6 +58,9 @@ export default defineComponent({
   name: "BaseLayout",
 
   setup() {
+    // const loginService = inject(
+    //   "provide-login-service"
+    // ) as LoginServiceInterface;
     let isAuthenticated = ref(false);
     const loading = ref<undefined | boolean>(undefined);
     let theme = ref("dark");

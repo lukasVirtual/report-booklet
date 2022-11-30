@@ -1,12 +1,61 @@
 import axios from "axios";
 
-export class dataService {
-  static async getAllData(): Promise<any> {
+export interface DataServiceInterface {
+  getAllData(): Promise<any>;
+  deleteItem(name: string): Promise<void>;
+  saveForm(text: string, time: string): Promise<void>;
+  saveTextField(date: string): Promise<void>;
+  getTextFieldData(date: string): Promise<any>;
+  writeJson(
+    Id: number,
+    Date: string,
+    Input: string,
+    Time: string,
+    Rows: number
+  ): Promise<void>;
+  readJson(date: string): Promise<[]>;
+  removeJson(date: string, index: number): Promise<void>;
+  insertQualifications(
+    qualis: {
+      text: string;
+      state: boolean;
+    }[],
+    date: string
+  ): Promise<void>;
+  getQualifications(date: string): Promise<any>;
+  WriteStatus(date: string, status: string): Promise<void>;
+  ReadStatus(date: string): Promise<[]>;
+  AssignUserToInstructor(
+    instructorsName: string,
+    usersName: string
+  ): Promise<void>;
+  GetAllUserForInstructor(instructor: string): Promise<[]>;
+  DelteUsersFromInstructor(instructor: string): Promise<void>;
+  ExportAsPDF(): Promise<void>;
+  insertCurriculum(person: string, qualis: any[]): Promise<void>;
+  readCurriculum(person: string): Promise<any>;
+  GetInstructorForUser(username: string): Promise<string>;
+  GetJsonMonth(month: string): Promise<[]>;
+  SaveSubmittedData(person: string, data: []): Promise<void>;
+  RetrieveSubmittedData(person: string, month: string): Promise<[]>;
+  WriteLog(message: string, instructor: string): Promise<void>;
+  RetrieveLog(instructor: string): Promise<[]>;
+}
+
+let instance: DataService | undefined = undefined;
+
+export function ProvideDataService(): DataService {
+  if (!instance) instance = new DataService();
+  return instance;
+}
+
+class DataService implements DataServiceInterface {
+  async getAllData(): Promise<any> {
     const res = await axios.get("http://127.0.0.1:5000/api/dataware");
     return res.data;
   }
 
-  static async deleteItem(name: string): Promise<void> {
+  async deleteItem(name: string): Promise<void> {
     const input = JSON.stringify({
       name: name,
     });
@@ -19,7 +68,7 @@ export class dataService {
     console.log(res.status);
   }
 
-  static async saveForm(text: string, time: string): Promise<void> {
+  async saveForm(text: string, time: string): Promise<void> {
     const input = JSON.stringify({
       input: text,
       timeStamp: time,
@@ -38,7 +87,7 @@ export class dataService {
     console.log("status from saving form: ", res.status);
   }
 
-  static async saveTextField(date: string): Promise<void> {
+  async saveTextField(date: string): Promise<void> {
     const input = JSON.stringify({
       calendarDate: date,
     });
@@ -56,7 +105,7 @@ export class dataService {
     console.log("status from saving TextField: ", res.status);
   }
 
-  static async getTextFieldData(date: string): Promise<any> {
+  async getTextFieldData(date: string): Promise<any> {
     const input = JSON.stringify({
       calendarDate: date,
     });
@@ -74,7 +123,7 @@ export class dataService {
     return res.json();
   }
 
-  static async writeJson(
+  async writeJson(
     Id: number,
     Date: string,
     Input: string,
@@ -100,7 +149,7 @@ export class dataService {
     console.log(res.status);
   }
 
-  static async readJson(date: string): Promise<[]> {
+  async readJson(date: string): Promise<[]> {
     const values = JSON.stringify({
       date: date,
     });
@@ -115,7 +164,7 @@ export class dataService {
     return res.json();
   }
 
-  static async removeJson(date: string, index: number): Promise<void> {
+  async removeJson(date: string, index: number): Promise<void> {
     const values = JSON.stringify({
       index: index,
       date: date,
@@ -133,7 +182,7 @@ export class dataService {
     console.log(res.status);
   }
 
-  static async insertQualifications(
+  async insertQualifications(
     qualis: {
       text: string;
       state: boolean;
@@ -157,7 +206,7 @@ export class dataService {
     console.log(res.status);
   }
 
-  static async getQualifications(date: string): Promise<any> {
+  async getQualifications(date: string): Promise<any> {
     const values = JSON.stringify({
       date: date,
     });
@@ -174,7 +223,7 @@ export class dataService {
     return res.json();
   }
 
-  static async WriteStatus(date: string, status: string): Promise<void> {
+  async WriteStatus(date: string, status: string): Promise<void> {
     const values = JSON.stringify({
       date: date,
       status: status,
@@ -192,7 +241,7 @@ export class dataService {
     console.log(res.status);
   }
 
-  static async ReadStatus(date: string): Promise<[]> {
+  async ReadStatus(date: string): Promise<[]> {
     const values = JSON.stringify({
       date: date,
     });
@@ -209,7 +258,7 @@ export class dataService {
     return res.json();
   }
 
-  static async AssignUserToInstructor(
+  async AssignUserToInstructor(
     instructorsName: string,
     usersName: string
   ): Promise<void> {
@@ -229,7 +278,7 @@ export class dataService {
     console.log(res.status);
   }
 
-  static async GetAllUserForInstructor(instructor: string): Promise<[]> {
+  async GetAllUserForInstructor(instructor: string): Promise<[]> {
     const values = JSON.stringify({
       instructorsName: instructor,
     });
@@ -245,7 +294,7 @@ export class dataService {
     return res.json();
   }
 
-  static async DelteUsersFromInstructor(instructor: string): Promise<void> {
+  async DelteUsersFromInstructor(instructor: string): Promise<void> {
     const values = JSON.stringify({
       instructorsName: instructor,
     });
@@ -262,7 +311,7 @@ export class dataService {
     console.log(`delted all users from instructor with status: ${res.status}`);
   }
 
-  static async DelteSingleUserFromInstructor(user: string): Promise<void> {
+  async DelteSingleUserFromInstructor(user: string): Promise<void> {
     const values = JSON.stringify({
       usersName: user,
     });
@@ -279,7 +328,7 @@ export class dataService {
     console.log(res.status);
   }
 
-  static async ExportAsPDF(): Promise<void> {
+  async ExportAsPDF(): Promise<void> {
     const res = await axios.get("http://127.0.0.1:5000/api/createdpdf");
     if (res.status !== 200) {
       throw new Error("Error while Creating Pdf");
@@ -304,7 +353,7 @@ export class dataService {
     a.remove();
   }
 
-  static async insertCurriculum(person: string, qualis: any[]): Promise<void> {
+  async insertCurriculum(person: string, qualis: any[]): Promise<void> {
     const values = JSON.stringify({
       date: person,
       qualifications: qualis,
@@ -320,7 +369,7 @@ export class dataService {
     console.log(res.status);
   }
 
-  static async readCurriculum(person: string): Promise<any> {
+  async readCurriculum(person: string): Promise<any> {
     const values = JSON.stringify({
       date: person,
     });
@@ -336,7 +385,7 @@ export class dataService {
     return res.json();
   }
 
-  static async GetInstructorForUser(username: string): Promise<string> {
+  async GetInstructorForUser(username: string): Promise<string> {
     const values = JSON.stringify({
       name: username,
     });
@@ -353,7 +402,7 @@ export class dataService {
     return res.json();
   }
 
-  static async GetJsonMonth(month: string): Promise<[]> {
+  async GetJsonMonth(month: string): Promise<[]> {
     const values = JSON.stringify({
       date: month,
     });
@@ -368,7 +417,7 @@ export class dataService {
     return res.json();
   }
 
-  static async SaveSubmittedData(person: string, data: []): Promise<void> {
+  async SaveSubmittedData(person: string, data: []): Promise<void> {
     const values = JSON.stringify({
       name: person,
       data: data,
@@ -385,10 +434,7 @@ export class dataService {
 
     console.log(res.status);
   }
-  static async RetrieveSubmittedData(
-    person: string,
-    month: string
-  ): Promise<[]> {
+  async RetrieveSubmittedData(person: string, month: string): Promise<[]> {
     const values = JSON.stringify({
       name: person,
       date: month,
@@ -407,7 +453,7 @@ export class dataService {
     return res.json();
   }
 
-  static async WriteLog(message: string, instructor: string): Promise<void> {
+  async WriteLog(message: string, instructor: string): Promise<void> {
     const values = JSON.stringify({
       name: instructor,
       message: message,
@@ -425,7 +471,7 @@ export class dataService {
     console.log(res.status);
   }
 
-  static async RetrieveLog(instructor: string): Promise<[]> {
+  async RetrieveLog(instructor: string): Promise<[]> {
     const values = JSON.stringify({
       name: instructor,
     });

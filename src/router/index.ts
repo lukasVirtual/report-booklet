@@ -1,12 +1,15 @@
 import { createRouter, createWebHistory } from "vue-router";
 import App from "../App.vue";
+import { inject } from "vue";
 import LoginDefault from "../Auth/Login-Default.vue";
 import MainPage from "../views/Berichtsheft/Main.vue";
 import DashboardDefault from "../views/Dashboard/Dashboard-Default.vue";
 import AdminDefault from "../views/Admin/Admin-Default.vue";
 import InstructorDefault from "../views/Instructor/Instructor-Default.vue";
-import { loginService } from "@/handler/loginHandler";
+// import type { LoginServiceInterface } from "@/handler/loginHandler";
 import CurriculumDefault from "@/views/Instructor/Curriculum-Default.vue";
+import { loginService } from "../handler/loginHandler"
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [

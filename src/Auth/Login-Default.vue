@@ -1,14 +1,7 @@
 <template>
   <v-app>
-    <v-main
-      v-if="$route.path == '/Login'"
-      class="text-center"
-      style="display: flex; align-items: center; margin: auto"
-    >
-      <v-form
-        tile
-        ref="valid"
-        style="
+    <v-main v-if="$route.path == '/Login'" class="text-center" style="display: flex; align-items: center; margin: auto">
+      <v-form tile ref="valid" style="
           border: 2px solid black;
           height: 400px;
           width: 700px;
@@ -16,33 +9,18 @@
           justify-content: center;
           align-items: center;
           border-radius: 20px;
-        "
-      >
+        ">
         <v-row justify="center" @keyup.enter="login">
           <v-card-title>Login</v-card-title>
           <v-col cols="12">
-            <v-text-field
-              prepend-icon="mdi-account"
-              label="Username"
-              type="text"
-              color="cyan"
-              style="padding-left: 25%; padding-right: 25%"
-              :rules="[rules.required]"
-              variant="underlined"
-              v-model="validation.username"
-            ></v-text-field>
+            <v-text-field prepend-icon="mdi-account" label="Username" type="text" color="cyan"
+              style="padding-left: 25%; padding-right: 25%" :rules="[rules.required]" variant="underlined"
+              v-model="validation.username"></v-text-field>
           </v-col>
           <v-col cols="12">
-            <v-text-field
-              prepend-icon="mdi-lock"
-              label="Password"
-              type="password"
-              style="padding-left: 25%; padding-right: 25%"
-              variant="underlined"
-              color="cyan"
-              :rules="[rules.required, rules.minLen]"
-              v-model="validation.password"
-            ></v-text-field>
+            <v-text-field prepend-icon="mdi-lock" label="Password" type="password"
+              style="padding-left: 25%; padding-right: 25%" variant="underlined" color="cyan"
+              :rules="[rules.required, rules.minLen]" v-model="validation.password"></v-text-field>
           </v-col>
 
           <v-divider length="700px"></v-divider>
@@ -65,7 +43,8 @@
 </template>
 
 <script lang="ts">
-import { loginService } from "@/handler/loginHandler";
+// import type { LoginServiceInterface } from "@/handler/loginHandler";
+import { loginService } from "@/handler/loginHandler"
 import { defineComponent, reactive, ref } from "@vue/runtime-core";
 import { io } from "socket.io-client";
 import { useRouter } from "vue-router";
@@ -75,6 +54,10 @@ export default defineComponent({
   name: "LoginDefault",
 
   setup() {
+    // const loginService = inject(
+    //   "provide-login-service"
+    // ) as LoginServiceInterface;
+
     const rules = {
       required: (value: string) => !!value || "Required",
       minLen: (v: string) => v.length >= 8 || "Min. 8 Characters",
@@ -99,6 +82,7 @@ export default defineComponent({
             validation.username,
             validation.password
           );
+          console.log(registerRequest.value)
           if (registerRequest.value) {
             loading.value = false;
             socket.emit("login", {
@@ -110,9 +94,9 @@ export default defineComponent({
                 let err = await router.push({
                   name: route.name,
                 });
-
-                if (err == undefined) return;
+                if (err === undefined) return;
               }
+
               router.push({ path: "/Login" });
             }
           } else {

@@ -3,39 +3,25 @@
     <v-main>
       <v-card color="transparent" class="d-flex justify-center mb-6">
         <v-card-actions>
-          <v-btn icon @click="switchPageLeft"
-            ><v-icon>mdi-arrow-left</v-icon></v-btn
-          >
+          <v-btn icon @click="switchPageLeft"><v-icon>mdi-arrow-left</v-icon></v-btn>
           <v-btn @click="today" style="font-size: 20px">Heute</v-btn>
-          <v-btn icon @click="switchPageRight"
-            ><v-icon>mdi-arrow-right</v-icon></v-btn
-          >
+          <v-btn icon @click="switchPageRight"><v-icon>mdi-arrow-right</v-icon></v-btn>
 
-          <v-btn :disabled="toggleStage" @click.prevent="submit" color="blue"
-            >Submit</v-btn
-          >
+          <v-btn :disabled="toggleStage" @click.prevent="submit" color="blue">Submit</v-btn>
 
           <h5 style="color: grey">{{ time }}</h5>
         </v-card-actions>
       </v-card>
 
-      <v-container
-        class="d-flex justify-center mb-6"
-        v-for="i in daysOfMonth"
-        :key="`${i}.${currMonth}.${currYear}`"
-        ref="container"
-        id="test"
-      >
+      <v-container class="d-flex justify-center mb-6" v-for="i in daysOfMonth" :key="`${i}.${currMonth}.${currYear}`"
+        ref="container" id="test">
         <text-field :propsDate="`${i}.${currMonth}.${currYear}`"></text-field>
       </v-container>
     </v-main>
 
     <template v-slot:navIcons>
-      <v-btn icon @click.prevent="exportAsPdf"
-        ><v-icon style="width: 35px" size="22"
-          >mdi-file-export-outline</v-icon
-        ></v-btn
-      >
+      <v-btn icon @click.prevent="exportAsPdf"><v-icon style="width: 35px"
+          size="22">mdi-file-export-outline</v-icon></v-btn>
     </template>
     <v-overlay :model-value="overlay" class="align-center justify-center">
       <v-progress-circular indeterminate size="64"></v-progress-circular>
@@ -68,9 +54,10 @@
 </style>
 
 <script lang="ts">
-import { dataService } from "@/handler/dataHandler";
-import { loginService } from "@/handler/loginHandler";
-import { defineComponent, onMounted, ref } from "@vue/runtime-core";
+import type { DataServiceInterface } from "@/handler/dataHandler";
+// import type { LoginServiceInterface } from "@/handler/loginHandler";
+import { loginService } from "@/handler/loginHandler"
+import { inject, defineComponent, onMounted, ref } from "@vue/runtime-core";
 import { useToast } from "vue-toastification";
 import BaseLayout from "../../boilerplate/layouts/Base.vue";
 import TextField, { date } from "./Text-Field.vue";
@@ -81,6 +68,10 @@ export default defineComponent({
   name: "MainPage",
 
   setup() {
+    // const loginService = inject(
+    //   "provide-login-service"
+    // ) as LoginServiceInterface;
+    const dataService = inject("provide-data-service") as DataServiceInterface;
     const calendarDate = new Date();
     const role = ref("");
     const toast = useToast();
@@ -156,10 +147,8 @@ export default defineComponent({
       try {
         socket.emit("submit", jsonOuput, user, currMonth.value.toString());
         await dataService.WriteLog(
-          `${user} sumbitted month ${currMonth.value}.${
-            currYear.value
-          } on ${calendarDate.getDate()}.${
-            calendarDate.getMonth() + 1
+          `${user} sumbitted month ${currMonth.value}.${currYear.value
+          } on ${calendarDate.getDate()}.${calendarDate.getMonth() + 1
           }.${calendarDate.getFullYear()}
            at ${time.value.slice(0, 4)}`,
           await dataService.GetInstructorForUser(user)

@@ -106,21 +106,12 @@
 </template>
 
 <script lang="ts">
-import { store } from "@/handler/store";
-import { dataService } from "@/handler/dataHandler";
-import { defineComponent, onMounted, ref } from "@vue/runtime-core";
+import type { DataServiceInterface } from "@/handler/dataHandler";
+import { useStore } from "@/handler/store";
+import { defineComponent, inject, onMounted, ref } from "@vue/runtime-core";
+import { storeToRefs } from "pinia";
 import QualificationsDefault from "./Qualifications-Default.vue";
 import TypingField from "./Typing-Field.vue";
-
-export const save = (propsDate: string | undefined) => {
-  console.warn("saving...");
-  store.date = propsDate as string;
-  console.log("saving props: ", propsDate);
-  console.log(store.input);
-
-  dataService.saveForm(store.input, store.time);
-  dataService.saveTextField(propsDate as string);
-};
 
 export const date = ref<string | undefined>("");
 export const timeStmp = ref("");
@@ -132,6 +123,8 @@ export default defineComponent({
   },
 
   setup() {
+    const initStore = useStore();
+    const { store } = storeToRefs(initStore);
     const index = ref<number>(0);
     const selectedItem = ref(1);
     let num = ref<number[]>([]);
@@ -143,6 +136,7 @@ export default defineComponent({
     const selected = ref("");
     const status = ref<any | null>(null);
     const overlay = ref<boolean | undefined>(undefined);
+    const dataService = inject("provide-data-service") as DataServiceInterface;
 
     const add = async (propsDate: string | undefined) => {
       console.log(index.value);
@@ -191,11 +185,11 @@ export default defineComponent({
     const returnIndex = async (idx: number, date: string | undefined) => {
       console.warn("Creating...");
       await dataService.writeJson(
-        store.id as number,
+        store.value.id as number,
         date as string,
-        store.input,
-        store.time,
-        store.rows
+        store.value.input,
+        store.value.time,
+        store.value.rows
       );
     };
 
@@ -231,7 +225,6 @@ export default defineComponent({
       changeStatus,
       removeItem,
       returnIndex,
-      save,
       showDate,
       add,
     };
