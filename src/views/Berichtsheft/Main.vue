@@ -145,7 +145,22 @@ export default defineComponent({
       );
       const user = await loginService.getUser();
       try {
-        socket.emit("submit", jsonOuput, user, currMonth.value.toString());
+        //socket.emit("submit", jsonOuput, user, currMonth.value.toString());
+        const values = JSON.stringify({
+          name: user,
+          date: currMonth.value.toString(),
+          data: jsonOuput,
+        });
+        const res = await fetch("http://127.0.0.1:5000/api/saveSubmittedData", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "http://127.0.0.1:5000",
+          },
+          body: values,
+        });
+        console.log(res.status)
+
         await dataService.WriteLog(
           `${user} sumbitted month ${currMonth.value}.${currYear.value
           } on ${calendarDate.getDate()}.${calendarDate.getMonth() + 1
